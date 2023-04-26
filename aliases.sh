@@ -4,11 +4,15 @@ MyNick='Hendrix'
 
   # Extra applications {{{1
 
+
 if [[ $OSTYPE == 'darwin'* ]]; then
-  alias front='cd /Users/henri/build/tikettisysteemi && ng build --watch'
+  ukkPath='/Users/henri/build/tikettisysteemi'
 else
-  alias front='cd /home/henri/build/UKK-tiketit && ng build --watch'
+  ukkPath='/home/henri/build/UKK-tiketit'
 fi
+
+alias ukk-dev="cd "$ukkPath" && ng build --watch --configuration development"
+alias ukk-prod="cd "$ukkPath" && ng build --watch"
 
 if [[ $OSTYPE == 'darwin'* ]]; then
   dir=/Users/henri/build/UKK-tiketit-backend/docs/postgres
@@ -221,7 +225,7 @@ function xclip_aliases() {
   cprealpath() { realpath "$1" | xclip -selection clipboard; }
 }
 
-if [[ has xclip && ! -n "$WAYLAND_DISPLAY" ]];
+if has xclip && [[ ! -n "$WAYLAND_DISPLAY" ]]; then
 
   has xbindkeys && alias xbindkeys="xbindkeys -f $HOME/.config/xbindkeysrc"
 
