@@ -225,6 +225,14 @@ function xclip_aliases() {
   cprealpath() { realpath "$1" | xclip -selection clipboard; }
 }
 
+# For Xorg
+has obxprop && alias obxp='echo Click a window; obxprop | grep "^_OB_APP"'
+  # Show window name and class.
+if has xprop; then
+  alias xp='echo Click a window; xprop | grep "WM_WINDOW_ROLE\|WM_CLASS" && \
+  echo "WM_CLASS(STRING) = \"NAME\", \"CLASS\""'
+fi
+
 if has xclip && [[ ! -n "$WAYLAND_DISPLAY" ]]; then
 
   has xbindkeys && alias xbindkeys="xbindkeys -f $HOME/.config/xbindkeysrc"
@@ -286,7 +294,8 @@ if [[ $OSTYPE != 'darwin'* ]]; then
   alias ka='killall --verbose'
   alias rm='rm --verbose'
   alias shred='shred --verbose --remove --zero'
-  alias units="units --verbose --one-line --history ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
+  alias units="units --verbose --one-line --history \
+  ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 else
   cflags='-v'
   alias df='df -h'
@@ -357,13 +366,6 @@ fi
 alias .2="cd ../.." .3="cd ../../.."
 alias .4="cd ../../../.." .5="cd ../../../../.."
 
-# For Xorg
-
-has obxprop && alias obxp='echo Click a window; obxprop | grep "^_OB_APP"'
-  # Show window name and class.
-if has xprop; then
-  alias xp='echo Click a window; xprop | grep "WM_WINDOW_ROLE\|WM_CLASS" && echo "WM_CLASS(STRING) = \"NAME\", \"CLASS\""'
-fi
 
 # Package management {{{1
 
