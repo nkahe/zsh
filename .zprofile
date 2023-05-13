@@ -150,7 +150,7 @@ fi
 # .NET
 # export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
-export GREP_COLOR='1;32'
+export GREP_COLOR='mt=1;32'
 
 # ---- User added programs and scripts ---------------
 
