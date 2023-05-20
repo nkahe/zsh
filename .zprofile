@@ -86,7 +86,9 @@ export AUDIOPLAYER="xdg-open"
 
 # If NeoVim is installed, let's use that as editor, else Vim.
 # FIXME: ei toiminut, kun ei ajeta zshrc:stä käsin.
-if has nvim; then
+if has micro; then
+  export EDITOR="micro"
+elif has nvim; then
   export EDITOR="nvim"
 elif has vim; then
   export EDITOR="vim"
