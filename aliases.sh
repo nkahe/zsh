@@ -39,6 +39,18 @@ has kitty && alias icat="kitty +kitten icat"
   # Show images with Kitty's icat. https://sw.kovidgoyal.net/kitty/kittens/icat.html
 has emacsclient && alias emc='emacsclient -nc'
 
+
+if has micro; then
+  editor="micro"
+elif has nvim; then
+  editor="nvim"
+elif has vim; then
+  editor="vim"
+else
+  editor="nano"
+fi
+alias e=$editor
+
 if has exa; then
   # Older versions doesn't support icons.
   if exa --icons &> /dev/null; then
@@ -310,7 +322,7 @@ alias chmod="chmod $cflags" chown="chown $cflags"
 
 # Shorter commands
 
-alias e="$EDITOR" alias p="$PAGER"
+alias p="$PAGER"
 alias jctl='journalctl' sctl='systemctl'
 alias his=' history'
 alias xo='xdg-open'
