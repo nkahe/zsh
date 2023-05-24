@@ -84,18 +84,19 @@ export LC_MESSAGES="en_US.UTF-8"
 
 export AUDIOPLAYER="xdg-open"
 
-# If NeoVim is installed, let's use that as editor, else Vim.
 # FIXME: ei toiminut, kun ei ajeta zshrc:stä käsin.
 if has micro; then
-  export EDITOR="micro"
+  editor="micro"
 elif has nvim; then
-  export EDITOR="nvim"
+  editor="nvim"
 elif has vim; then
-  export EDITOR="vim"
+  editor="vim"
 else
-  export EDITOR="nano"
+  editor="nano"
 fi
-export VISUAL="$EDITOR"
+
+export EDITOR=$editor
+export VISUAL=$editor
 
 # In some distros like openSUSE this is defined in /etc/zshrc so this doesn't
 # work but must be changed there.
