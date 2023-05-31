@@ -1,4 +1,4 @@
-#0 This file is for common aliases compatible for Zsh, Bash and Fish -shells.
+# This file is for common aliases compatible for Zsh, Bash and Fish -shells.
 
 MyNick='Hendrix'
 
@@ -19,14 +19,14 @@ if [[ $OSTYPE == 'darwin'* ]]; then
   function reset-possu() {
     psql -U postgres -d dvvukk -f $dir/dvvukk_drop_tables.txt
     psql -U postgres -d dvvukk -f $dir/dvvukk_create_tables.txt
-  	psql -U postgres -d dvvukk -f /Users/henri/Documents/sampledata.txt
+  	psql -U postgres -d dvvukk -f $dir/dvvukk_sample_data.txt
   }
 else
   dir=/home/henri/build/UKK-tiketit-backend/docs/postgres
   function reset-possu() {
     psql -U postgres -d dvvukk -f $dir/dvvukk_drop_tables.txt
     psql -U postgres -d dvvukk -f $dir/dvvukk_create_tables.txt
-  	psql -U postgres -d dvvukk -f /home/henri/MegaSync/Työ-YO/20230316_sampledata.txt
+  	psql -U postgres -d dvvukk -f $dir/dvvukk_sample_data.txt
   }
 fi
 
