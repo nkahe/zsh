@@ -167,7 +167,7 @@ function load_plugins() {
   zinit load noctuid/tdrop
 
   # Use alias instead of move so completions work correctly.
-  zinit ice wait lucid as"program" pick"todo.sh" atinit"alias todo=todo.sh"
+  zinit ice wait lucid as"program" pick"todo"
   zinit load todotxt/todo.txt-cli
 
   # zinit ice as"completion" pick"src/_cheat"

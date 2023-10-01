@@ -42,6 +42,10 @@ if has xbindkeys && ! pgrep xbindkeys &>/dev/null; then
   fi
 fi
 
+if pgrep wayland &>/dev/null; then
+	export MOZ_ENABLE_WAYLAND=1
+fi
+
 cachedir="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 export CHEAT_USE_FZF=true
