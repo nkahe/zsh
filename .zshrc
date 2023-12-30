@@ -18,8 +18,8 @@
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
 # for vi mode."
-set -o vi
-#set -o emacs
+#iset -o vi
+set -o emacs
 
 PS1="%~ ❯ " # provide a simple prompt till the theme loads
 
@@ -118,7 +118,9 @@ function load_plugins() {
     # zinit ice from"github-rel" bpick"*arm-unknown-linux-musleabihf*" as"program" atload'!eval $(starship init zsh)' lucid
     has starship && eval $(starship init zsh)
   else
-    zinit ice from"github-rel" as"program" atload'!eval $(starship init zsh)' lucid
+    # zinit ice from"github-rel" as"program" atload'starship_init'
+    # ! Command line substitution must be in parenthesis.
+    zinit ice from"github-rel" as"program" atload'eval "$(starship init zsh)"'
   fi
   zinit load starship/starship
 
