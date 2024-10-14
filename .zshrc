@@ -24,8 +24,10 @@ PS1="%~ ❯ "
 # Uncomment if you want to skip plugins for tty.
 # if [[ ! "$TERM" == (dumb|linux) ]]; then
 
-# Utils used in config files. ("has" -function)
-source "$ZDOTDIR"/utils/utils.zsh
+# Helper function: check if command exists.
+has() {
+  command -v "$@" &> /dev/null
+}
 
 # Load Zinit
 #
@@ -50,7 +52,6 @@ ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 # shell is opened each day.
 # Gives error if put aftere plugins
 
-# Load 3rd party plugins and set default settings.
 # Don't rename executables if want completion to work. {{{
 function load_plugins() {
 
@@ -86,6 +87,7 @@ function load_plugins() {
   # Sets directory options and defines directory aliases.
   zinit snippet PZT::modules/directory/init.zsh
 
+  # Sets directory options and defines history aliases.
   zinit snippet PZT::modules/history/init.zsh
 
   # bashmount: Tool to mount and unmount removable media from the command-line

@@ -10,13 +10,9 @@
 
 # LESS_TERMCAP_* variables are defined in Environment -Prezto -snippet.
 
-# Check if command exists.
+# Helper function: check if command exists.
 has() {
-  if command -v "$@" &> /dev/null; then
-    return 0
-  else
-    return 1
-  fi
+  command -v "$@" &> /dev/null
 }
 
 # No read access to others by default.
