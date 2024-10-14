@@ -34,18 +34,11 @@ has() {
 # Flexible Zsh plugin manager . https://github.com/zdharma-continuum/zinit
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
-
 source "$ZINIT_HOME/bin/zinit.zsh"
 
 # No security checks
-ZINIT[COMPINIT_OPTS]="-C"
-
+# ZINIT[COMPINIT_OPTS]="-C"
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
-
-# Add my own completions.
-# https://github.com/zsh-users/zsh-completions/tree/master/src
-# export fpath=($ZDOTDIR/completions $fpath)
-# Note: jos ei toimi: force rebuild zcompdump by: rm .zcompdump; compinit
 
 # Load and initialize the completion system ignoring insecure directories with a
 # cache time of 20 hours, so it should almost always regenerate the first time a
@@ -249,11 +242,11 @@ load_personal_configs() {
   zinit ice multisrc"*.zsh *.sh plugins/*.zsh" lucid
   zinit light $ZDOTDIR
 
-  for file in $ZDOTDIR/completions/*
-  do
-    zinit ice as"completion"
-    zinit snippet "$file"
-  done
+#   for file in $ZDOTDIR/completions/*
+#   do
+#     zinit ice as"completion"
+#     zinit snippet "$file"
+#   done
 
   # Doesn't work. Kitty supports this.
   # zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
@@ -273,6 +266,9 @@ function end_message() {
 
 load_plugins
 load_personal_configs
+
+# autoload -Uz _zinit
+# (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # zinit cdreplay -q
 # -q is for quiet; actually run all the `compdef's saved before 'compinit`
