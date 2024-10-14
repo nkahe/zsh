@@ -129,16 +129,15 @@ function load_plugins() {
   # zinit ice wait lucid as"program" pick"tdyyrop"
   # zinit load noctuid/tdrop
 
-  zinit ice wait lucid as"program" pick"todo.sh"
+  zinit ice wait lucid as"program" pick"todo.sh" atload"alias todo=todo.sh"
   zinit load todotxt/todo.txt-cli
   # Doesn't work if put in aliases.sh
-  alias todo='todo.sh'
 
   # zinit ice as"completion" pick"src/_cheat"
   # zinit light zsh-users/zsh-completions
 
   # Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
-  zinit ice wait"1" lucid as"program" pick"tungsten.sh" mv"tungsten.sh -> ask"
+  zinit ice wait"1" lucid as"program" pick"tungsten.sh" atload"alias ask=tungsten.sh"
   zinit load ASzc/tungsten
 
   # A CLI tool that scrapes Google search results and SERPs that provides
@@ -241,6 +240,9 @@ load_personal_configs() {
 
   zinit ice multisrc"*.zsh *.sh plugins/*.zsh" lucid
   zinit light $ZDOTDIR
+
+  # Install local completions. Run only one.
+  # zinit creinstall $ZDOTDIR/completions
 
 #   for file in $ZDOTDIR/completions/*
 #   do
