@@ -11,7 +11,7 @@
 
 
 # set default cheat directory
-cheatpath=~/linux/cheat
+cheatpath=~/Nextcloud/cheat
 cd "$cheatpath"
 
 # start fuzzy searching

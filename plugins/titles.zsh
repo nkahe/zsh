@@ -6,7 +6,7 @@
 #   Olaf Conradi <olaf@conradi.org>
 #
 # Changes from original: (22-3-17)
-# Added line 32 dbus command so it works with Yakuake.
+# Added support for Yakuake, Terminator and Terminology -terminals.
 # Commented window title changes.
 # Removed support for Apple terminals.
 
@@ -15,7 +15,7 @@ if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi
 
-# Sets the terminal window title.
+# Sets the terminal _window_ title.
 # function set-window-title {
 #  local title_format{,ted}
 #  zstyle -s ':prezto:module:terminal:window-title' format 'title_format' || title_format="%s"
@@ -28,11 +28,12 @@ fi
 
 # FIXME: ei tunnista terminaaleja oikein, jos on useita käynnissä.
 
-running() {
+# Check if a process $1 is running.
+function running() {
   if pgrep "$1" &> /dev/null; then
-    return 1
-  else
     return 0
+  else
+    return 1
   fi
 }
 
@@ -51,7 +52,6 @@ elif running terminator; then
 elif running konsole; then
   export TERMINAL=konsole
 elif running terminology; then
-  # http://terminator-gtk3.readthedocs.io/en/latest/index.html
   export TERMINAL=terminology
 fi
 
@@ -62,10 +62,9 @@ function set-tab-title {
   zformat -f title_formatted "$title_format" "s:$argv"
 
   # ADDED. Yakuake -terminal's tab titles are changed by dbus. Terminator command fixed too.
-
   case "$TERMINAL" in
     yakuake)
-      # Doesn't work if we are root or we couldn't figure out session id.
+      # Setting title work if we are root or we couldn't figure out session id.
       if [[ $UID == 0 ]] || [[ "$session_id" = "" ]]; then
         return 1
       fi

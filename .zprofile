@@ -4,10 +4,15 @@
 # /etc/zprofile gets executed before this
 # ! settings in /etc/zshrc override these.
 
-# Initialization file. DE should set run this file at startup.
-# Don't put anything that outputs something here. Can break things
-# like ssh and scp.
+# Initialization file. DE should set run this file at startup. Don't put
+# anything that outputs something here. Can break things like ssh and scp.
 # KDE Plasma: link to ~/.config/plasma-workspace/env
+
+# LESS_TERMCAP_* variables are defined in Environment -Prezto -snippet.
+
+export OLLAMA_MODELS=/home/ollama/models
+
+export WINEPREFIX=$HOME/hdd/wine 
 
 # Check if command exists.
 has() {
@@ -20,7 +25,6 @@ has() {
 
 # No read access to others by default.
 [[ $EUID != 0 ]] && umask 027
-
 
 # Doesn't work when sourcing here.
 # file="$HOME/.config/shells/profile/ls_colors.sh"
@@ -132,14 +136,6 @@ fi
     fi
     :>"$LESSHISTFILE"
   fi
-  # Colors
-  export LESS_TERMCAP_mb=$'\E[1;31m'   # Begins blinking.
-  export LESS_TERMCAP_md=$'\E[1;31m'   # Begins bold.
-  export LESS_TERMCAP_me=$'\E[0m'      # Ends mode.
-  export LESS_TERMCAP_se=$'\E[0m'      # Ends standout-mode.
-  export LESS_TERMCAP_so=$'\E[7m'      # Begins standout-mode.
-  export LESS_TERMCAP_ue=$'\E[0m'      # Ends underline.
-  export LESS_TERMCAP_us=$'\E[1;32m'   # Begins underline.
 #fi
 
 # Open man pages in Vim/NeoVim. Needs fixing.
@@ -158,6 +154,9 @@ fi
 # export DOTNET_CLI_TELEMETRY_OPTOUT=true
 
 export GREP_COLOR='mt=1;32'
+
+export GEM_HOME="$HOME/.local/rubygems"
+[[ -d $GEM_HOME ]] && export PATH="$PATH:$GEM_HOME/bin"
 
 # ---- User added programs and scripts ---------------
 

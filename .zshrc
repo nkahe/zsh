@@ -21,7 +21,8 @@
 #iset -o vi
 set -o emacs
 
-PS1="%~ ❯ " # provide a simple prompt till the theme loads
+# provide a simple prompt till the theme loads
+PS1="%~ ❯ "
 
 # ---- Prezto terminal settings ----
 # Terminal titles
@@ -33,12 +34,24 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 # Set the tab title format.
 zstyle ':prezto:module:terminal:tab-title' format '%s'
 
+zstyle ':prezto:environment:termcap' color
+
+# In some distros like openSUSE this is defined in /etc/zshrc so this doesn't
+# work but must be changed there.
+zstyle ':prezto:module:history' histfile "${XDG_STATE_HOME:-$HOME/.local/state}"/zsh/history
+export HISTORY_IGNORE="(ls|ll|la|pwd|exit|history|cd -|cd ..)"
+
+# Big history
+zstyle ':prezto:module:history' histsize 20000
+zstyle ':prezto:module:history' savehist 20000
+
 # Set the terminal multiplexer title format.
 # zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 # ----------------------------------
 # Uncomment if you want to skip plugins for tty.
 # if [[ ! "$TERM" == (dumb|linux) ]]; then
 
+# Utils used in config files. ("has" -function)
 source "$ZDOTDIR"/utils/utils.zsh
 
 # {{{ Load Zinit plugin manager
@@ -101,13 +114,15 @@ ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 # shell is opened each day.
 # Gives error if put aftere plugins
 
-# Load 3rd party plugins and set default settings. {{{
+# Load 3rd party plugins and set default settings.
+# Don't rename executables if want completion to work. {{{
 function load_plugins() {
 
   # Raspille:
   # https://github.com/starship/starship/releases/latest/download/starship-arm-unknown-linux-musleabihf.tar.gz
 
-  # "lucid" means no output.
+  # "lucid" = no output. "light" = no plugin tracking or reporting.
+  # ! if "mv" executable completions probably don't work.
   #
   file="$HOME/.config/shells/profile/ls_colors.sh"
   [[ -e $file ]] && source "$file"
@@ -124,6 +139,14 @@ function load_plugins() {
   fi
   zinit load starship/starship
 
+	# Sets general shell options and defines termcap variables.
+	zinit snippet PZT::modules/environment/init.zsh
+
+  # Sets directory options and defines directory aliases.
+	zinit snippet PZT::modules/directory/init.zsh
+
+	zinit snippet PZT::modules/history/init.zsh
+
   # bashmount: Tool to mount and unmount removable media from the command-line
   # https://github.com/jamielinux/bashmount
   zinit ice wait lucid as"program" pick"bashmount"
@@ -137,10 +160,6 @@ function load_plugins() {
   # Bash-script. Works by adding symlink from
   zinit ice wait as"program" pick"ch" lucid
   zinit load learnbyexample/command_help
-
-  # Available in repositories
-  # zinit ice from"gh-r" as"program"
-  # zinit light junegunn/fzf-bin
 
   # fzf-z: Plugin for zsh to integrate fzf and zsh's z plugin.
   # https://github.com/andrewferrier/fzf-z
@@ -164,13 +183,14 @@ function load_plugins() {
 
   # zinit light denysdovhan/spaceship-prompt
 
-  zinit ice wait lucid as"program" pick"tdrop"
+  # zinit ice wait lucid as"program" pick"tdrop"
   # zinit ice wait lucid as"program" pick"tdyyrop"
-  zinit load noctuid/tdrop
+  # zinit load noctuid/tdrop
 
-  # Use alias instead of move so completions work correctly.
-  zinit ice wait lucid as"program" pick"todo"
+  zinit ice wait lucid as"program" pick"todo.sh"
   zinit load todotxt/todo.txt-cli
+  # Doesn't work if put in aliases.sh
+  alias todo='todo.sh'
 
   # zinit ice as"completion" pick"src/_cheat"
   # zinit light zsh-users/zsh-completions
@@ -285,7 +305,7 @@ load_personal_configs() {
 
   # zinit ice wait multisrc"*.zsh" lucid
   # zinit load $ZDOTDIR
-  zinit ice multisrc"*.zsh" lucid
+  zinit ice multisrc"*.zsh *.sh plugins/*.zsh" lucid
   zinit light $ZDOTDIR
 
   for file in $ZDOTDIR/completions/*
@@ -294,13 +314,15 @@ load_personal_configs() {
     zinit snippet "$file"
   done
 
-  for file in $ZDOTDIR/*.zsh $ZDOTDIR/plugins/*.zsh
-  do
+  # Other plugins.
+  #for file in $ZDOTDIR/plugins/*.zsh
+  #for file in $ZDOTDIR/*.zsh $ZDOTDIR/plugins/*.zsh
+  #do
     # zinit ice
-    zinit snippet "$file"
-  done
+  #  zinit snippet "$file"
+  #done
 
-  zinit snippet "$HOME/.config/shells/aliases.sh"
+  # zinit snippet "$HOME/.config/shells/aliases.sh"
 
   # zinit ice pick"Completion/Unix/Command/_todo.sh" as"completion"
   # zinit light zsh-users/zsh

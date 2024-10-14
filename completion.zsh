@@ -150,7 +150,7 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
 # smart editor completion
-zstyle ':completion:*:(nano|vim|nvim|vi|emacs|kwrite|kate|e):*' ignored-patterns '*.(wav|mp3|flac|ogg|mp4|avi|mkv|webm|iso|dmg|so|o|a|bin|exe|dll|pcap|7z|zip|tar|gz|bz2|rar|deb|pkg|gzip|pdf|mobi|epub|png|jpeg|jpg|gif)'
+zstyle ':completion:*:(nano|vim|nvim|vi|emacs|kwrite|kate|e|micro):*' ignored-patterns '*.(wav|mp3|flac|ogg|mp4|avi|mkv|webm|iso|dmg|so|o|a|bin|exe|dll|pcap|7z|zip|tar|gz|bz2|rar|deb|pkg|gzip|pdf|mobi|epub|png|jpeg|jpg|gif)'
 
 ### Add from other sources than Prezto ###
 
@@ -158,6 +158,11 @@ zstyle ':completion:*:(nano|vim|nvim|vi|emacs|kwrite|kate|e):*' ignored-patterns
 zstyle ':completion:*:*:task:*' verbose yes
 zstyle ':completion:*:*:task:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:*:task:*' group-name ''
+
+# Docker
+# Short-option stacking can be enabled with:
+zstyle ':completion:*:*:docker:*' option-stacking yes
+zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
 # Add completions for pip/pip3
 

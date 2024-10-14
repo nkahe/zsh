@@ -1,17 +1,17 @@
 #!/bin/zsh
 # $ZDOTDIR/zsh-aliases.zsh
-# Aliases that are only useful with Z-shell.
-# Common aliases are in ~/.config/shells/aliases.sh
+# Aliases and functions that only work in Z-shell.
+# Both Zsh and Bash -compatible aliases are in ~/.config/shells/aliases.sh
 
 # Misc {{{
 
 # make less more friendly for non-text input files, see lesspipe(1)
 # [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s"  # Ei oo asennettu.
 
-# By Gotbletu
-
-function srf() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
-  \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }
+function srf() {
+  zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
+    \ awk 'NF != 0 && !/^#/ {print $1}' ) ;
+}
 
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw
@@ -20,13 +20,6 @@ alias reload=load_personal_configs
 
  #}}}
 # Functions {{{
-
-# starts one or multiple args as programs in background
-background() {
-  for ((i=2; i<=$#; i++)); do
-    ${@[1]} ${@[$i]} &> /dev/null &
-  done
-}
 
 # Edit Zsh config files. Usage: edz <part of filename>
 #   - Bypass fuzzy finder if there's only one match (--select-1)
@@ -45,6 +38,7 @@ function edz() {
 
 # copy/paste for linux machines (Mac style). by gotbletu
 # demo video: http://www.youtube.com/watch?v=fKP0FLp3uW0
+
 ck_check() {
   if [[  -z $1 || $1 == "--help" || $1 == "h" ]]; then
     echo "Usage: ck_check <english word(s)>\n"
@@ -58,23 +52,6 @@ ck_check() {
     fi
   fi
 }
-
-if has exa; then
-  # Not all versions support icons.
-  if exa --icons &>/dev/null; then
-    local icons='--icons';
-  else
-    local icons=''
-  fi
-    chpwd() { exa --group-directories-first "$icons" ;}
-else
-  
-  if [[ $OSTYPE == 'darwin'* ]]; then
-    chpwd() { ls -c ;}
-  else
-    chpwd() { ls --color ;}
-  fi
-fi
 
 # Paste the selected entry from locate output into the command line
 # https://github.com/junegunn/fzf/wiki/examples#changing-directory
@@ -108,21 +85,6 @@ bindkey -M isearch " " magic-space    # normal space during searches
 # http://ix.io
 post-ix() { "$@" | curl -F 'f:1=<-' ix.io ;}
 
-function tinyurl() {
-  if [[  -z $1 || $1 == "--help" || $1 == "h" ]]; then
-    echo "Usage: tinyurl <url>\n"
-    echo "Sends long URL to tinyURL.com and copies short url to X clipboard. Needs 'xclip'."
-  else
-    if has xclip; then
-      noglob wget -qO - "http://is.gd/create.php?format=simple&url=$1" | xclip -selection clipboard
-      echo "Copied link to clipboard:"
-      xcopy -o
-    else
-      echo "xclip not found."
-    fi
-  fi
-}
-
 # Calculator
 autoload -U zcalc
 function __calculate {
@@ -139,7 +101,7 @@ function fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 ]]; then   # Check if input line is empty.
     bg
     zle redisplay
-    else
+  else
     zle push-input
   fi
 }
@@ -166,8 +128,10 @@ alias history=' fc -El 1 |tail -n 100'
 # alias tldr='tldr --linux -t ocean'
 
 # Etsii cmdfu:sta tietoa, by Gotbletu.
-function cmdfu() { curl "https://www.commandlinefu.com/commands/matching/$(echo "$@" \
-| sed 's/ /-/g')/$(echo -n $@ | base64)/plaintext" ;}
+function cmdfu() {
+  curl "https://www.commandlinefu.com/commands/matching/$(echo "$@" \
+  | sed 's/ /-/g')/$(echo -n $@ | base64)/plaintext";
+}
 
 # File operations {{{1
 
@@ -176,9 +140,11 @@ alias lsl='ls -d *(@)' \
       lll='ls -dl *(@)'
 
 # Make new dir and change to it.
-function mkcd() { nocorrect mkdir -p $1 && cd $1 ;}
+function mkcd() {
+  nocorrect mkdir -p "$1" && cd "$1";
+}
 
-# Zsh autocorrection turned of with these commands. Also some nice defaults.
+# Don't use autocorrect with these commands + some better default flags..
 alias sudo='nocorrect sudo'
 alias touch='nocorrect touch'
 alias ln='nocorrect ln'
@@ -194,27 +160,16 @@ function sef () {
   locate --ignore-case $keyword | less
 }
 
-function sef-fzf() { xdg-open "$(locate --ignore-case --existing $@"*" | fzf -e)" ;}
+function sef-fzf() {
+  xdg-open "$(locate --ignore-case --existing $@"*" | fzf -e)";
+}
 
-# Ei taida tarvita. ffind korvaa tämän.
-# Srf = Search Files. Käyttäjäystävällisempi syntaksi Find -komennolle.
-# srf () {
-# # Jos hakemistoa ei ole määritelty, niin käytä työhakemistoa.
-#   if [[ "$#" -eq 1 ]]; then
-#      # Virheilmoitukset ja tulokset backup-hakemistosta pois.
-#      sudo find $PWD/ -iname \*$1\* -print 2>&1 | grep --invert-match "Permission denied\|$backupdir"
-#      return
-#   fi
-#   if [[ "$#" -eq 0 ]]; then   # Jos muita operaattoreita ei ole, niin printtaa ohjeet.
-#     echo "srf - Search files"
-#     echo "Käyttö: srf [hakemisto] hakutermi"
-#     echo "Etsii rekursiivisesti hakemistoista ja sen alihakemistoista seuraten linkkejä."
-#     echo "Jos hakemistoa ei ole annettu, niin käyttää työhakemistoa."
-#     return
-#   fi
-#   sudo find $1/ -L -iname \*$2\* $3 -print 2>&1 | grep --invert-match "Permission denied\|$backupdir"
-# }
-# #}}}
+# starts one or multiple args as programs in background. Used with suffix aliases.
+background() {
+  for ((i=2; i<=$#; i++)); do
+    ${@[1]} ${@[$i]} &> /dev/null &
+  done
+}
 
 ##### Global and suffix aliases ##### {{{
 
@@ -224,8 +179,6 @@ alias -g C='column' G='grep' H='head' L='less' M='most' S='sort' T='tail'
 alias -g DN='/dev/null'
 # For DNF
 alias -g NW='--setopt=install_weak_deps=False'
-# vimpager = script to use (Neo)Vim as a pager.
-alias -g VP='vim-pager'
 
 # global aliases
 alias -g SU='--suggested' NR='--no-recommends' D='--details'

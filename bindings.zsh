@@ -1,15 +1,20 @@
 #!/bin/zsh
 # Key bindings for Zsh
 
-# Keycodes which are used.
+# Key definitions.
 declare -A key
 alt="^["
+
 key[up]='\eOA' key[up2]='^[[A' key[down]='\eOB' key[down2]='^[[B'
 key[A-up]='^[[1;3A' key[A-left]='^[[1;3D' key[A-right]='^[[1;3C'
 key[A-home]='^[[1;3H'
+key[home]='^[[H'
+key[end]='^[[F'
 key[f12]='[24~'
-key[BS]='^?' key[C-BS]='^[[127;5u' key[A-BS]="^[^?"
-key[C-left]='^[[1;5C' key[C-right]='^[[1;5D'
+key[BS]='^?'
+key[C-BS]='^[[127;5u'
+key[A-BS]="^[^?"
+key[C-left]='^[[1;5D' key[C-right]='^[[1;5C'
 key[C-del]='^[[3;5~'
 key[S-tab]='^[[Z'
 
@@ -22,7 +27,7 @@ fi
 function lsbind() {
   echo "\
   Binding   Command
-  ――――――――――――――――――――――――――――――――――――――――――――――――――――――
+――――――――――――――――――――――――――――――――――――――――――――――――――――――
   Alt-K     Describe key briefly.
   Alt-L     ls
   Alt-E     Edit command line in text editor.
@@ -34,7 +39,7 @@ function lsbind() {
   Alt-<nbr> Paste <nbr> parameters of last command.
   Alt-BS    Delete previous word.
   Alt-Home  cd ~
-  (Alt--     cd -)
+  (Alt--    cd -)
   Alt-▲     cd ..
   Alt-◀ ▶   cd previous / next dir.
   Alt-D     Fzf cd
@@ -42,7 +47,7 @@ function lsbind() {
   Ctrl-T    Fzf select file
   Ctrl-Z    Secod press continues job.
   C-Del     Delete word
-  F12       Source zshrc."
+  F12       Source settings."
 }
 
 # What code shortcut sends: Ctrl-V <shortcut> or
@@ -185,6 +190,8 @@ bindkey "${alt}v" paste-xclip
 # [Space] - do history expansion
 bindkey ' ' magic-space
 
+bindkey "$key[home]" beginning-of-line
+bindkey "$key[end]" end-of-line
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   bindkey "$key[Opt-right]" forward-word
