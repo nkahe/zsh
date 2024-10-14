@@ -15,12 +15,6 @@
 # autoload -U bracketed-paste-url-magic
 # zle -N self-insert bracketed-paste-url-magic
 
-# Fzf: "If you use vi mode on bash, you need to add set -o vi before source
-# ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
-# for vi mode."
-#iset -o vi
-set -o emacs
-
 # provide a simple prompt till the theme loads
 PS1="%~ ❯ "
 
@@ -33,55 +27,18 @@ PS1="%~ ❯ "
 # Utils used in config files. ("has" -function)
 source "$ZDOTDIR"/utils/utils.zsh
 
-# {{{ Load Zinit plugin manager
-
-# Zinit - Flexible Zsh plugin manager . https://github.com/zdharma-continuum/zinit
+# Load Zinit
+#
+# Flexible Zsh plugin manager . https://github.com/zdharma-continuum/zinit
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
 
-# Install Zinit if not found.
-function check_zinit() {
-  if [[ ! -d $ZINIT_HOME/bin ]]; then
-    if ! has git; then
-      echo "Error: Install Git to install Zinit."
-    fi
-    while true; do
-      if [[ $UID == 0 ]]; then
-        read -q "answer?Make symlink: $ZINIT_HOME -> /home/henri/.local/share/zinit (yes/no)? "
-      else
-        read -q "answer?Install Zinit in $ZINIT_HOME (yes/no)? "
-      fi
-      echo -e "\n"
-      case $answer in
-        [Nn] )
-          break
-          ;;
-        [Yy] )
-          if [[ $UID == 0 ]]; then
-            ln -sdv /home/henri/.local/share/zinit $ZINIT_HOME
-          else
-            print 'Ok, installing Zinit...'
-            mkdir -pv "$ZINIT_HOME"
-            # This path could be /zinit.git as in their example instead of /bin
-            git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME/bin"
-            compile_or_recompile "$ZINIT_HOME/bin/zinit.zsh"
-            break
-          fi
-          ;;
-        * ) echo "Please answer [y]es or [n]o." ;;
-      esac
-    done
-  fi
-}
-
-check_zinit
 source "$ZINIT_HOME/bin/zinit.zsh"
 
 # No security checks
 ZINIT[COMPINIT_OPTS]="-C"
-# Must be after sourcing Zinit.
+
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
-# }}}
 
 # Add my own completions.
 # https://github.com/zsh-users/zsh-completions/tree/master/src
@@ -127,9 +84,9 @@ function load_plugins() {
   zinit snippet PZT::modules/environment/init.zsh
 
   # Sets directory options and defines directory aliases.
-	zinit snippet PZT::modules/directory/init.zsh
+  zinit snippet PZT::modules/directory/init.zsh
 
-	zinit snippet PZT::modules/history/init.zsh
+  zinit snippet PZT::modules/history/init.zsh
 
   # bashmount: Tool to mount and unmount removable media from the command-line
   # https://github.com/jamielinux/bashmount
@@ -193,6 +150,11 @@ function load_plugins() {
   # https://github.com/simoniz0r/zyp
   # zinit ice wait lucid as"program" cp"zyp.sh -> zyp" pick"zyp"
   # zinit light simoniz0r/zyp
+
+  # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
+  # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
+  # for vi mode."
+  # set -o vi
 
   # Binary is installed by distro package manager.
   zinit ice wait lucid multisrc"shell/{completion,key-bindings}.zsh"
