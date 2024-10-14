@@ -2,43 +2,19 @@
 
 MyNick='Hendrix'
 
-  # Extra applications {{{1
+alias game="kscreen-doctor output.DP-1.mode.12"
+alias normal="kscreen-doctor output.DP-1.mode.2"
 
+# Extra applications {{{1
 
-if [[ $OSTYPE == 'darwin'* ]]; then
-  ukkPath='/Users/henri/build/tikettisysteemi'
-else
-  ukkPath='/home/henri/build/UKK-tiketit'
-fi
+alias restart-xdg='systemctl --user restart plasma-xdg-desktop-portal-kde'
 
-alias ukk-dev="cd "$ukkPath" && ng build --watch --configuration development"
-alias ukk-prod="cd "$ukkPath" && ng build --watch"
-
-if [[ $OSTYPE == 'darwin'* ]]; then
-  dir=/Users/henri/build/UKK-tiketit-backend/docs/postgres
-  function reset-possu() {
-    psql -U postgres -d dvvukk -f $dir/dvvukk_drop_tables.txt
-    psql -U postgres -d dvvukk -f $dir/dvvukk_create_tables.txt
-  	psql -U postgres -d dvvukk -f $dir/dvvukk_sample_data.txt
-  }
-else
-  dir=/home/henri/build/UKK-tiketit-backend/docs/postgres
-  function reset-possu() {
-    psql -U postgres -d dvvukk -f $dir/dvvukk_drop_tables.txt
-    psql -U postgres -d dvvukk -f $dir/dvvukk_create_tables.txt
-  	psql -U postgres -d dvvukk -f $dir/dvvukk_sample_data.txt
-  }
-fi
-
-has bat && alias cat=bat
 # allows you to create and view interactive sheets on the command-line.
 # https://github.com/cheat/cheat. cs is short for cheatsheet
 has cheat && alias cs='cheat'
-has conky && alias conky="conky --config $HOME/.config/conkyrc"
+# has conky && alias conky="conky --config $HOME/.config/conkyrc"
 has kitty && alias icat="kitty +kitten icat"
   # Show images with Kitty's icat. https://sw.kovidgoyal.net/kitty/kittens/icat.html
-has emacsclient && alias emc='emacsclient -nc'
-
 
 if has micro; then
   editor="micro"
@@ -51,15 +27,7 @@ else
 fi
 alias e=$editor
 
-if has exa; then
-  # Older versions doesn't support icons.
-  if exa --icons &> /dev/null; then
-    icons='--icons'
-  else
-    icons=''
-  fi
-  alias ls="exa --group-directories-first --color=always $icons"
-fi
+alias ls="eza --group-directories-first --color=always --icons"
 
 alias g='git'
 
@@ -74,7 +42,7 @@ elif has vim; then
   WikiEditor="vim"
 fi
 # Add 'wincmd w' if want to focus file.
-ww() { $WikiEditor -c ":execute 'cd ~/MegaSync/vimwiki|NERDTreeToggle|wincmd w|VimwikiIndex'"; }
+ww() { $WikiEditor -c ":execute 'cd ~/Documents/notes|NERDTreeToggle|wincmd w|VimwikiIndex'"; }
 
 # ffind: A sane replacement for find. https://github.com/jaimebuelta/ffind
 # alias ffind='ffind --hidden'    # Show also hidden files.
@@ -93,16 +61,7 @@ if has susepaste; then
 fi
 
 # Tail with colors.
-has ccze && tailc () { tail $@ | ccze -A; }
-
-if has task; then
-  # Taskwarrior. https://taskwarrior.org.
-  alias t=" task"
-  # Work-related tasks
-  # alias tt="task rc.data.location=:~/MegaSync/task/työ"
-  # Purge completed tasks
-  alias t-purge=" rm ~/MegaSync/task/completed.data"
-fi
+has ccze && tailc () { tail "$@" | ccze -A; }
 
 if has trans; then
   # Translate-shell. https://github.com/soimort/translate-shell
@@ -116,8 +75,6 @@ fi
 # https://github.com/lord63/tldr.py
 # lord63/tldr.py: A python client for tldr: simplified and community-driven man pages.
 has gio && alias tldrf='/usr/bin/tldr find'
-
-alias vpn-oamk='echo "Oamk-passu rootin jälkeen"; sudo openconnect --protocol=gp -u n8kahe00 --passwd-on-stdin pa.oamk.fi'
 
 if has gio; then
   # Put files to trash
@@ -171,7 +128,7 @@ alp() {
   for x in {A..Z} ; do
     printf $x" "
   done
-  echo "Å Ä Ö\n"
+  echo "Å Ä Ö"
 }
 
 # dutchcoders/transfer.sh: Easy and fast file sharing from the command-line.
@@ -209,6 +166,14 @@ function transfer() {
 html-to-md () {
  find . -iname "*.html" -type f -exec sh -c 'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
 }
+
+
+# Wayland Tools ---------------------------------------------------------------
+
+# Copy working directory to clipboard. Needs wl-clipboard.
+if has wl-copy; then
+  cpwd() { pwd | tr -d "\r\n" | wl-copy; }
+fi
 
 
 # X Tools ---------------------------------------------------------------------
@@ -286,9 +251,7 @@ function restart() {
  # Huom. jos laittaa & perään, niin oletuksena bg jobeilla on pienempi prioriteetti.
  # You can turn this feature off by setting NO_BG_NICE.
 
-# Sudo by default
-
-
+# For non-root users.
 if [[ $UID != 0 ]]; then
   alias mount='sudo mount' umount='sudo umount'
   alias updatedb='sudo updatedb'
