@@ -69,7 +69,13 @@ function load_plugins() {
     # Zinit's updating below didn't work on Raspberry's executables so it's
     # updated manually.
     # zinit ice from"github-rel" bpick"*arm-unknown-linux-musleabihf*" as"program" atload'!eval $(starship init zsh)' lucid
-    has starship && eval $(starship init zsh)
+    if has starship; then
+      eval $(starship init zsh);
+    else
+      # Backup -theme.
+      themefile=$ZDOTDIR/themes/oma_teema.zsh-theme
+      [[ -f $themefile ]] && source $themefile
+    fi
   else
     # zinit ice from"github-rel" as"program" atload'starship_init'
     # ! Command line substitution must be in parenthesis.
@@ -240,8 +246,6 @@ function load_plugins() {
 # Load own configs {{{
 load_personal_configs() {
 
-  # zinit ice wait multisrc"*.zsh" lucid
-  # zinit load $ZDOTDIR
   zinit ice multisrc"*.zsh *.sh plugins/*.zsh" lucid
   zinit light $ZDOTDIR
 
@@ -251,26 +255,9 @@ load_personal_configs() {
     zinit snippet "$file"
   done
 
-  # Other plugins.
-  #for file in $ZDOTDIR/plugins/*.zsh
-  #for file in $ZDOTDIR/*.zsh $ZDOTDIR/plugins/*.zsh
-  #do
-    # zinit ice
-  #  zinit snippet "$file"
-  #done
-
-  # zinit snippet "$HOME/.config/shells/aliases.sh"
-
-  # zinit ice lucid
-  # zinit snippet $ZDOTDIR/plugins/*.zsh
-
   # Doesn't work. Kitty supports this.
   # zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
 
-  # themefile=$ZDOTDIR/themes/oma_teema.zsh-theme
-  #  if [[ -f $themefile ]]; then
-  #    source $themefile
-  #  fi
 } # }}}
 # End {{{
 function end_message() {
@@ -286,9 +273,6 @@ function end_message() {
 
 load_plugins
 load_personal_configs
-
-# autoload -Uz _zinit
-# (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # zinit cdreplay -q
 # -q is for quiet; actually run all the `compdef's saved before 'compinit`
