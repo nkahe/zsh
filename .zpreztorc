@@ -1,0 +1,22 @@
+#!/bin/zsh
+# Settings for Prezto -modules/snippets.
+
+# Terminal titles. (I use customized version).
+zstyle ':prezto:module:terminal' auto-title 'yes'
+
+# Set the window title format. Comment if don't want to change window title.
+# zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
+
+# Set the tab title format.
+zstyle ':prezto:module:terminal:tab-title' format '%s'
+
+zstyle ':prezto:environment:termcap' color
+
+# In some distros like openSUSE this is defined in /etc/zshrc so this doesn't
+# work but must be changed there.
+zstyle ':prezto:module:history' histfile "${XDG_STATE_HOME:-$HOME/.local/state}"/zsh/history
+export HISTORY_IGNORE="(ls|ll|la|pwd|exit|history|cd -|cd ..)"
+
+# Big history
+zstyle ':prezto:module:history' histsize 20000
+zstyle ':prezto:module:history' savehist 20000

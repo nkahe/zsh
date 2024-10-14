@@ -24,27 +24,6 @@ set -o emacs
 # provide a simple prompt till the theme loads
 PS1="%~ ❯ "
 
-# ---- Prezto terminal settings ----
-# Terminal titles
-zstyle ':prezto:module:terminal' auto-title 'yes'
-
-# Set the window title format. Comment if don't want to change window title.
-# zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
-
-# Set the tab title format.
-zstyle ':prezto:module:terminal:tab-title' format '%s'
-
-zstyle ':prezto:environment:termcap' color
-
-# In some distros like openSUSE this is defined in /etc/zshrc so this doesn't
-# work but must be changed there.
-zstyle ':prezto:module:history' histfile "${XDG_STATE_HOME:-$HOME/.local/state}"/zsh/history
-export HISTORY_IGNORE="(ls|ll|la|pwd|exit|history|cd -|cd ..)"
-
-# Big history
-zstyle ':prezto:module:history' histsize 20000
-zstyle ':prezto:module:history' savehist 20000
-
 # Set the terminal multiplexer title format.
 # zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 # ----------------------------------
@@ -122,6 +101,7 @@ function load_plugins() {
   # https://github.com/starship/starship/releases/latest/download/starship-arm-unknown-linux-musleabihf.tar.gz
 
   # "lucid" = no output. "light" = no plugin tracking or reporting.
+  # "wait" parallel "turbo-mode".
   # ! if "mv" executable completions probably don't work.
   #
   file="$HOME/.config/shells/profile/ls_colors.sh"
@@ -139,8 +119,12 @@ function load_plugins() {
   fi
   zinit load starship/starship
 
-	# Sets general shell options and defines termcap variables.
-	zinit snippet PZT::modules/environment/init.zsh
+  # Settings for Prezto -modules/snippets.
+  #zinit light "$ZDOTDIR"/.zpreztorc
+  source "$ZDOTDIR"/.zpreztorc
+
+  # Sets general shell options and defines termcap variables.
+  zinit snippet PZT::modules/environment/init.zsh
 
   # Sets directory options and defines directory aliases.
 	zinit snippet PZT::modules/directory/init.zsh
@@ -178,7 +162,7 @@ function load_plugins() {
     cp"keyd.1.gz -> $HOME/.local/man/man1"
   zinit load rvaiya/keyd
 
-  zinit ice wait lucid as"program" pick"radcard"
+  zinit ice wait"1" lucid as"program" pick"radcard"
   zinit load superjamie/snippets
 
   # zinit light denysdovhan/spaceship-prompt
@@ -196,30 +180,19 @@ function load_plugins() {
   # zinit light zsh-users/zsh-completions
 
   # Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
-  zinit ice wait lucid as"program" pick"tungsten.sh" mv"tungsten.sh -> ask"
+  zinit ice wait"1" lucid as"program" pick"tungsten.sh" mv"tungsten.sh -> ask"
   zinit load ASzc/tungsten
 
   # A CLI tool that scrapes Google search results and SERPs that provides
   # instant and concise answers. https://github.com/Bugswriter/tuxi
-  zinit ice wait as"program" pick"tuxi" lucid
+  zinit ice wait"1" as"program" pick"tuxi" lucid
   zinit load Bugswriter/tuxi
-
-  # zinit ice as"completion" pick"_todo.sh"
-  # zinit light $ZDOTDIR/completions
 
   # A simple wrapper of zypper and osc that allows for searching and installing
   # of packages from openSUSE Build Service repos
   # https://github.com/simoniz0r/zyp
   # zinit ice wait lucid as"program" cp"zyp.sh -> zyp" pick"zyp"
   # zinit light simoniz0r/zyp
-
-  # zinit ice from"github-rel" as"program" pick"cheat-linux-amd64.*"
-    # extract mv"cheat-linux-amd64 -> cheat" lucid
-  # zinit light cheat/cheat
-
-  # Already in Suse's /etc/zshrc. Uses the command-not-found package's zsh
-  # support if there's one available.
-  # [[ -e /etc/zsh_command_not_found ]] && source /etc/zsh_command_not_found
 
   # Binary is installed by distro package manager.
   zinit ice wait lucid multisrc"shell/{completion,key-bindings}.zsh"
@@ -255,7 +228,7 @@ function load_plugins() {
 
   # xiny: Simple command line tool for unit conversions
   # https://github.com/bcicen/xiny
-  zinit ice wait lucid from"github-rel" as"program" bpick"*linux*" mv"xiny* -> xiny"
+  zinit ice wait"1" lucid from"github-rel" as"program" bpick"*linux*" mv"xiny* -> xiny"
   zinit load bcicen/xiny
 
   # Gemini client
@@ -324,9 +297,6 @@ load_personal_configs() {
 
   # zinit snippet "$HOME/.config/shells/aliases.sh"
 
-  # zinit ice pick"Completion/Unix/Command/_todo.sh" as"completion"
-  # zinit light zsh-users/zsh
-
   # zinit ice lucid
   # zinit snippet $ZDOTDIR/plugins/*.zsh
 
@@ -350,23 +320,19 @@ function end_message() {
   fi
 }
 
-function main() {
-  load_plugins
-  load_personal_configs
+load_plugins
+load_personal_configs
 
-  # autoload -Uz _zinit
-  # (( ${+_comps} )) && _comps[zinit]=_zinit
+# autoload -Uz _zinit
+# (( ${+_comps} )) && _comps[zinit]=_zinit
 
-  # zinit cdreplay -q
-  # -q is for quiet; actually run all the `compdef's saved before 'compinit`
-  # call (`compinit' declares the `compdef' function, so it cannot be used until
-  # `compinit` is ran; zinit solves this via intercepting the `compdef'-calls
-  # and storing them for later use with `zinit cdreplay')
+# zinit cdreplay -q
+# -q is for quiet; actually run all the `compdef's saved before 'compinit`
+# call (`compinit' declares the `compdef' function, so it cannot be used until
+# `compinit` is ran; zinit solves this via intercepting the `compdef'-calls
+# and storing them for later use with `zinit cdreplay')
 
-  end_message
-  # Uncomment to show speed profiling stats.
-  # zprof
-}
-
-main
+end_message
+# Uncomment to show speed profiling stats.
+# zprof
 # }}}
