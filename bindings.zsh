@@ -1,7 +1,7 @@
 #!/bin/zsh
-# Key bindings for Zsh
+# Key bindings. Plugin specific bindings are defined in .zshrc
 
-# Key definitions.
+# Key definitions --------------------------------------------------------------
 declare -A key
 alt="^["
 
@@ -10,6 +10,7 @@ key[A-up]='^[[1;3A' key[A-left]='^[[1;3D' key[A-right]='^[[1;3C'
 key[A-home]='^[[1;3H'
 key[home]='^[[H'
 key[end]='^[[F'
+key[del]='^[[3~'
 key[f12]='[24~'
 key[BS]='^?'
 key[C-BS]='^[[127;5u'
@@ -23,11 +24,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   key[Opt-right]='^[^[[C'
 fi
 
+# List bindings ----------------------------------------------------------------
+
 # List bindings defined here and by plugins
 function lsbind() {
   echo "\
   Binding   Command
-――――――――――――――――――――――――――――――――――――――――――――――――――――――
+------------------------------------------------------
   Alt-K     Describe key briefly.
   Alt-L     ls
   Alt-E     Edit command line in text editor.
@@ -40,15 +43,19 @@ function lsbind() {
   Alt-BS    Delete previous word.
   Alt-Home  cd ~
   (Alt--    cd -)
-  Alt-▲     cd ..
-  Alt-◀ ▶   cd previous / next dir.
+  Alt-↑     cd ..
+  Alt- ← | ->   cd previous / next dir.
   Alt-D     Fzf cd
+  ↑         History substring search up
+  ↓         History substring search down
   Ctrl-G    Fzf change dir
   Ctrl-T    Fzf select file
   Ctrl-Z    Secod press continues job.
   C-Del     Delete word
   F12       Source settings."
 }
+
+# Misc -------------------------------------------------------------------------
 
 # What code shortcut sends: Ctrl-V <shortcut> or
 # (another way: 'cat -v'  showed wrong codes)
@@ -76,9 +83,10 @@ bindkey "${alt}k" describe-key-briefly
 # Shortcut same as in Fish.
 bindkey -s "${alt}l" 'ls^M'
 
+# Copy & paste previous word
 bindkey "${alt}m" copy-prev-shell-word
 
-# Etsi tiedosto
+# Find file
 if typeset -f fzfz-file-widget &> /dev/null; then
   bindkey '^G' fzfz-file-widget
 fi
@@ -87,32 +95,8 @@ bindkey "${alt}d" fzf-cd-widget
 # Go to the previous menu item.
 bindkey "$key[S-tab]" reverse-menu-complete
 
-# TODO: test if these functions exists.
-# doesn't work:
-# if typeset -f history-substring-search-up > /dev/null; then
-  # if [[ "$FPATH" == *history-substring-search-up >/dev/null ]]; then
-  # Backspace triggasi tämän.
-  # print 'Plugin found: history substring search.'
-  # history-substring-search. bind UP and DOWN arrow keys. https://github.com/zsh-users/zsh-history-substring-search.
-  # Press ^U the Control and U keys  simultaneously to abort the search. Right keycode seems to alter.
-  bindkey "$key[up]" history-substring-search-up
-  bindkey "$key[down]" history-substring-search-down
-  bindkey "$key[up2]" history-substring-search-up
-  bindkey "$key[down2]" history-substring-search-down
-# else
-  # print 'Plugin not found: history substring search.'
-  # Similar builtins for backup
-  # bindkey '\eOA' history-search-backward
-  # bindkey '\eOA' history-search-forward
-  # bindkey '^[[A' history-search-backward
-  # bindkey '^[[B' history-search-forward
-# fi
-
 bindkey "$key[f12]" load_personal_configs
 zle -N load_personal_configs
-
-# Same shortcut as Firefox' Go to homepage.
-bindkey -s "$key[A-home]" 'cd ~^M'
 
 function previous_command_hotkeys() {
   # Bang! Previous Command Hotkeys
@@ -126,11 +110,19 @@ function previous_command_hotkeys() {
   bindkey -s '\e`' "!:0- \t"     # all but the last word
 }
 
+bindkey "${alt}z" undo
+bindkey "${alt}y" redo
+
 previous_command_hotkeys
+
+# Change directories -----------------------------------------------------------
 
 bindkey -s "$key[A-up]" 'cd ..\n'
 
-# These don't work is used with Enhancd.
+# Same shortcut as Firefox' Go to homepage.
+bindkey -s "$key[A-home]" 'cd ~^M'
+
+# These don't work fs used with Enhancd.
 BACK_HISTORY="" FORWARD_HISTORY=""
 
 function cd_previous_forward() {
@@ -165,8 +157,37 @@ function cd_previous_forward() {
 
 cd_previous_forward
 
-bindkey "${alt}z" undo
-bindkey "${alt}y" redo
+# Moving cursor ----------------------------------------------------------------
+
+bindkey "$key[home]" beginning-of-line
+bindkey "$key[end]" end-of-line
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  bindkey "$key[Opt-right]" forward-word
+  bindkey "$key[Opt-left]" backward-word
+else
+  bindkey "$key[C-right]" forward-word
+  bindkey "$key[C-left]" backward-word
+fi
+
+# Deleting characters ----------------------------------------------------------
+
+bindkey "$key[del]" delete-char
+
+# Only some terminals use this sequence.
+bindkey "$key[C-BS]" backward-delete-word
+
+# Alt-backspace to delete backward word like in Emacs mode.
+bindkey "$key[A-BS]" backward-kill-word
+
+bindkey "$key[C-del]" delete-word
+
+# Many terminals (like Terminator) send ^H with C-BS.
+# Qterminal sends this with only backspace so doesn't work!
+
+# bindkey '^H' backward-delete-word
+
+# Clipboard --------------------------------------------------------------------
 
 # Copy command line to X clipboard
 function copy-to-xclip() {
@@ -185,31 +206,5 @@ function paste-xclip() {
 zle -N paste-xclip
 bindkey "${alt}v" paste-xclip
 
-# Basic bindings
-
-# [Space] - do history expansion
+# Do history expansion
 bindkey ' ' magic-space
-
-bindkey "$key[home]" beginning-of-line
-bindkey "$key[end]" end-of-line
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  bindkey "$key[Opt-right]" forward-word
-  bindkey "$key[Opt-left]" backward-word
-else
-  bindkey "$key[C-right]" forward-word
-  bindkey "$key[C-left]" backward-word
-fi
-
-# Only some terminals use this sequence.
-bindkey "$key[C-BS]" backward-delete-word
-
-# Alt-backspace to delete backward word like in Emacs mode.
-bindkey "$key[A-BS]" backward-kill-word
-
-bindkey "$key[C-del]" delete-word
-
-# Many terminals (like Terminator) send ^H with C-BS.
-# Qterminal sends this with only backspace so doesn't work!
-
-# bindkey '^H' backward-delete-word
