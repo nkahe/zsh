@@ -21,25 +21,33 @@ alias reload=load_personal_configs
  #}}}
 # Functions {{{
 
+# Automatically show files after directory change.
+if has eza; then
+  chpwd() { eza --group-directories-first ;}
+else
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    chpwd() { ls -c ;}
+  else
+    chpwd() { ls --color ;}
+  fi
+fi
+
 # Edit Zsh config files. Usage: edz <part of filename>
 #   - Bypass fuzzy finder if there's only one match (--select-1)
 #   - Exit if there's no match (--exit-0)
 function edz() {
-    if has -v fzf; then
-      local files=(${(f)"$(find $ZDOTDIR -iname "*$1*" | fzf --select-1 --exit-0)"})
-      if [[ -n "$files" ]]; then
-        $EDITOR -- "$files" && source "$files"
-        print -l "$files[1]"
-      fi
-    else
-      echo "fzf not found."
+  if has fzf; then
+    local files=(${(f)"$(find $ZDOTDIR -iname "*$1*" | fzf --select-1 --exit-0)"})
+    if [[ -n "$files" ]]; then
+      $EDITOR -- "$files" && source "$files"
+      print -l "$files[1]"
     fi
+  else
+    echo "fzf not found."
+  fi
 }
 
-# copy/paste for linux machines (Mac style). by gotbletu
-# demo video: http://www.youtube.com/watch?v=fKP0FLp3uW0
-
-ck_check() {
+function ck_check() {
   if [[  -z $1 || $1 == "--help" || $1 == "h" ]]; then
     echo "Usage: ck_check <english word(s)>\n"
     echo "Checks if your spelling is correct. If it's incorrect, it gives"
@@ -56,7 +64,7 @@ ck_check() {
 # Paste the selected entry from locate output into the command line
 # https://github.com/junegunn/fzf/wiki/examples#changing-directory
 # Ctrl-Alt-F (Find).
-fzf-locate-widget() {
+function fzf-locate-widget() {
   local selected
   if selected=$(locate / | fzf -q "$LBUFFER"); then
     LBUFFER=$selected
@@ -83,7 +91,7 @@ bindkey -M isearch " " magic-space    # normal space during searches
 # demo video: http://www.youtube.com/watch?v=Ww7Sl4d8F8A
 # -a "käyttäjänimi", -b "serveri", -t "otsikko"
 # http://ix.io
-post-ix() { "$@" | curl -F 'f:1=<-' ix.io ;}
+function post-ix() { "$@" | curl -F 'f:1=<-' ix.io ;}
 
 # Calculator
 autoload -U zcalc
@@ -115,7 +123,7 @@ bindkey '^Z' fancy-ctrl-z
 
 alias lsfpath='echo -e ${FPATH//:/\\n}'  # List $FPATH (zsh functions path) nicely
 
-alias history=' fc -El 1 |tail -n 100'
+alias hist=' fc -El 1 | tail -n 100'
 
 #alias tv="w3m -dump http://www.iltapulu.fi/\?timeframe\=2 | awk '/tv-ohjelmat/,/^$/'"  pipetys sekoaa tästä.
 
@@ -165,7 +173,7 @@ function sef-fzf() {
 }
 
 # starts one or multiple args as programs in background. Used with suffix aliases.
-background() {
+function background() {
   for ((i=2; i<=$#; i++)); do
     ${@[1]} ${@[$i]} &> /dev/null &
   done
