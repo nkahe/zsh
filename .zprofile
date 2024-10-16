@@ -16,7 +16,7 @@ has() {
 }
 
 # No read access to others by default.
-[[ $EUID != 0 ]] && umask 027
+#[[ $EUID != 0 ]] && umask 027
 
 # Set xterm to use 256 color mode if it already isn't.
 [[ $TERM = (xterm|xterm-color) ]] && export TERM=xterm-256color
