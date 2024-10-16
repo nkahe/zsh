@@ -5,14 +5,13 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #   Olaf Conradi <olaf@conradi.org>
 #
-# Changes from original: (22-3-17)
 
 # Original https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
 
 # Added support for Yakuake, Terminator and Terminology -terminals.
 # Additions marked by "ADDED".
-# Commented window title changes.
-# Removed support for Apple terminals.
+# Commented out window title changes.
+# Nicer title for root and Irssi.
 
 # Return if requirements are not found.
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
@@ -38,13 +37,12 @@ function get-terminal-name() {
     if [[ $UID != 0 ]]; then   # Doesn't work for root.
       # Find out the right Yakuake session id.
       if command -v qdbus &>/dev/null; then
-        session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
+        local session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
           tr , "\n" | sort -g | tail -1 | tr -d '\n')"
         echo "yakuake" "$session_id"
       fi
     fi
   elif running terminator; then
-    # http://terminator-gtk3.readthedocs.io/en/latest/index.html
     echo terminator
   elif running konsole; then
     echo konsole
@@ -53,9 +51,25 @@ function get-terminal-name() {
   fi
 }
 
-read TERMINAL session_id <<< $(get-terminal-name)
-#echo "Terminal: $TERMINAL"
-#echo "session id: $session_id"
+#read TERMINAL session_id <<< $(get-terminal-name)
+
+# FIXME: ei toimi jos on esim. tmux.
+
+TERMINAL=$(ps -o comm= "$PPID")
+
+if [[ $TERMINAL == "yakuake" ]]; then
+  echo "on yakuake"
+  session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
+    tr , "\n" | sort -g | tail -1 | tr -d '\n')"
+elif [[ $TERMINAL == "konsole" ]]; then
+
+  # FIXME: konsolella numerotunnus perässä.
+  #session_id="$(qdbus org.kde.konsole /konsole/sessions sessionIdList | \
+  #  tr , "\n" | sort -g | tail -1 | tr -d '\n')"
+fi
+
+echo "Terminal: ${TERMINAL}"
+echo "session id: $session_id"
 
 # Sets the terminal tab title.
 function set-tab-title {
