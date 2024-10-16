@@ -6,7 +6,11 @@
 #   Olaf Conradi <olaf@conradi.org>
 #
 # Changes from original: (22-3-17)
+
+# Original https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
+
 # Added support for Yakuake, Terminator and Terminology -terminals.
+# Additions marked by "ADDED".
 # Commented window title changes.
 # Removed support for Apple terminals.
 
@@ -23,37 +27,35 @@ fi
 #  printf '\e]2;%s\a' "${(V%)title_formatted}"
 #}
 
-# FIXME: miten asettaa Yakuakella/konsolella tab title, jos 'qdbus'
-# paketista libqt4 ei ole asennettu. qt5:lla ei välttämättä ole.
-
-# FIXME: ei tunnista terminaaleja oikein, jos on useita käynnissä.
-
-# Check if a process $1 is running.
-function running() {
-  if pgrep "$1" &> /dev/null; then
-    return 0
-  else
-    return 1
+# ADDED. Which terminal we are running. ! Doesn't work properly if many different
+# types of terminals are running.
+function get-terminal-name() {
+  # Check if a process $1 is running.
+  function running() {
+    pgrep "$1" &> /dev/null
+  }
+  if running yakuake; then
+    if [[ $UID != 0 ]]; then   # Doesn't work for root.
+      # Find out the right Yakuake session id.
+      if command -v qdbus &>/dev/null; then
+        session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
+          tr , "\n" | sort -g | tail -1 | tr -d '\n')"
+        echo "yakuake" "$session_id"
+      fi
+    fi
+  elif running terminator; then
+    # http://terminator-gtk3.readthedocs.io/en/latest/index.html
+    echo terminator
+  elif running konsole; then
+    echo konsole
+  elif running terminology; then
+    echo terminology
   fi
 }
 
-# Which terminal we are running.
-if running yakuake; then
-  export TERMINAL=yakuake
-  if [[ $UID != 0 ]]; then   # Doesn't work for root.
-    # Find out the right Yakuake session id.
-    if command -v qdbus &>/dev/null; then
-      session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | tr , "\n" | sort -g | tail -1 | tr -d '\n')"
-    fi
-  fi
-elif running terminator; then
-  # http://terminator-gtk3.readthedocs.io/en/latest/index.html
-  export TERMINAL=terminator
-elif running konsole; then
-  export TERMINAL=konsole
-elif running terminology; then
-  export TERMINAL=terminology
-fi
+read TERMINAL session_id <<< $(get-terminal-name)
+#echo "Terminal: $TERMINAL"
+#echo "session id: $session_id"
 
 # Sets the terminal tab title.
 function set-tab-title {
@@ -61,7 +63,7 @@ function set-tab-title {
   zstyle -s ':prezto:module:terminal:tab-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
 
-  # ADDED. Yakuake -terminal's tab titles are changed by dbus. Terminator command fixed too.
+  # ADDED. Support for additional terminals.
   case "$TERMINAL" in
     yakuake)
       # Setting title work if we are root or we couldn't figure out session id.
