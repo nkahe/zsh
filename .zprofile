@@ -25,6 +25,7 @@ has() {
 [[ -d $home/bin ]] && export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 
 
+
 # Locale -----------------------------------------------------------------------
 
 # First set this lang to all locales.
@@ -42,9 +43,8 @@ export LC_MESSAGES="en_US.UTF-8"
 
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
-cachedir="${XDG_CACHE_HOME:-$HOME/.cache}"
-
 # Used by OMZ plugins like last-working-dir and completions.
+cachedir="${XDG_CACHE_HOME:-$HOME/.cache}"
 export ZSH_CACHE_DIR="$cachedir/zsh"
 
 [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
@@ -55,14 +55,10 @@ export ZSH_CACHE_DIR="$cachedir/zsh"
 
 [[ -f "$ZDOTDIR/.zprofile.priv" ]] && source "$ZDOTDIR/.zprofile.priv"
 
-# Doesn't work when sourcing here.
-# file="$HOME/.config/shells/profile/ls_colors.sh"
-# [[ -e $file ]] && source "$file"
-
+export ZCALC_HISTFILE="$HOME/.local/state/zsh/zcalc_history"
 
 # Default applications  --------------------------------------------------------
 
-# FIXME: ei toiminut, kun ei ajeta zshrc:stä käsin.
 if has micro; then
   editor="micro"
 elif has nvim; then
@@ -76,12 +72,8 @@ fi
 export EDITOR=$editor
 export VISUAL=$editor
 
-if has feh; then
-  export IMAGEVIEWER='feh'
-fi
-if has zathura; then
-  export PDFVIEWER='zathura'
-fi
+has feh && export IMAGEVIEWER='feh'
+has zathura && export PDFVIEWER='zathura'
 
 export AUDIOPLAYER="xdg-open"
 
@@ -94,7 +86,8 @@ export AUDIOPLAYER="xdg-open"
   else
     local configfile=''
   fi
-  export LESS="--tabs=4 --no-init --LONG-PROMPT --ignore-case --quit-if-one-screen --RAW-CONTROL-CHARS $configfile"
+  export LESS="--tabs=4 --no-init --LONG-PROMPT --ignore-case --quit-if-one-screen \
+    --RAW-CONTROL-CHARS $configfile"
   export LESSHISTFILE="$cachedir/.less_history"
   if [[ ! -f "$LESSHISTFILE" ]]; then
     if [[ ! -d "$cachedir" ]]; then
