@@ -27,7 +27,11 @@ else
 fi
 alias e=$editor
 
-alias ls="eza --group-directories-first --color=always --icons"
+if has eza; then
+  alias ls="eza --group-directories-first --color=always --icons"
+elif has exa; then
+ alias ls="exa --group-directories-first --color=always --icons"
+fi
 
 alias g='git'
 
@@ -63,10 +67,14 @@ fi
 # Tail with colors.
 has ccze && tailc () { tail "$@" | ccze -A; }
 
+# Translate-shell. https://github.com/soimort/translate-shell
 if has trans; then
-  # Translate-shell. https://github.com/soimort/translate-shell
-  alias ten=' trans fi:en "$@" 2>/dev/null' \
-        tfi=' trans en:fi "$@" 2>/dev/null'
+  function ten() {
+    trans fi:en "$@" 2>/dev/null
+  }
+  function tfi() {
+    trans en:fi "$@" 2>/dev/null
+  }
 fi
 
 # Trayer. System Tray for WMs. Program has no config file.
@@ -153,16 +161,6 @@ function transfer() {
   done
 }
 
-# man() {
-#   LESS_TERMCAP_md=$'\e[1;36m'
-#   LESS_TERMCAP_me=$'\e[0m'
-#   LESS_TERMCAP_se=$'\e[0m'
-#   LESS_TERMCAP_so=$'\e[01;44;160m'
-#   LESS_TERMCAP_ue=$'\e[0m'
-#   LESS_TERMCAP_us=$'\e[01;32m'
-#   command man "$@"
-# }
-
 html-to-md () {
  find . -iname "*.html" -type f -exec sh -c 'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
 }
@@ -210,7 +208,7 @@ if has xprop; then
   echo "WM_CLASS(STRING) = \"NAME\", \"CLASS\""'
 fi
 
-if has xclip && [[ ! -n "$WAYLAND_DISPLAY" ]]; then
+if has xclip && [[ -z "$WAYLAND_DISPLAY" ]]; then
 
   has xbindkeys && alias xbindkeys="xbindkeys -f $HOME/.config/xbindkeysrc"
 
