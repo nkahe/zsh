@@ -58,7 +58,6 @@ function get-terminal-name() {
 TERMINAL=$(ps -o comm= "$PPID")
 
 if [[ $TERMINAL == "yakuake" ]]; then
-  echo "on yakuake"
   session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
     tr , "\n" | sort -g | tail -1 | tr -d '\n')"
 elif [[ $TERMINAL == "konsole" ]]; then
@@ -68,8 +67,8 @@ elif [[ $TERMINAL == "konsole" ]]; then
   #  tr , "\n" | sort -g | tail -1 | tr -d '\n')"
 fi
 
-echo "Terminal: ${TERMINAL}"
-echo "session id: $session_id"
+#echo "Terminal: ${TERMINAL}"
+#echo "session id: $session_id"
 
 # Sets the terminal tab title.
 function set-tab-title {

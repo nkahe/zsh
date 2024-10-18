@@ -8,10 +8,14 @@
 # make less more friendly for non-text input files, see lesspipe(1)
 # [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s"  # Ei oo asennettu.
 
-function srf() {
-  zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
-    \ awk 'NF != 0 && !/^#/ {print $1}' ) ;
-}
+# Search in Surfraw bookmarks using Fzf. Note: surfraw has native alias "sr".
+if has srf; then
+  function srfb() {
+    zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
+      \ awk 'NF != 0 && !/^#/ {print $1}' ) ;
+  }
+fi
+
 
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw

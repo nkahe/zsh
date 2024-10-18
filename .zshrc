@@ -10,11 +10,6 @@
 # onkohan mitään hyötyä? hidastaa käynnistymistä selvästi.
 # autoload -U zsh-mime-setup; zsh-mime-setup
 
-# smart urls
-# FIXME: edgellä ei toiminu.
-# autoload -U bracketed-paste-url-magic
-# zle -N self-insert bracketed-paste-url-magic
-
 # provide a simple prompt till the theme loads
 PS1="%~ ❯ "
 
@@ -29,15 +24,10 @@ function has() {
   command -v "$@" &> /dev/null
 }
 
-# Load Zinit
-#
-# Flexible Zsh plugin manager . https://github.com/zdharma-continuum/zinit
-
+# Load Zinit - Zsh plugin manager. https://github.com/zdharma-continuum/zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
 source "$ZINIT_HOME/bin/zinit.zsh"
 
-# No security checks
-# ZINIT[COMPINIT_OPTS]="-C"
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 
 # Load and initialize the completion system ignoring insecure directories with a
@@ -69,7 +59,8 @@ function load_common_plugins() { #{{{
   if [[ $HOST == raspberry* ]]; then
     # Zinit's updating below didn't work on Raspberry's executables so it's
     # updated manually.
-    # zinit ice from"github-rel" bpick"*arm-unknown-linux-musleabihf*" as"program" atload'!eval $(starship init zsh)' lucid
+    # zinit ice from"github-rel" bpick"*arm-unknown-linux-musleabihf*" as"program" \
+      atload'!eval $(starship init zsh)' lucid
     if has starship; then
       eval $(starship init zsh);
     else
@@ -97,6 +88,8 @@ function load_common_plugins() { #{{{
   # Sets history options and defines history aliases.
   zinit snippet PZT::modules/history/init.zsh
 
+  zinit snippet OMZP::extract
+
   # bashmount: Tool to mount and unmount removable media from the command-line
   # https://github.com/jamielinux/bashmount
   zinit ice wait"2" lucid as"program" pick"bashmount"
@@ -112,10 +105,6 @@ function load_common_plugins() { #{{{
   # for vi mode."
   # set -o vi
   has fzf && source <(fzf --zsh)
-
-  # The diff-so-fancy for Zsh. https://github.com/z-shell/zsh-diff-so-fancy
-  zinit ice wait"2" lucid as"program" pick"bin/git-dsf"
-  zinit load zdharma-continuum/zsh-diff-so-fancy
 
   # fzf-z: Plugin for zsh to integrate fzf and zsh's z plugin.
   # https://github.com/andrewferrier/fzf-z . Has to be after fzf.
@@ -235,7 +224,7 @@ function load_personal_configs() { # {{{
 
   # Alternative method if want to measure profile by file.
 
-    for file in $ZDOTDIR/*.{zsh,sh} $ZDOTDIR/plugins/*.zsh
+    for file in $ZDOTDIR/plugins/*.zsh $ZDOTDIR/*.{zsh,sh}
     do
       zi snippet "$file"
     done
@@ -267,8 +256,8 @@ load_personal_configs
 # Fix completion
 has eza && compdef eza=ls
 
-# autoload -Uz _zinit
-# (( ${+_comps} )) && _comps[zinit]=_zinit
+#autoload -Uz _zinit
+#(( ${+_comps} )) && _comps[zinit]=_zinit
 
 # zinit cdreplay -q
 # -q is for quiet; actually run all the `compdef's saved before 'compinit`
