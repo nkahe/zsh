@@ -57,6 +57,8 @@ export ZSH_CACHE_DIR="$cachedir/zsh"
 
 export ZCALC_HISTFILE="$HOME/.local/state/zsh/zcalc_history"
 
+export _ZO_DATA_DIR="$HOME/.local/state/zsh"
+
 # Default applications  --------------------------------------------------------
 
 if has micro; then

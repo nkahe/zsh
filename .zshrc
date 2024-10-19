@@ -45,6 +45,7 @@ function load_common_plugins() { #{{{
   # "wait" = parallel "turbo-mode".
   # ! if "mv" executable completions probably don't work.
 
+  # ! Needs to be before completion settings.
   # Colors for ls/eza/exa. Doesn't work is put in .zprofile.
   # Batched from LS_COLORS: A collection of LS_COLORS definitions.
   # https://github.com/trapd00r/LS_COLORS/tree/master
@@ -52,6 +53,12 @@ function load_common_plugins() { #{{{
   if [[ -e $ls_colors ]]; then
     zinit ice id-as"LS_COLORS"
     zinit snippet "$ls_colors"
+  fi
+
+    # General Colorizer.
+  file="$HOME/.config/shells/grc.sh"
+  if [[ -e $file ]]; then
+    zi snippet $file
   fi
 
   # zinit ice atinit'dircolors -b ls_colors > ls_colors.zsh' pick"ls_colors.zsh"
@@ -108,8 +115,8 @@ function load_common_plugins() { #{{{
 
   # fzf-z: Plugin for zsh to integrate fzf and zsh's z plugin.
   # https://github.com/andrewferrier/fzf-z . Has to be after fzf.
-  zinit ice wait lucid atinit"export FZFZ_SUBDIR_LIMIT=0"
-  zinit load andrewferrier/fzf-z
+  #zinit ice wait lucid atinit"export FZFZ_SUBDIR_LIMIT=0"
+  #zinit load andrewferrier/fzf-z
   # Directories under the current directory. The number of these shown in
   # fzf is limited by the FZFZ_SUBDIR_LIMIT environment variable, which defaults
   # to 50. If you don't want those to be shown, simply set this to 0.
@@ -140,9 +147,9 @@ function load_common_plugins() { #{{{
 
   # agkozak/zsh-z: Jump quickly to directories that you have visited "frecently."
   # A native Zsh port of z.sh. https://github.com/agkozak/zsh-z
-  local file="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/z"
-  zinit ice wait lucid atinit"export _Z_DATA=$file" atclone"touch $file"
-  zinit load agkozak/zsh-z
+  #local file="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/z"
+  #zinit ice wait lucid atinit"export _Z_DATA=$file" atclone"touch $file"
+  #zinit load agkozak/zsh-z
 
   # Fish-like autosuggestions for zsh.
   # https://github.com/zsh-users/zsh-autosuggestions
@@ -167,6 +174,13 @@ function load_common_plugins() { #{{{
   #   echo "[zshrc]" running compinit -i -d "$compfiles"
   # fi
   # unset compfiles
+
+  # ZSH plugin that reminds you to use existing aliases for commands you
+  # just typed. https://github.com/MichaelAquilina/zsh-you-should-use
+  # setaf 10 refers to color.
+  zinit ice wait lucid
+  zinit light "MichaelAquilina/zsh-you-should-use"
+  export YSU_MESSAGE_FORMAT="$(tput setaf 10)There is an alias for that: %alias$(tput sgr0)"
 
   # Fish shell like syntax highlighting for Zsh.
   # https://github.com/zsh-users/zsh-syntax-highlighting.
@@ -208,10 +222,7 @@ function load_user_plugins() { # {{{
     cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
   zinit load TheLocehiliosan/yadm
 
-  # ZSH plugin that reminds you to use existing aliases for commands you
-  # just typed. https://github.com/MichaelAquilina/zsh-you-should-use
-  zinit ice wait lucid
-  zinit light "MichaelAquilina/zsh-you-should-use"
+  eval "$(zoxide init zsh)"
 
 } # }}}
 function load_personal_configs() { # {{{
@@ -224,10 +235,10 @@ function load_personal_configs() { # {{{
 
   # Alternative method if want to measure profile by file.
 
-    for file in $ZDOTDIR/plugins/*.zsh $ZDOTDIR/*.{zsh,sh}
-    do
-      zi snippet "$file"
-    done
+  for file in $ZDOTDIR/plugins/*.zsh $ZDOTDIR/*.{zsh,sh}
+  do
+    zi snippet "$file"
+  done
 
   # Note. Install local completions by running once in terminal:
   # zinit creinstall $ZDOTDIR/completions

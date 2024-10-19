@@ -8,6 +8,24 @@
 # make less more friendly for non-text input files, see lesspipe(1)
 # [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s"  # Ei oo asennettu.
 
+zox_fzf_widget() {
+  # Save the currently typed characters into a variable
+  local query="$LBUFFER"
+
+  # Use fzf to search in the Zoxide database, pre-filtered by the typed characters
+  local dir=$(zoxide query -ls | awk '{print $2}' | fzf --query="$query" --height 40% --reverse --inline-info)
+
+  # If a directory is selected, replace the current command line buffer with 'cd' to that directory
+  if [[ -n $dir ]]; then
+    LBUFFER="cd '$dir'"
+    zle accept-line  # Simulate pressing Enter to execute the command
+  fi
+}
+
+# Bind Ctrl-G to the custom widget
+zle -N zox_fzf_widget
+bindkey '^G' zox_fzf_widget
+
 # Search in Surfraw bookmarks using Fzf. Note: surfraw has native alias "sr".
 if has srf; then
   function srfb() {
