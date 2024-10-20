@@ -80,8 +80,17 @@ bindkey "${alt}e" edit-command-line
 # Waits for keypress, then prints the function bound to the pressed key.
 bindkey "${alt}k" describe-key-briefly
 
-# Shortcut same as in Fish.
-bindkey -s "${alt}l" 'ls^M'
+# Alt-l to do ls (same as in Fish).
+_runcmdpushinput_ls () {
+  # Set the buffer to 'ls' and accept the line
+  BUFFER="ls"
+  zle accept-line
+}
+
+# Bind the function to Alt+l
+zle -N _runcmdpushinput_ls
+bindkey '^[l' _runcmdpushinput_ls
+
 
 # Copy & paste previous word
 bindkey "${alt}m" copy-prev-shell-word
