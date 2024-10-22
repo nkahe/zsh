@@ -40,6 +40,8 @@ export ZCALC_HISTFILE="$HOME/.local/state/zsh/zcalc_history"
 
 export _ZO_DATA_DIR="$HOME/.local/state/zsh"
 
+
+
 # Other software  -------------------------------------------------------------
 
 has ollama && export OLLAMA_MODELS=/home/ollama/models
@@ -80,8 +82,6 @@ has fzf && export FZF_DEFAULT_OPTS='--height 40%'
 
 # .NET
 # export DOTNET_CLI_TELEMETRY_OPTOUT=true
-
-export GREP_COLOR='mt=1;32'
 
 # if has kwallet-query &>/dev/null && has keepassxc &>/dev/null; then
 #   kwallet-query -f '' -r '' kdewallet | keepassxc --pw-stdin $HOME/linux/passwd.kdbx

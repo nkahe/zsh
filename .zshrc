@@ -3,8 +3,28 @@
 # If not running interactively
 [[ $- != *i* ]] && return
 
+# Record the start time in nanoseconds when Zsh starts
+zsh_start_time=$(date +%s%N)
+
+# Define a precmd hook to run just before the prompt is displayed
+my_precmd() {
+  # Get the current time just before showing the prompt
+  zsh_end_time=$(date +%s%N)
+
+  # Calculate the time difference in milliseconds
+  elapsed_time=$(( (zsh_end_time - zsh_start_time) / 1000000 )) # Convert nanoseconds to milliseconds
+
+  # Display the total time taken for Zsh to initialize
+  echo "Zsh startup time: ${elapsed_time} ms\n"
+
+  add-zsh-hook -d precmd my_precmd
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd my_precmd
+
 # Uncomment to profile speed.
-# zmodload zsh/zprof
+#zmodload zsh/zprof
 
 # Load common mime-types
 # onkohan mitään hyötyä? hidastaa käynnistymistä selvästi.
@@ -35,6 +55,7 @@ ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 # shell is opened each day.
 # Gives error if put aftere plugins
 
+# Load plugins and snippets
 function load_common_plugins() { #{{{
 
   # Don't rename executables if want completion to work.
@@ -47,7 +68,7 @@ function load_common_plugins() { #{{{
 
   # ! Needs to be before completion settings.
   # Colors for ls/eza/exa. Doesn't work is put in .zprofile.
-  # Batched from LS_COLORS: A collection of LS_COLORS definitions.
+  # Patched from LS_COLORS: A collection of LS_COLORS definitions.
   # https://github.com/trapd00r/LS_COLORS/tree/master
   ls_colors="$HOME/.config/shells/ls_colors.sh"
   if [[ -e $ls_colors ]]; then
@@ -193,6 +214,8 @@ function load_common_plugins() { #{{{
     # (If the defer tag is given 2 or above, run after compinit command)
   fi
 
+  eval "$(zoxide init zsh)"
+
   # ! Load after syntax-highlighting !
   # history-substring-search. Type in any part of any previously  entered
   # command and press the UP and DOWN arrow keys to cycle through the matching
@@ -222,10 +245,9 @@ function load_user_plugins() { # {{{
     cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
   zinit load TheLocehiliosan/yadm
 
-  eval "$(zoxide init zsh)"
-
 } # }}}
-function load_personal_configs() { # {{{
+#
+function load_local_configs() { # {{{
 
 #   zinit ice multisrc"*.{zsh,sh}" lucid
 #   zinit light $ZDOTDIR
@@ -237,7 +259,8 @@ function load_personal_configs() { # {{{
 
   for file in $ZDOTDIR/plugins/*.zsh $ZDOTDIR/*.{zsh,sh}
   do
-    zi snippet "$file"
+    zinit ice wait"0" lucid
+    zinit snippet "$file"
   done
 
   # Note. Install local completions by running once in terminal:
@@ -262,7 +285,7 @@ function end_message() {
 
 load_common_plugins
 [[ $UID != 0 ]] && load_user_plugins
-load_personal_configs
+load_local_configs
 
 # Fix completion
 has eza && compdef eza=ls
@@ -278,6 +301,6 @@ has eza && compdef eza=ls
 
 end_message
 # Uncomment to show speed profiling stats.
-# zprof
+#zprof
 
 # }}}
