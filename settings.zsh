@@ -9,15 +9,16 @@
 #   precmd() { echo }
 # fi
 
-if [[ "$TERM" != (linux|dump) ]] && [[ -z "$SSH_CONNECTION" ]] && command -v xset &>/dev/null; then
-  # Set peeping off.
-  xset -b
-fi
-
 # Named directories
 hash -d cheat="$HOME/Nextcloud/cheat" config="$HOME/.config" \
   share="$HOME/.local/share" zsh="$ZDOTDIR"
 
+# Beeping off
+if [[ "$TERM" != (linux|dump) ]] && [[ -z "$SSH_CONNECTION" ]] && command -v xset &>/dev/null; then
+  xset -b
+fi
+
+setterm -blength 0
 
 # Don't set AUTO_NAME_DIRS. Makes prompt path to be expanded to variable names.
 
