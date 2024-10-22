@@ -30,8 +30,6 @@ fi
 
 alias g='git'
 
-has khelpcenter && alias khelp='khelpcenter'
-
 # vimwiki: Personal Wiki for Vim. https://github.com/vimwiki/vimwiki
 # ( <Leader>ww is keymap for VimWiki in Vim)
 
