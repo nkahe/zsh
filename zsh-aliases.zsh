@@ -171,15 +171,15 @@ alias lsl='ls -d *(@)' \
 
 # Make new dir and change to it.
 function mkcd() {
-  nocorrect mkdir -p "$1" && cd "$1";
+  nocorrect mkdir --parents --verbose "$1" && cd "$1";
 }
 
 # Don't use autocorrect with these commands + some better default flags..
 alias sudo='nocorrect sudo'
 alias touch='nocorrect touch'
 alias ln='nocorrect ln'
-alias mv='nocorrect mv -v'
-alias mkdir='nocorrect mkdir -vp'
+alias mv='nocorrect mv --verbose'
+alias mkdir='nocorrect mkdir --verbose --parents'
 
 # Finding files {{{1
 

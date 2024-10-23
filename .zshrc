@@ -7,21 +7,22 @@
 zsh_start_time=$(date +%s%N)
 
 # Define a precmd hook to run just before the prompt is displayed
-my_precmd() {
+function show-elapsed-time() {
   # Get the current time just before showing the prompt
   zsh_end_time=$(date +%s%N)
 
   # Calculate the time difference in milliseconds
-  elapsed_time=$(( (zsh_end_time - zsh_start_time) / 1000000 )) # Convert nanoseconds to milliseconds
+  # Convert nanoseconds to milliseconds
+  elapsed_time=$(( (zsh_end_time - zsh_start_time) / 1000000 ))
 
   # Display the total time taken for Zsh to initialize
   echo "Zsh startup time: ${elapsed_time} ms\n"
 
-  add-zsh-hook -d precmd my_precmd
+  add-zsh-hook -d precmd show-elapsed-time
 }
 
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd my_precmd
+add-zsh-hook precmd show-elapsed-time
 
 # Uncomment to profile speed.
 #zmodload zsh/zprof
@@ -32,6 +33,8 @@ add-zsh-hook precmd my_precmd
 
 # provide a simple prompt till the theme loads
 PS1="%~ ❯ "
+
+source "$HOME/.profile"
 
 # Set the terminal multiplexer title format.
 # zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
@@ -171,6 +174,10 @@ function load_common_plugins() { #{{{
   #local file="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/z"
   #zinit ice wait lucid atinit"export _Z_DATA=$file" atclone"touch $file"
   #zinit load agkozak/zsh-z
+
+  # zsh-completions: Additional completion definitions for Zsh.
+  # https://github.com/zsh-users/zsh-completions
+  zinit light zsh-users/zsh-completions 
 
   # Fish-like autosuggestions for zsh.
   # https://github.com/zsh-users/zsh-autosuggestions
