@@ -82,6 +82,7 @@ function load_common_plugins() { #{{{
     # General Colorizer.
   file="$HOME/.config/shells/grc.sh"
   if [[ -e $file ]]; then
+    zinit ice wait"1" lucid
     zi snippet $file
   fi
 
@@ -119,6 +120,7 @@ function load_common_plugins() { #{{{
   # Sets history options and defines history aliases.
   zinit snippet PZT::modules/history/init.zsh
 
+  zinit ice wait"2" lucid
   zinit snippet OMZP::extract
 
   # bashmount: Tool to mount and unmount removable media from the command-line
@@ -128,7 +130,7 @@ function load_common_plugins() { #{{{
 
   # Command Help. Extract help text from builtin commands and man pages.
   # https://github.com/learnbyexample/command_help
-  zinit ice wait"2" as"program" pick"ch" lucid
+  zinit ice wait"1" lucid as"program" pick"ch"
   zinit load learnbyexample/command_help
 
   # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
@@ -177,15 +179,15 @@ function load_common_plugins() { #{{{
 
   # zsh-completions: Additional completion definitions for Zsh.
   # https://github.com/zsh-users/zsh-completions
-  zinit light zsh-users/zsh-completions 
+  #zinit light zsh-users/zsh-completions 
 
   # Fish-like autosuggestions for zsh.
   # https://github.com/zsh-users/zsh-autosuggestions
-  zinit ice wait"0" lucid atload"_zsh_autosuggest_start" \
-   atinit"export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
-      ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
-      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30"
-  zinit load zsh-users/zsh-autosuggestions
+  # zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
+   # atinit"export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+      # ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+      # ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30"
+  # zinit load zsh-users/zsh-autosuggestions
 
   # xiny: Simple command line tool for unit conversions
   # https://github.com/bcicen/xiny
@@ -214,11 +216,27 @@ function load_common_plugins() { #{{{
   # https://github.com/zsh-users/zsh-syntax-highlighting.
   if [[ $HOST != raspberry* ]]; then
     # Gives error if variable isn't set.
-    zinit ice atinit"zpcompinit; zpcdreplay; export region_highlight=''" lucid
-    zinit load zsh-users/zsh-syntax-highlighting
+    #zinit ice atinit"zpcompinit; zpcdreplay; export region_highlight=''" lucid
+    #zinit load zsh-users/zsh-syntax-highlighting
+    
     # Defer: set the priority when loading. e.g., zsh-syntax-highlighting must
     # be loaded after executing compinit command and sourcing other plugins
     # (If the defer tag is given 2 or above, run after compinit command)
+
+    # zdharma-continuum/fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH
+    # https://github.com/zdharma-continuum/fast-syntax-highlighting
+
+    zinit wait silent for \
+     atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
+     has eza && compdef eza=ls;\
+      export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+      ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
+        zdharma-continuum/fast-syntax-highlighting \
+     blockf \
+        zsh-users/zsh-completions \
+     atload"!_zsh_autosuggest_start" \
+        zsh-users/zsh-autosuggestions
   fi
 
   eval "$(zoxide init zsh)"
@@ -237,7 +255,7 @@ function load_common_plugins() { #{{{
     bindkey -a 'k' history-substring-search-up
     bindkey -a 'j' history-substring-search-down
   }
-  zinit ice wait atload"_zsh_highlight" lucid atinit"set_history_substring_keys"
+  zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_history_substring_keys"
   zinit load zsh-users/zsh-history-substring-search
 
 } # }}}
@@ -293,9 +311,6 @@ function end_message() {
 load_common_plugins
 [[ $UID != 0 ]] && load_user_plugins
 load_local_configs
-
-# Fix completion
-has eza && compdef eza=ls
 
 #autoload -Uz _zinit
 #(( ${+_comps} )) && _comps[zinit]=_zinit
