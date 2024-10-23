@@ -91,12 +91,23 @@ html-to-md () {
 
 # Wayland Tools ---------------------------------------------------------------
 
-# Copy working directory to clipboard. Needs wl-clipboard.
-if has wl-copy; then
-  cpwd() {
-    pwd | tr -d "\r\n" | wl-copy
-  }
-fi
+cppath() {
+  if [[ -n "$1" ]]; then
+    # If a filename is provided, get the full path of the file
+    fullpath=$(realpath "$1" 2>/dev/null)
+    if [[ -f "$fullpath" || -d "$fullpath" ]]; then
+      echo -n "$fullpath" | wl-copy
+      echo "Copied: $fullpath"
+    else
+      echo "Error: '$1' is not a valid file or directory."
+    fi
+  else
+    # If no parameter, copy the current working directory
+    echo -n "$(pwd)" | wl-copy
+    echo "Copied: $(pwd)"
+  fi
+}
+
 
 # -----------------------------------------------------------------------------
 
