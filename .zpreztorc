@@ -18,5 +18,5 @@ zstyle ':prezto:module:history' histfile "${XDG_STATE_HOME:-$HOME/.local/state}"
 export HISTORY_IGNORE="(ls|ll|la|pwd|exit|history|cd -|cd ..)"
 
 # Big history
-zstyle ':prezto:module:history' histsize 20000
-zstyle ':prezto:module:history' savehist 20000
+zstyle ':prezto:module:history' histsize 50000
+zstyle ':prezto:module:history' savehist 50000
