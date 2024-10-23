@@ -1,17 +1,25 @@
 #!/bin/zsh
 ### Completions
-#
-# Mostly from Prezto and Zim. https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
+
+# Mostly from Prezto. https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 
 # zmodload zsh/zprof
 
 # Return if requirements are not found.
 [[ "$TERM" == 'dumb' ]] && return 1
 
-# # Angular cli
-# if command -v "ng" &> /dev/null; then
-#   source <(ng completion script)
-# fi
+# Add completion for keg-only brewed curl on macOS when available.
+if (( $+commands[brew] )); then
+  brew_prefix=${HOMEBREW_PREFIX:-${HOMEBREW_REPOSITORY:-$commands[brew]:A:h:h}}
+  # $HOMEBREW_PREFIX defaults to $HOMEBREW_REPOSITORY but is explicitly set to
+  # /usr/local when $HOMEBREW_REPOSITORY is /usr/local/Homebrew.
+  # https://github.com/Homebrew/brew/blob/2a850e02d8f2dedcad7164c2f4b95d340a7200bb/bin/brew#L66-L69
+  [[ $brew_prefix == '/usr/local/Homebrew' ]] && brew_prefix=$brew_prefix:h
+  fpath=($brew_prefix/opt/curl/share/zsh/site-functions(/N) $fpath)
+  unset brew_prefix
+fi
+
+# Options
 
 setopt correct             # try to correct spelling...
 setopt correctall          # ...for all arguments
@@ -23,29 +31,37 @@ setopt path_dirs           # Perform path search even on command names with slas
 setopt auto_menu           # show completion menu on succesive tab press
 setopt auto_list           # Automatically list choices on ambiguous completion.
 setopt auto_param_slash    # If completed parameter is a directory, add a trailing slash.
-# On an ambiguous completion, instead of listing possibilities or beeping, insert the first match immediately.
-# Then when completion is requested again, remove the first match and insert the second match, etc.
-unsetopt menu_complete
+setopt extended_glob       # Needed for file modification glob modifiers with compinit.
+unsetopt menu_complete     # Do not autoselect the first completion entry.
 unsetopt flowcontrol       # Disable start/stop characters in shell editor.
-unsetopt case_glob         # Make globbing (filename generation) sensitive to case.
 
 # Treat these characters as part of a word.
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 # Styles
 
+if [[ -n "$LS_COLORS" ]]; then
+  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+fi
+
 # Addons elsewhere than Prezto/Zim:
 # when new programs is installed, auto update autocomplete without reloading shell
 zstyle ':completion:*' rehash true
-zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
 
 # Use caching so that commands like apt and dpkg complete are useable
 zstyle ':completion::complete:*' use-cache on
 # Different from Prezto: Don't use $ZDOTDIR for cache (Synced folder).
 zstyle ':completion::complete:*' cache-path "$ZSH_CACHE_DIR"
 
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+# Case-insensitive (all), partial-word, and then substring completion.
+if zstyle -t ':prezto:module:completion:*' case-sensitive; then
+  zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  setopt CASE_GLOB
+else
+  zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'm:{[:upper:]}={[:lower:]}'  'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  unsetopt CASE_GLOB
+fi
 
 # Group matches and describe.
 zstyle ':completion:*:*:*:*:*' menu select
@@ -81,10 +97,6 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 # Directories
 # Make completion use same colors as ls.
-if [[ -n "$LS_COLORS" ]]; then
-  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-fi
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
 zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
 zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
@@ -98,6 +110,10 @@ zstyle ':completion:*:history-words' menu yes
 
 # Environmental Variables
 zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+
+# Populate hostname completion. But allow ignoring custom entries from static
+# */etc/hosts* which might be uninteresting.
+zstyle -a ':prezto:module:completion:*:hosts' etc-host-ignores '_etc_host_ignores'
 
 # Populate hostname completion.
 zstyle -e ':completion:*:hosts' hosts 'reply=(
@@ -124,6 +140,13 @@ zstyle '*' single-ignored show
 zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
 zstyle ':completion:*:rm:*' file-patterns '*:all-files'
 
+# Kill
+zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:*:kill:*' force-list always
+zstyle ':completion:*:*:kill:*' insert-ids single
+
 # Man
 zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:manuals.(^1*)' insert-sections true
@@ -149,10 +172,12 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
+# End of Prezto settings--------------------------------------------------------
+
+zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
+
 # smart editor completion
 zstyle ':completion:*:(nano|vim|nvim|vi|emacs|kwrite|kate|e|micro):*' ignored-patterns '*.(wav|mp3|flac|ogg|mp4|avi|mkv|webm|iso|dmg|so|o|a|bin|exe|dll|pcap|7z|zip|tar|gz|bz2|rar|deb|pkg|gzip|pdf|mobi|epub|png|jpeg|jpg|gif)'
-
-### Add from other sources than Prezto ###
 
 # Taskwarrior
 zstyle ':completion:*:*:task:*' verbose yes
@@ -164,15 +189,8 @@ zstyle ':completion:*:*:task:*' group-name ''
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
-# Add completions for pip/pip3
 
-# if has pip; then
-#   eval "`pip completion --zsh`"
+# # Angular cli
+# if command -v "ng" &> /dev/null; then
+#   source <(ng completion script)
 # fi
-
-# if has pip3; then
-#   compctl -K _pip_completion pip3
-# fi
-
-
-# zprof
