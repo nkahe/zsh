@@ -78,8 +78,8 @@ has yank-cli && alias yank=yank-cli
 
 # Print alphabets
 alp() {
-  for x in {A..Z} ; do
-    printf $x" "
+  for char in {A..Z} ; do
+    printf $char" "
   done
   echo "Å Ä Ö"
 }
@@ -87,7 +87,7 @@ alp() {
 html-to-md () {
  find . -iname "*.html" -type f -exec sh -c \
   'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
-}
+#}
 
 # Wayland Tools ---------------------------------------------------------------
 
@@ -107,7 +107,6 @@ cppath() {
     echo "Copied: $(pwd)"
   fi
 }
-
 
 # -----------------------------------------------------------------------------
 
