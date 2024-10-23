@@ -11,24 +11,11 @@ alias restart-xdg='systemctl --user restart plasma-xdg-desktop-portal-kde'
 has kitty && alias icat="kitty +kitten icat"
   # Show images with Kitty's icat. https://sw.kovidgoyal.net/kitty/kittens/icat.html
 
-if has micro; then
-  editor="micro"
-elif has nvim; then
-  editor="nvim"
-elif has vim; then
-  editor="vim"
-else
-  editor="nano"
-fi
-alias e="$editor"
-
 if has eza; then
   alias ls="eza --group-directories-first --color=always --icons"
 elif has exa; then
  alias ls="exa --group-directories-first --color=always --icons"
 fi
-
-alias g='git'
 
 # vimwiki: Personal Wiki for Vim. https://github.com/vimwiki/vimwiki
 # ( <Leader>ww is keymap for VimWiki in Vim)
@@ -146,9 +133,6 @@ fi
 
 # Add additional default flags
 
-alias chmod="chmod $cflags" chown="chown $cflags"
-alias dd='dd status=progress'
-
 # Mac versions has some different flags.
 if [[ $OSTYPE != 'darwin'* ]]; then
   cflags='--preserve-root -v'
@@ -170,19 +154,24 @@ else
   alias shred='shred -v -z'
   alias units="units -v -1 -H ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 fi
-alias chmod="chmod $cflags" chown="chown $cflags"
+alias chmod="chmod $cflags"
+alias chown="chown $cflags"
+alias dd='dd status=progress'
 
 # Abbrevations
 
+# allows you to create and view interactive sheets on the command-line.
+# https://github.com/cheat/cheat. cs is short for cheatsheet
+alias cs='cheat'
+alias e="$EDITOR"
+alias g='git'
 alias p="$PAGER"
 alias sctl='systemctl'
 alias jctl='journalctl'
 alias his=' history'
 alias xo='xdg-open'
-
-# allows you to create and view interactive sheets on the command-line.
-# https://github.com/cheat/cheat. cs is short for cheatsheet
-has cheat && alias cs='cheat'
+# z=zoxide 
+# x=extract (Prezto module)
 
 # Handy aliases
 
@@ -199,6 +188,8 @@ alias lspath='echo -e ${PATH//:/\\n}'
 # Hakemistojen viemä tila. Ei alihakemistojen kokoa.
 # Ei toimi edellisen aliaksen kanssa.  pitäis korjata.
 alias lsip='ip -brief -family inet addr'
+# List environment variables.
+# Don't show some long entires.
 alias lsenv='env | grep -vE "LS_COLORS|LESS_TERMCAP" | sort -f | column -t -s "=" -E 2'
 
 lsmount() {
