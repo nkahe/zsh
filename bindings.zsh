@@ -44,7 +44,10 @@ key_info=(
   'Down'         "$terminfo[kcud1]"
   'Right'        "$terminfo[kcuf1]"
   'BackTab'      "$terminfo[kcbt]"
+  "Shift-Tab"    '^[[Z'
 )
+
+
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   key_info[Opt-left]='^[^[[D'
@@ -116,6 +119,14 @@ function zle-line-finish {
 }
 zle -N zle-line-finish
 
+# Show ls
+_runcmdpushinput_ls () {
+  # Set the buffer to 'ls' and accept the line
+  BUFFER="ls"
+  zle accept-line
+}
+zle -N _runcmdpushinput_ls
+
 # Fast directory changing
 
 function cd {
@@ -126,8 +137,7 @@ function cd {
 
 function cd_previous_dir {
   DIR=${BACK_HISTORY%%:*}
-  if [[ -d "$DIR" ]]
-  then
+  if [[ -d "$DIR" ]]; then
     BACK_HISTORY=${BACK_HISTORY#*:}
     FORWARD_HISTORY=$PWD:$FORWARD_HISTORY
     builtin cd "$DIR"
@@ -136,21 +146,12 @@ function cd_previous_dir {
 
 function cd_forward_dir {
   DIR=${FORWARD_HISTORY%%:*}
-  if [[ -d "$DIR" ]]
-  then
+  if [[ -d "$DIR" ]]; then
     FORWARD_HISTORY=${FORWARD_HISTORY#*:}
     BACK_HISTORY=$PWD:$BACK_HISTORY
     builtin cd "$DIR"
   fi
 }
-
-# Show ls
-_runcmdpushinput_ls () {
-  # Set the buffer to 'ls' and accept the line
-  BUFFER="ls"
-  zle accept-line
-}
-zle -N _runcmdpushinput_ls
 
 # Reset to default key bindings.
 bindkey -d
@@ -163,6 +164,7 @@ bindkey -d
 for key in "$key_info[Esc]"{B,b} "${(s: :)key_info[Ctrl-Left]}" \
   "${key_info[Esc]}${key_info[Left]}"
   bindkey -M emacs "$key" emacs-backward-word
+
 for key in "$key_info[Esc]"{F,f} "${(s: :)key_info[Ctrl-Right]}" \
   "${key_info[Esc]}${key_info[Right]}"
   bindkey -M emacs "$key" emacs-forward-word
@@ -172,15 +174,17 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   bindkey "$key_info[Opt-left]" backward-word
 fi
 
+# Kill to the beginning of the line.
+for key in "$key_info[Esc]"{K,k}
+  bindkey -M emacs "$key" backward-kill-line
+
 bindkey -e "$key_info[Alt]l" _runcmdpushinput_ls
 
-# if [[ "$OSTYPE" == "darwin"* ]]; then
-#   bindkey "$key_info[Opt-Right]" forward-word
-#   bindkey "$key_info[Opt-Reft]" backward-word
-# else
-#   bindkey -M emacs "$key_info[Ctrl-Right]" forward-word
-#   bindkey -M emacs "$key_info[Ctrl-Left]" backward-word
-# fi
+# Command insertion.
+bindkey -s "$key_info[F12]" 'source bindings.zsh\n'
+bindkey -s "$key_info[Alt-Right]" 'cd_forward_dir\n'
+bindkey -s "$key_info[Alt-Left]" 'cd_previous_dir\n'
+bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
 
 #
 # Vi Key Bindings
@@ -200,7 +204,7 @@ for keymap in 'emacs' 'viins' 'vicmd'; do
   bindkey -M "$keymap" "$key_info[Ctrl-Delete]" delete-word
 done
 
-# Emacs + Vi Insert mode
+# Keybinds for emacs and vi insert mode
 for keymap in 'emacs' 'viins'; do
   bindkey -M "$keymap" "$key_info[Ctrl]l" clear-screen
   bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
@@ -210,13 +214,11 @@ for keymap in 'emacs' 'viins'; do
   # Expand history on space.
   bindkey -M "$keymap" ' ' magic-space
 
-done
+  # Bind Shift + Tab to go to the previous menu item.
+  bindkey -M "$keymap" "$key_info[BackTab]" reverse-menu-complete
+  bindkey -M "$keymap" "$key_info[Shift-Tab]" reverse-menu-complete
 
-# Command insertion.
-bindkey -s "$key_info[F12]" 'source bindings-test.zsh\n'
-bindkey -s "$key_info[Alt-Right]" 'cd_forward_dir\n'
-bindkey -s "$key_info[Alt-Left]" 'cd_previous_dir\n'
-bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
+done
 
 # Set the default keymap
 bindkey -e
