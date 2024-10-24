@@ -1,219 +1,224 @@
-#!/bin/zsh
-# Key bindings. Plugin specific bindings are defined in .zshrc
+#echo "bindings test running"
 
-# Key definitions --------------------------------------------------------------
-declare -A key
-alt="^["
+WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
-key[up]='\eOA' key[up2]='^[[A' key[down]='\eOB' key[down2]='^[[B'
-key[A-up]='^[[1;3A' key[A-left]='^[[1;3D' key[A-right]='^[[1;3C'
-key[A-home]='^[[1;3H'
-key[home]='^[[H'
-key[end]='^[[F'
-key[del]='^[[3~'
-key[f12]='[24~'
-key[BS]='^?'
-key[C-BS]='^[[127;5u'
-key[A-BS]="^[^?"
-key[C-left]='^[[1;5D' key[C-right]='^[[1;5C'
-key[C-del]='^[[3;5~'
-key[S-tab]='^[[Z'
+zmodload zsh/terminfo
+typeset -gA key_info
+
+# Only some terminals supports Ctrl-Backspace
+key_info=(
+  'Alt-Up'        '^[[1;3A'
+  'Alt-Left'      '^[[1;3D'
+  'Alt-Right'     '^[[1;3C'
+  'Ctrl'          '\C-'
+  'Ctrl-Backspace'  '^[[127;5u'
+  'Ctrl-Delete'   '^[[3;5~'
+  'Ctrl-Left'     '\e[1;5D \e[5D \e\e[D \eOd'
+  'Ctrl-Right'    '\e[1;5C \e[5C \e\e[C \eOc'
+  'Ctrl-PageUp'   '\e[5;5~'
+  'Ctrl-PageDown' '\e[6;5~'
+  'Alt'           '^['
+  'Esc'          '\e'
+  'Meta'         '\M-'
+  'Backspace'    "^?"
+  'Delete'       "^[[3~"
+  'F1'           "$terminfo[kf1]"
+  'F2'           "$terminfo[kf2]"
+  'F3'           "$terminfo[kf3]"
+  'F4'           "$terminfo[kf4]"
+  'F5'           "$terminfo[kf5]"
+  'F6'           "$terminfo[kf6]"
+  'F7'           "$terminfo[kf7]"
+  'F8'           "$terminfo[kf8]"
+  'F9'           "$terminfo[kf9]"
+  'F10'          "$terminfo[kf10]"
+  'F11'          "$terminfo[kf11]"
+  'F12'          "$terminfo[kf12]"
+  'Insert'       "$terminfo[kich1]"
+  'Home'         "$terminfo[khome]"
+  'PageUp'       "$terminfo[kpp]"
+  'End'          "$terminfo[kend]"
+  'PageDown'     "$terminfo[knp]"
+  'Up'           "$terminfo[kcuu1]"
+  'Left'         "$terminfo[kcub1]"
+  'Down'         "$terminfo[kcud1]"
+  'Right'        "$terminfo[kcuf1]"
+  'BackTab'      "$terminfo[kcbt]"
+)
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  key[Opt-left]='^[^[[D'
-  key[Opt-right]='^[^[[C'
+  key_info[Opt-left]='^[^[[D'
+  key_info[Opt-right]='^[^[[C'
 fi
 
-# List bindings ----------------------------------------------------------------
+# Set empty $key values to an invalid UTF-8 sequence to induce silent
+# bindkey failure.
+for key in "${(k)key_info[@]}"; do
+  if [[ -z "$key_info[$key]" ]]; then
+    key_info[$key]='�'
+  fi
+done
 
-# List bindings defined here and by plugins
-function lsbind() {
-  echo "\
-  Binding   Command
-------------------------------------------------------
-  Alt-K     Describe key briefly.
-  Alt-L     ls
-  Alt-E     Edit command line in text editor.
-  Alt-C     Copy command line to X-clipboard.
-  Alt-M     Copy previous word.
-  Alt-V     Paste from X-clipboard to command line.
-  Alt-Y     Redo
-  Alt-Z     Undo
-  Alt-<nbr> Paste <nbr> parameters of last command.
-  Alt-BS    Delete previous word.
-  Alt-Home  cd ~
-  (Alt--    cd -)
-  Alt-↑     cd ..
-  Alt- ← | ->   cd previous / next dir.
-  Alt-D     Fzf cd
-  ↑         History substring search up
-  ↓         History substring search down
-  Ctrl-G    Fzf change dir
-  Ctrl-T    Fzf select file
-  Ctrl-Z    Secod press continues job.
-  C-Del     Delete word
-  F12       Source settings."
+# Allow command line editing in an external editor.
+autoload -Uz edit-command-line
+zle -N edit-command-line
+
+# Runs bindkey but for all of the keymaps. Running it with no arguments will
+# print out the mappings for all of the keymaps.
+function bindkey-all {
+  local keymap=''
+  for keymap in $(bindkey -l); do
+    [[ "$#" -eq 0 ]] && printf "#### %s\n" "${keymap}" 1>&2
+    bindkey -M "${keymap}" "$@"
+  done
 }
 
-# Misc -------------------------------------------------------------------------
-
-# What code shortcut sends: Ctrl-V <shortcut> or
-# (another way: 'cat -v'  showed wrong codes)
 #
-# ctrl: ^ tai \C-, Alt: \e or ^[
+# Functions overrides
+# These override default Zsh functions.
 
-# Aloita emacs moodissa: bindkey -e,
-# export KEYTIMEOUT=3   # Viive, kun odottaa että tuleeko lisää näppäimiä komentoon Vim-moodissa.
+# Reset the prompt based on the current context and
+# the ps-context option.
+function zle-reset-prompt {
+  if zstyle -t ':prezto:module:editor' ps-context; then
+    # If we aren't within one of the specified contexts, then we want to reset
+    # the prompt with the appropriate editor_info[keymap] if there is one.
+    if [[ $CONTEXT != (select|cont) ]]; then
+      zle reset-prompt
+      zle -R
+    fi
+  else
+    zle reset-prompt
+    zle -R
+  fi
+}
+zle -N zle-reset-prompt
 
-# Hyvä, niin voi käyttää aliaksia sudon kanssa:
-# _expand_alias
+# Enables terminal application mode and updates editor information.
+function zle-line-init {
+  # The terminal must be in application mode when ZLE is active for $terminfo
+  # values to be valid.
+  if (( $+terminfo[smkx] )); then
+    # Enable terminal application mode.
+    echoti smkx
+  fi
+}
+zle -N zle-line-init
 
-# Check 'vim-bindaukset.zsh' for Vim-bindings.
+# Disables terminal application mode
+function zle-line-finish {
+  # The terminal must be in application mode when ZLE is active for $terminfo
+  # values to be valid.
+  if (( $+terminfo[rmkx] )); then
+    # Disable terminal application mode.
+    echoti rmkx
+  fi
+}
+zle -N zle-line-finish
 
-# Edit command line in text editor (shortcut same as in Fish).
-autoload -z edit-command-line
-zle -N edit-command-line
-bindkey "${alt}e" edit-command-line
+# Fast directory changing
 
-# Edit command-line in editor
+function cd {
+  BACK_HISTORY=$PWD:$BACK_HISTORY
+  FORWARD_HISTORY=""
+  builtin cd "$@"
+}
 
-# Waits for keypress, then prints the function bound to the pressed key.
-bindkey "${alt}k" describe-key-briefly
+function cd_previous_dir {
+  DIR=${BACK_HISTORY%%:*}
+  if [[ -d "$DIR" ]]
+  then
+    BACK_HISTORY=${BACK_HISTORY#*:}
+    FORWARD_HISTORY=$PWD:$FORWARD_HISTORY
+    builtin cd "$DIR"
+  fi
+}
 
-# Alt-l to do ls (same as in Fish).
+function cd_forward_dir {
+  DIR=${FORWARD_HISTORY%%:*}
+  if [[ -d "$DIR" ]]
+  then
+    FORWARD_HISTORY=${FORWARD_HISTORY#*:}
+    BACK_HISTORY=$PWD:$BACK_HISTORY
+    builtin cd "$DIR"
+  fi
+}
+
+# Show ls
 _runcmdpushinput_ls () {
   # Set the buffer to 'ls' and accept the line
   BUFFER="ls"
   zle accept-line
 }
-
-# Bind the function to Alt+l
 zle -N _runcmdpushinput_ls
-bindkey '^[l' _runcmdpushinput_ls
 
+# Reset to default key bindings.
+bindkey -d
 
-# Copy & paste previous word
-bindkey "${alt}m" copy-prev-shell-word
+#
+# Emacs Key Bindings
+#
 
-# Find file
-if typeset -f fzfz-file-widget &> /dev/null; then
-  bindkey '^G' fzfz-file-widget
-fi
-bindkey "${alt}d" fzf-cd-widget
-
-# Go to the previous menu item.
-bindkey "$key[S-tab]" reverse-menu-complete
-
-bindkey "$key[f12]" load_personal_configs
-zle -N load_personal_configs
-
-function previous_command_hotkeys() {
-  # Bang! Previous Command Hotkeys
-  # print previous command but only the first nth arguments
-  # Alt+1, Alt+2 ...etc
-  bindkey -s '\e1' "!:0 \t"
-  bindkey -s '\e2' "!:0-1 \t"
-  bindkey -s '\e3' "!:0-2 \t"
-  bindkey -s '\e4' "!:0-3 \t"
-  bindkey -s '\e5' "!:0-4 \t"
-  bindkey -s '\e`' "!:0- \t"     # all but the last word
-}
-
-bindkey "${alt}z" undo
-bindkey "${alt}y" redo
-
-previous_command_hotkeys
-
-# Change directories -----------------------------------------------------------
-
-bindkey -s "$key[A-up]" 'cd ..\n'
-
-# Same shortcut as Firefox' Go to homepage.
-bindkey -s "$key[A-home]" 'cd ~^M'
-
-# These don't work fs used with Enhancd.
-BACK_HISTORY="" FORWARD_HISTORY=""
-
-function cd_previous_forward() {
-  function cd {
-    BACK_HISTORY=$PWD:$BACK_HISTORY
-    FORWARD_HISTORY=""
-    builtin cd "$@"
-  }
-
-  function cd_previous_dir {
-    DIR=${BACK_HISTORY%%:*}
-    if [[ -d "$DIR" ]]
-    then
-      BACK_HISTORY=${BACK_HISTORY#*:}
-      FORWARD_HISTORY=$PWD:$FORWARD_HISTORY
-      builtin cd "$DIR"
-    fi
-  }
-  bindkey -s "$key[A-left]" 'cd_previous_dir\n'
-
-  function cd_forward_dir {
-    DIR=${FORWARD_HISTORY%%:*}
-    if [[ -d "$DIR" ]]
-    then
-      FORWARD_HISTORY=${FORWARD_HISTORY#*:}
-      BACK_HISTORY=$PWD:$BACK_HISTORY
-      builtin cd "$DIR"
-    fi
-  }
-  bindkey -s "$key[A-right]" 'cd_forward_dir\n'
-}
-
-cd_previous_forward
-
-# Moving cursor ----------------------------------------------------------------
-
-bindkey "$key[home]" beginning-of-line
-bindkey "$key[end]" end-of-line
+# Ctrl-Left / -Right move word left or right.
+for key in "$key_info[Esc]"{B,b} "${(s: :)key_info[Ctrl-Left]}" \
+  "${key_info[Esc]}${key_info[Left]}"
+  bindkey -M emacs "$key" emacs-backward-word
+for key in "$key_info[Esc]"{F,f} "${(s: :)key_info[Ctrl-Right]}" \
+  "${key_info[Esc]}${key_info[Right]}"
+  bindkey -M emacs "$key" emacs-forward-word
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  bindkey "$key[Opt-right]" forward-word
-  bindkey "$key[Opt-left]" backward-word
-else
-  bindkey "$key[C-right]" forward-word
-  bindkey "$key[C-left]" backward-word
+  bindkey "$key_info[Opt-right]" forward-word
+  bindkey "$key_info[Opt-left]" backward-word
 fi
 
-# Deleting characters ----------------------------------------------------------
+bindkey -e "$key_info[Alt]l" _runcmdpushinput_ls
 
-bindkey "$key[del]" delete-char
+# if [[ "$OSTYPE" == "darwin"* ]]; then
+#   bindkey "$key_info[Opt-Right]" forward-word
+#   bindkey "$key_info[Opt-Reft]" backward-word
+# else
+#   bindkey -M emacs "$key_info[Ctrl-Right]" forward-word
+#   bindkey -M emacs "$key_info[Ctrl-Left]" backward-word
+# fi
 
-# Only some terminals use this sequence.
-bindkey "$key[C-BS]" backward-delete-word
+#
+# Vi Key Bindings
+#
 
-# Alt-backspace to delete backward word like in Emacs mode.
-bindkey "$key[A-BS]" backward-kill-word
+#
+# Emacs and Vi Key Bindings
+#
 
-bindkey "$key[C-del]" delete-word
+# All modes
+for keymap in 'emacs' 'viins' 'vicmd'; do
+  bindkey -M "$keymap" "$key_info[Delete]" delete-char
+  bindkey -M "$keymap" "$key_info[Home]" beginning-of-line
+  bindkey -M "$keymap" "$key_info[End]" end-of-line
+  bindkey -M "$keymap" "$key_info[Backspace]" backward-delete-char
+  bindkey -M "$keymap" "$key_info[Ctrl-Backspace]" backward-delete-word
+  bindkey -M "$keymap" "$key_info[Ctrl-Delete]" delete-word
+done
 
-# Many terminals (like Terminator) send ^H with C-BS.
-# Qterminal sends this with only backspace so doesn't work!
+# Emacs + Vi Insert mode
+for keymap in 'emacs' 'viins'; do
+  bindkey -M "$keymap" "$key_info[Ctrl]l" clear-screen
+  bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
+  bindkey -M "$keymap" "$key_info[Left]" backward-char
+  bindkey -M "$keymap" "$key_info[Right]" forward-char
 
-# bindkey '^H' backward-delete-word
+  # Expand history on space.
+  bindkey -M "$keymap" ' ' magic-space
 
-# Clipboard --------------------------------------------------------------------
+done
 
-# Copy command line to X clipboard
-function copy-to-xclip() {
-    zle copy-region-as-kill
-    print -rn -- $CUTBUFFER | xclip -selection clipboard -in
-}
-zle -N copy-to-xclip
-bindkey "${alt}c" copy-to-xclip
+# Command insertion.
+bindkey -s "$key_info[F12]" 'source bindings-test.zsh\n'
+bindkey -s "$key_info[Alt-Right]" 'cd_forward_dir\n'
+bindkey -s "$key_info[Alt-Left]" 'cd_previous_dir\n'
+bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
 
-# Paste from X clipboard to command line
-function paste-xclip() {
-    killring=("$CUTBUFFER" "${(@)killring[1,-2]}")
-    CUTBUFFER=$(xclip -selection clipboard -out)
-    zle yank
-}
-zle -N paste-xclip
-bindkey "${alt}v" paste-xclip
+# Set the default keymap
+bindkey -e
 
-# Do history expansion
-bindkey ' ' magic-space
+unset key{,map,_bindings}
