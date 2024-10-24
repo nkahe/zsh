@@ -120,6 +120,9 @@ function load_common_plugins() { #{{{
   # Sets history options and defines history aliases.
   zinit snippet PZT::modules/history/init.zsh
 
+  # Sets history options and defines history aliases.
+  #zinit snippet PZT::modules/editor/init.zsh
+
   zinit ice wait"2" lucid
   zinit snippet OMZP::extract
 
@@ -179,15 +182,15 @@ function load_common_plugins() { #{{{
 
   # zsh-completions: Additional completion definitions for Zsh.
   # https://github.com/zsh-users/zsh-completions
-  #zinit light zsh-users/zsh-completions 
+  zinit light zsh-users/zsh-completions
 
   # Fish-like autosuggestions for zsh.
   # https://github.com/zsh-users/zsh-autosuggestions
-  # zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
-   # atinit"export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
-      # ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
-      # ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30"
-  # zinit load zsh-users/zsh-autosuggestions
+  zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
+   atinit"export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+      ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30"
+  zinit load zsh-users/zsh-autosuggestions
 
   # xiny: Simple command line tool for unit conversions
   # https://github.com/bcicen/xiny
@@ -216,9 +219,9 @@ function load_common_plugins() { #{{{
   # https://github.com/zsh-users/zsh-syntax-highlighting.
   if [[ $HOST != raspberry* ]]; then
     # Gives error if variable isn't set.
-    #zinit ice atinit"zpcompinit; zpcdreplay; export region_highlight=''" lucid
-    #zinit load zsh-users/zsh-syntax-highlighting
-    
+    zinit ice atinit"zpcompinit; zpcdreplay; export region_highlight=''" lucid
+    zinit load zsh-users/zsh-syntax-highlighting
+
     # Defer: set the priority when loading. e.g., zsh-syntax-highlighting must
     # be loaded after executing compinit command and sourcing other plugins
     # (If the defer tag is given 2 or above, run after compinit command)
@@ -226,17 +229,18 @@ function load_common_plugins() { #{{{
     # zdharma-continuum/fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH
     # https://github.com/zdharma-continuum/fast-syntax-highlighting
 
-    zinit wait silent for \
-     atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
-     has eza && compdef eza=ls;\
-      export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
-      ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
-      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
-        zdharma-continuum/fast-syntax-highlighting \
-     blockf \
-        zsh-users/zsh-completions \
-     atload"!_zsh_autosuggest_start" \
-        zsh-users/zsh-autosuggestions
+    # zinit wait silent for \
+    #   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
+    #   has eza && compdef eza=ls;\
+    #   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+    #   ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+    #   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
+    #     zdharma-continuum/fast-syntax-highlighting \
+    #   blockf \
+    #     zsh-users/zsh-completions \
+    #   atload"!_zsh_autosuggest_start" \
+    #     zsh-users/zsh-autosuggestions
+
   fi
 
   eval "$(zoxide init zsh)"
@@ -311,6 +315,8 @@ function end_message() {
 load_common_plugins
 [[ $UID != 0 ]] && load_user_plugins
 load_local_configs
+
+#source $ZDOTDIR/bindings-test.zsh
 
 #autoload -Uz _zinit
 #(( ${+_comps} )) && _comps[zinit]=_zinit
