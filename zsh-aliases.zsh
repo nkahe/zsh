@@ -8,6 +8,9 @@
 # make less more friendly for non-text input files, see lesspipe(1)
 # [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s"  # Ei oo asennettu.
 
+# Reload Zsh user settings.
+alias reload="source $ZDOTDIR/.{zprofile,zshrc}"
+
 zox_fzf_widget() {
   # Save the currently typed characters into a variable
   local query="$LBUFFER"
@@ -34,11 +37,8 @@ if has srf; then
   }
 fi
 
-
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw
-
-alias reload=load_personal_configs
 
  #}}}
 # Functions {{{
@@ -69,14 +69,14 @@ function edz() {
   fi
 }
 
-function ck_check() {
+function check() {
   if [[  -z $1 || $1 == "--help" || $1 == "h" ]]; then
-    echo "Usage: ck_check <english word(s)>\n"
+    echo "Usage: check <english word(s)>\n"
     echo "Checks if your spelling is correct. If it's incorrect, it gives"
     echo "you suggestions for possible correct format. Needs 'aspell'."
   else
     if has aspell; then
-      echo "$@" | aspell -a -l en
+      echo "$@" | aspell -a --lang=en
     else
       echo "aspell not found."
     fi
@@ -145,7 +145,7 @@ bindkey '^Z' fancy-ctrl-z
 
 alias lsfpath='echo -e ${FPATH//:/\\n}'  # List $FPATH (zsh functions path) nicely
 
-alias hist=' fc -El 1 | tail -n 100'
+alias lshist=' fc -El 1 | tail -n 100'
 
 #alias tv="w3m -dump http://www.iltapulu.fi/\?timeframe\=2 | awk '/tv-ohjelmat/,/^$/'"  pipetys sekoaa tästä.
 
@@ -160,7 +160,7 @@ alias hist=' fc -El 1 | tail -n 100'
 # Etsii cmdfu:sta tietoa, by Gotbletu.
 function cmdfu() {
   curl "https://www.commandlinefu.com/commands/matching/$(echo "$@" \
-  | sed 's/ /-/g')/$(echo -n $@ | base64)/plaintext";
+    | sed 's/ /-/g')/$(echo -n $@ | base64)/plaintext";
 }
 
 # File operations {{{1
@@ -170,8 +170,8 @@ alias lsl='ls -d *(@)' \
       lll='ls -dl *(@)'
 
 # Make new dir and change to it.
-function mkcd() {
-  nocorrect mkdir --parents --verbose "$1" && cd "$1";
+function mkdcd() {
+  nocorrect mkdir --parents "$1" && cd "$1";
 }
 
 # Don't use autocorrect with these commands + some better default flags..
@@ -183,14 +183,15 @@ alias mkdir='nocorrect mkdir --verbose --parents'
 
 # Finding files {{{1
 
-# Locate -komennosta parempi versio. Voi laittaa 'foo bar (bla1|bla2)  	    by Gotbletu'
-function sef () {
+# Locate with Fzf. Original script by Gotbletu.
+# You can enter searches: foo bar (bla1|bla2)
+function flocate () {
   keyword=$(echo "$@" | sed 's/ /.*/g' | sed 's:|:\\:g' | sed 's:(:\\(:g' | sed 's:):\\):g')
   # Do not results from backup -directory
-  locate --ignore-case $keyword | less
+  locate --ignore-case --limit 500 $keyword | fzf
 }
 
-function sef-fzf() {
+function flocate-open() {
   xdg-open "$(locate --ignore-case --existing $@"*" | fzf -e)";
 }
 
@@ -203,15 +204,10 @@ function background() {
 
 ##### Global and suffix aliases ##### {{{
 
-# Mac aliases for WOL.
-alias -g I7='e0:69:95:2e:93:98' HPPRO='38:63:bb:bb:f0:36' RYZEN='18:c0:4d:99:88:11'
-alias -g C='column' G='grep' H='head' L='less' M='most' S='sort' T='tail'
+alias -g C='column' G='grep' H='head' L='less' S='sort' T='tail'
 alias -g DN='/dev/null'
 # For DNF
 alias -g NW='--setopt=install_weak_deps=False'
-
-# global aliases
-alias -g SU='--suggested' NR='--no-recommends' D='--details'
 
 ###### Suffix -aliases. #####
 
