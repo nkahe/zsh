@@ -96,35 +96,7 @@ function set_hs_keys() {
 }
 
 
-# Load plugins and snippets
-function load_common_plugins() { #{{{
-
-  # Don't rename executables if want completion to work.
-  # Raspille:
-  # https://github.com/starship/starship/releases/latest/download/starship-arm-unknown-linux-musleabihf.tar.gz
-
-  # "lucid" = no non-error output. "light" = no plugin tracking or reporting.
-  # "wait" = parallel "turbo-mode".
-  # ! if "mv" executable completions probably don't work.
-
-  # ! Needs to be before completion settings.
-  # Colors for ls/eza/exa. Doesn't work is put in .zprofile.
-  # Patched from LS_COLORS: A collection of LS_COLORS definitions.
-  # https://github.com/trapd00r/LS_COLORS/tree/master
-  ls_colors="$HOME/.config/shells/ls_colors.sh"
-  if [[ -e $ls_colors ]]; then
-    zinit ice id-as"LS_COLORS"
-    zinit snippet "$ls_colors"
-  fi
-  # zinit ice atinit'dircolors -b ls_colors > ls_colors.zsh' pick"ls_colors.zsh"
-
-  # General Colorizer.
-  file="$HOME/.config/shells/grc.sh"
-  if [[ -e $file ]]; then
-    zinit ice wait"1" id-as"grc.sh" lucid
-    zi snippet $file
-  fi
-
+function load_prompt() {
   if [[ $HOST == raspberry* ]]; then
     # Zinit's updating below didn't work on Raspberry's executables so it's
     # updated manually.§§
@@ -143,29 +115,18 @@ function load_common_plugins() { #{{{
     zinit ice from"github-rel" as"program" atload'eval "$(starship init zsh)"'
     zinit load starship/starship
   fi
+}
 
-  # Settings for Prezto -modules/snippets.
-  #zinit light "$ZDOTDIR"/.zpreztorc
-  zinit snippet "$ZDOTDIR"/.zpreztorc
+# Load plugins and snippets
+function load_misc_plugins() { #{{{
 
-  # Sets general shell options and defines termcap variables.
-  zinit snippet PZT::modules/environment/init.zsh
+  # Don't rename executables if want completion to work.
+  # Raspille:
+  # https://github.com/starship/starship/releases/latest/download/starship-arm-unknown-linux-musleabihf.tar.gz
 
-  # Sets directory options and defines directory aliases.
-  zinit snippet PZT::modules/directory/init.zsh
-
-  # Sets history options and defines history aliases.
-  zinit snippet PZT::modules/history/init.zsh
-
-  # Forked version of Prezto terminal. Use wait since this takes some time.
-  zinit ice wait lucid
-  zinit snippet "$ZDOTDIR/plugins/titles.zsh"
-
-  # Sets history options and defines history aliases.
-  #zinit snippet PZT::modules/editor/init.zsh
-
-  zinit ice wait"2" lucid
-  zinit snippet OMZP::extract
+  # "lucid" = no non-error output. "light" = no plugin tracking or reporting.
+  # "wait" = parallel "turbo-mode".
+  # ! if "mv" executable completions probably don't work.
 
   # bashmount: Tool to mount and unmount removable media from the command-line
   # https://github.com/jamielinux/bashmount
@@ -176,11 +137,6 @@ function load_common_plugins() { #{{{
   # https://github.com/learnbyexample/command_help
   zinit ice wait"1" lucid as"program" pick"ch"
   zinit load learnbyexample/command_help
-
-  # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
-  # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
-  # for vi mode."
-  (( $+commands[fzf] )) && source <(fzf --zsh)
 
   # fzf-z: Plugin for zsh to integrate fzf and zsh's z plugin.
   # https://github.com/andrewferrier/fzf-z . Has to be after fzf.
@@ -224,14 +180,6 @@ function load_common_plugins() { #{{{
   # https://github.com/zsh-users/zsh-completions
   zinit light zsh-users/zsh-completions
 
-  # Fish-like autosuggestions for zsh.
-  # https://github.com/zsh-users/zsh-autosuggestions
-  zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
-   atinit"export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
-      ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
-      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30"
-  zinit load zsh-users/zsh-autosuggestions
-
   # xiny: Simple command line tool for unit conversions
   # https://github.com/bcicen/xiny
   zinit ice wait"2" lucid from"github-rel" as"program" bpick"*linux*" mv"xiny* -> xiny"
@@ -248,6 +196,56 @@ function load_common_plugins() { #{{{
   # fi
   # unset compfiles
 
+  # zdharma-continuum/fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH
+  # https://github.com/zdharma-continuum/fast-syntax-highlighting
+
+  # zinit wait silent for \
+  #   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
+  #   (( $+commands[eza] )) && compdef eza=ls;\
+  #   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+  #   ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+  #   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
+  #     zdharma-continuum/fast-syntax-highlighting \
+  #   blockf \
+  #     zsh-users/zsh-completions \
+  #   atload"!_zsh_autosuggest_start" \
+  #     zsh-users/zsh-autosuggestions
+
+  # ! Load after syntax-highlighting !
+  # history-substring-search. Type in any part of any previously  entered
+  # command and press the UP and DOWN arrow keys to cycle through the matching
+  # commands. https://github.com/zsh-users/zsh-history-substring-search.
+
+  #   bindkey -M vicmd "?" history-incremental-pattern-search-backward
+  #   bindkey -M vicmd "/" history-incremental-pattern-search-forward
+  zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_hs_keys"
+  zinit load zsh-users/zsh-history-substring-search
+
+  eval "$(zoxide init zsh)"
+
+} # }}}
+
+# These plugins take some resources.
+function load_heavy_plugins() {
+  # Fish-like autosuggestions for zsh.
+  # https://github.com/zsh-users/zsh-autosuggestions
+  zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
+   atinit"export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+      ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30"
+  zinit load zsh-users/zsh-autosuggestions
+
+  # Defer: set the priority when loading. e.g., zsh-syntax-highlighting must
+  # be loaded after executing compinit command and sourcing other plugins
+  # (If the defer tag is given 2 or above, run after compinit command)
+
+  # Fish shell like syntax highlighting for Zsh.
+  # https://github.com/zsh-users/zsh-syntax-highlighting.
+  # Gives error if variable isn't set.
+  zinit ice wait lucid atinit"zpcompinit; zpcdreplay;export region_highlight='';\
+    (( $+commands[eza] )) && compdef eza=ls"
+  zinit load zsh-users/zsh-syntax-highlighting
+
   # ZSH plugin that reminds you to use existing aliases for commands you
   # just typed. https://github.com/MichaelAquilina/zsh-you-should-use
   # setaf 10 refers to color.
@@ -255,51 +253,13 @@ function load_common_plugins() { #{{{
   zinit light "MichaelAquilina/zsh-you-should-use"
   export YSU_MESSAGE_FORMAT="$(tput setaf 10)There is an alias for that: %alias$(tput sgr0)"
 
-  # Fish shell like syntax highlighting for Zsh.
-  # https://github.com/zsh-users/zsh-syntax-highlighting.
-  if [[ $HOST != raspberry* ]]; then
-    # Gives error if variable isn't set.
-    zinit ice wait lucid atinit"zpcompinit; zpcdreplay;export region_highlight=''"
-    zinit load zsh-users/zsh-syntax-highlighting
+  # Forked version of Prezto terminal. Use wait since this takes some time.
+  zinit ice wait lucid
+  zinit snippet "$ZDOTDIR/plugins/titles.zsh"
+}
 
-    # Defer: set the priority when loading. e.g., zsh-syntax-highlighting must
-    # be loaded after executing compinit command and sourcing other plugins
-    # (If the defer tag is given 2 or above, run after compinit command)
-
-    # zdharma-continuum/fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH
-    # https://github.com/zdharma-continuum/fast-syntax-highlighting
-
-    # zinit wait silent for \
-    #   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
-    #   (( $+commands[eza] )) && compdef eza=ls;\
-    #   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
-    #   ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
-    #   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
-    #     zdharma-continuum/fast-syntax-highlighting \
-    #   blockf \
-    #     zsh-users/zsh-completions \
-    #   atload"!_zsh_autosuggest_start" \
-    #     zsh-users/zsh-autosuggestions
-
-  fi
-
-  eval "$(zoxide init zsh)"
-
-  # ! Load after syntax-highlighting !
-  # history-substring-search. Type in any part of any previously  entered
-  # command and press the UP and DOWN arrow keys to cycle through the matching
-  # commands. https://github.com/zsh-users/zsh-history-substring-search.
-
-#   bindkey -M vicmd "?" history-incremental-pattern-search-backward
-#   bindkey -M vicmd "/" history-incremental-pattern-search-forward
-
-  zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_hs_keys"
-  zinit load zsh-users/zsh-history-substring-search
-
-} # }}}
-
+# Configs which are skipped for root.
 function load_user_plugins() { # {{{
-  # Used only for non-root user
 
   zinit ice wait"1" lucid as"program" pick"todo.sh" atload"alias todo=todo.sh"
   zinit load todotxt/todo.txt-cli
@@ -309,14 +269,52 @@ function load_user_plugins() { # {{{
   zinit load TheLocehiliosan/yadm
 
 } # }}}
-#
-function load_local_configs() { # {{{
+# Configs not loaded from external sources.
+function load_configs() { # {{{
 
 #   zinit ice multisrc"*.{zsh,sh}" lucid
 #   zinit light $ZDOTDIR
 #
 #   zinit ice multisrc"*.zsh" lucid
 #   zinit light $ZDOTDIR/plugins
+
+  # ! Needs to be before completion settings.
+  # Colors for ls/eza/exa. Doesn't work is put in .zprofile.
+  # Patched from LS_COLORS: A collection of LS_COLORS definitions.
+  # https://github.com/trapd00r/LS_COLORS/tree/master
+  ls_colors="$HOME/.config/shells/ls_colors.sh"
+  if [[ -e $ls_colors ]]; then
+    zinit ice id-as"LS_COLORS"
+    zinit snippet "$ls_colors"
+  fi
+  # zinit ice atinit'dircolors -b ls_colors > ls_colors.zsh' pick"ls_colors.zsh"
+
+  # General Colorizer.
+  file="$HOME/.config/shells/grc.sh"
+  if [[ (( $+commands[grc] )) && -e $file ]]; then
+    zinit ice wait"1" id-as"grc.sh" lucid
+    zi snippet $file
+  fi
+
+  # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
+  # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
+  # for vi mode."
+  (( $+commands[fzf] )) && source <(fzf --zsh)
+
+  # Sets general shell options and defines termcap variables.
+  zinit snippet PZT::modules/environment/init.zsh
+
+  # Sets directory options and defines directory aliases.
+  zinit snippet PZT::modules/directory/init.zsh
+
+  # Sets history options and defines history aliases.
+  zinit snippet PZT::modules/history/init.zsh
+
+  # Sets history options and defines history aliases.
+  #zinit snippet PZT::modules/editor/init.zsh
+
+  zinit ice wait"2" lucid
+  zinit snippet OMZP::extract
 
   # snippetillä käytti joskus cachea.
   source "$ZDOTDIR/bindings.zsh"
@@ -328,7 +326,6 @@ function load_local_configs() { # {{{
     [[ $file == *bindings.zsh ]] && continue
     # echo $file
     #source "$file"
-    #zinit ice wait"0" lucid
     zinit snippet "$file"
   done
 
@@ -355,9 +352,16 @@ function end_message() {
   fi
 }
 
-load_common_plugins
+# Bootstrap
+
+load_prompt
+# Settings for Prezto -modules.
+#zinit light "$ZDOTDIR"/.zpreztorc
+zinit snippet "$ZDOTDIR"/.zpreztorc
+load_misc_plugins
+[[ $HOST != raspberry* ]] && load_heavy_plugins
 [[ $UID != 0 ]] && load_user_plugins
-load_local_configs
+load_configs
 
 #source $ZDOTDIR/bindings-test.zsh
 
