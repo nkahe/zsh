@@ -1,6 +1,9 @@
 #!/bin/zsh
 # Settings for Prezto -modules/snippets.
 
+# Set the terminal multiplexer title format.
+# zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
+
 # Terminal titles. (I use customized version).
 zstyle ':prezto:module:terminal' auto-title 'yes'
 

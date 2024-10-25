@@ -53,28 +53,53 @@ key_info=(
 
 # Display bindings defined here and in some plugins.
 function lsbind() {
-  echo "\
-  Binding   Command
-------------------------------------------------------
+  (echo; echo -e "
+  \nDefaults
+  Ctrl-A    Move to start of line
+  Ctrl-B    Move to end of line
+  Ctrl-U    Kill whole line
+  Ctrl-K    Kill to end of line
+  Alt-K     Kill to beginning of line
+  Ctrl-C    Kill the process
+  Ctrl-D    End-of-line
+  Ctrl-L    Clear screen
+  Ctrl-N    Select next menu item
+  Ctrl-P    Select previous menu item
+  Ctrl-Q    Push the line to stack
+  Ctrl-Z    Suspend the process
+  Alt-G     Get the line from stack
+  Alt-F     Move a word forward
+  Alt-B     Move a word backward
+
+  Extras
+  ↑ | ↓     History substring search
+  Ctrl-B    Show these bindings
   Alt-<nbr> Paste <nbr> parameters of last command.
   Alt-↑     cd ..
   Alt- ← | ->   cd previous / next dir.
-  ↑ | ↓     History substring search
-  Ctrl-G    Fzf change to any dir
-  Ctrl-T    Fzf select file
-  Ctrl-C    Fzf cd
-  Ctrl-Z    Secod press continues job.
-  F12       Source settings
-
-  Emacs mode
+  Alt-C     Fzf cd
+  Alt-E     Expand command path
   Alt-L     ls
-  "
+  Alt-M     Duplicate previous word
+  Ctrl-G    Fzf cd to any dir
+  Ctrl-R    Fzf search history
+  Ctrl-T    Fzf select file
+  Ctrl-Z    2. press to continue process in background.
+  F12       Source settings
+  Ctrl-BS   Kill previous word
+  Ctrl-Del  Kill next word
+  Ctrl-Space    Expand aliases
+  Ctrl- ← | ->  Move to previous / next word
+  C-x C-s   Prepend line with sudo" | column)
+
+  zle reset-prompt
 }
+
+zle -N lsbind
 
 #   Alt-K     Describe key briefly.
 #   Alt-E     Edit command line in text editor.
 #   Alt-C     Copy command line to X-clipboard.
-#   Alt-M     Copy previous word.
 #   Alt-Y     Redo
 #   Alt-Z     Undo
 
@@ -217,14 +242,12 @@ for key in "$key_info[Esc]"{F,f} "${(s: :)key_info[Ctrl-Right]}" \
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   bindkey "$key_info[Opt-right]" forward-word
-  bindkey "$key_info[Opt-left]" backward-word
+  bindkey "$key_info[Opt-left]"  backward-word
 fi
 
 # Kill to the beginning of the line.
 for key in "$key_info[Esc]"{K,k}
   bindkey -M emacs "$key" backward-kill-line
-
-bindkey -e "$key_info[Alt]l" _runcmdpushinput_ls
 
 # Command insertion.
 bindkey -s "$key_info[F12]" 'source $HOME/bindings.zsh\n'
@@ -291,7 +314,7 @@ unbound_keys=(
   "${key_info[ControlPageDown]}"
 )
 
-#  "${key_info[F12]}"
+#"${key_info[F12]}"
 
 for keymap in $unbound_keys; do
   bindkey -M viins "${keymap}" _prezto-zle-noop
@@ -311,32 +334,41 @@ done
 # Keybinds for emacs and vi insert mode
 for keymap in 'emacs' 'viins'; do
 
-  bindkey -M "$keymap" "$key_info[Ctrl]l" clear-screen
+  bindkey -M "$keymap" "$key_info[Ctrl]l"  clear-screen
   bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
-  bindkey -M "$keymap" "$key_info[Left]" backward-char
-  bindkey -M "$keymap" "$key_info[Right]" forward-char
+  bindkey -M "$keymap" "$key_info[Left]"   backward-char
+  bindkey -M "$keymap" "$key_info[Right]"  forward-char
 
   # Expand history on space.
   bindkey -M "$keymap" ' ' magic-space
 
+  # List bindings
+  bindkey -M "$keymap" "$key_info[Ctrl]b" lsbind
+
   # Expand command name to full path.
   for key in "$key_info[Esc]"{E,e}
-  bindkey -M "$keymap" "$key" expand-cmd-path
+    bindkey -M "$keymap" "$key" expand-cmd-path
 
   # Duplicate the previous word.
   for key in "$key_info[Esc]"{M,m}
-  bindkey -M "$keymap" "$key" copy-prev-shell-word
+    bindkey -M "$keymap" "$key" copy-prev-shell-word
+
+  # Use a more flexible push-line.
+  for key in "$key_info[Ctrl]Q" "$key_info[Esc]"{q,Q}
+    bindkey -M "$keymap" "$key" push-line-or-edit
 
   # Insert 'sudo ' at the beginning of the line.
   bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
 
   # Bind Shift + Tab to go to the previous menu item.
-  bindkey -M "$keymap" "$key_info[BackTab]" reverse-menu-complete
+  bindkey -M "$keymap" "$key_info[BackTab]"   reverse-menu-complete
   bindkey -M "$keymap" "$key_info[Shift-Tab]" reverse-menu-complete
 
   # control-space expands all aliases, including global
   bindkey -M "$keymap" "$key_info[Ctrl] " glob-alias
 
+  # Execute ls
+  bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
 done
 
 unset key{,map,_bindings}

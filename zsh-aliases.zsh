@@ -30,7 +30,7 @@ zle -N zox_fzf_widget
 bindkey '^G' zox_fzf_widget
 
 # Search in Surfraw bookmarks using Fzf. Note: surfraw has native alias "sr".
-if has srf; then
+if (( $+commands[surfraw] )); then
   function srfb() {
     zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
       \ awk 'NF != 0 && !/^#/ {print $1}' ) ;
@@ -44,7 +44,7 @@ fi
 # Functions {{{
 
 # Automatically show files after directory change.
-if has eza; then
+if (( $+commands[eza] )); then
   chpwd() { eza --group-directories-first ;}
 else
   if [[ $OSTYPE == 'darwin'* ]]; then
@@ -58,7 +58,7 @@ fi
 #   - Bypass fuzzy finder if there's only one match (--select-1)
 #   - Exit if there's no match (--exit-0)
 function edz() {
-  if has fzf; then
+  if (( $+commands[fzf] )); then
     local files=(${(f)"$(find $ZDOTDIR -iname "*$1*" | fzf --select-1 --exit-0)"})
     if [[ -n "$files" ]]; then
       $EDITOR -- "$files" && source "$files"
@@ -75,7 +75,7 @@ function check() {
     echo "Checks if your spelling is correct. If it's incorrect, it gives"
     echo "you suggestions for possible correct format. Needs 'aspell'."
   else
-    if has aspell; then
+    if (( $+commands[aspell] )); then
       echo "$@" | aspell -a --lang=en
     else
       echo "aspell not found."
