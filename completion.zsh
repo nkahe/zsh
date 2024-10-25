@@ -1,7 +1,8 @@
 #!/bin/zsh
 ### Completions
 
-# Mostly from Prezto. https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
+# Forked from Prezto completion module.
+#https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 
 # zmodload zsh/zprof
 
