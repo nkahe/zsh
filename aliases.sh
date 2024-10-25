@@ -84,10 +84,10 @@ alp() {
   echo "Å Ä Ö"
 }
 
-html-to-md () {
+function html-to-md () {
  find . -iname "*.html" -type f -exec sh -c \
   'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
-#}
+}
 
 # Wayland Tools ---------------------------------------------------------------
 
@@ -180,7 +180,7 @@ alias sctl='systemctl'
 alias jctl='journalctl'
 alias his=' history'
 alias xo='xdg-open'
-# z=zoxide 
+# z=zoxide
 # x=extract (Prezto module)
 
 # Handy aliases
