@@ -1,5 +1,9 @@
-#echo "bindings test running"
+#
+# Sets key bindings.
+#
+# Forked from Prezto editor module.
 
+# Treat these characters as part of a word.
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 zmodload zsh/terminfo
@@ -47,6 +51,32 @@ key_info=(
   "Shift-Tab"    '^[[Z'
 )
 
+# Display bindings defined here and in some plugins.
+function lsbind() {
+  echo "\
+  Binding   Command
+------------------------------------------------------
+  Alt-<nbr> Paste <nbr> parameters of last command.
+  Alt-↑     cd ..
+  Alt- ← | ->   cd previous / next dir.
+  ↑ | ↓     History substring search
+  Ctrl-G    Fzf change to any dir
+  Ctrl-T    Fzf select file
+  Ctrl-C    Fzf cd
+  Ctrl-Z    Secod press continues job.
+  F12       Source settings
+
+  Emacs mode
+  Alt-L     ls
+  "
+}
+
+#   Alt-K     Describe key briefly.
+#   Alt-E     Edit command line in text editor.
+#   Alt-C     Copy command line to X-clipboard.
+#   Alt-M     Copy previous word.
+#   Alt-Y     Redo
+#   Alt-Z     Undo
 
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -119,6 +149,25 @@ function zle-line-finish {
 }
 zle -N zle-line-finish
 
+# Inserts 'sudo ' at the beginning of the line.
+function prepend-sudo {
+  if [[ "$BUFFER" != su(do|)\ * ]]; then
+    BUFFER="sudo $BUFFER"
+    (( CURSOR += 5 ))
+  fi
+}
+zle -N prepend-sudo
+
+# Expand aliases
+function glob-alias {
+  zle _expand_alias
+  zle expand-word
+  zle magic-space
+}
+zle -N glob-alias
+
+# End of Prezto functions.
+
 # Show ls
 _runcmdpushinput_ls () {
   # Set the buffer to 'ls' and accept the line
@@ -153,9 +202,6 @@ function cd_forward_dir {
   fi
 }
 
-# Reset to default key bindings.
-bindkey -d
-
 #
 # Emacs Key Bindings
 #
@@ -181,7 +227,7 @@ for key in "$key_info[Esc]"{K,k}
 bindkey -e "$key_info[Alt]l" _runcmdpushinput_ls
 
 # Command insertion.
-bindkey -s "$key_info[F12]" 'source bindings.zsh\n'
+bindkey -s "$key_info[F12]" 'source $HOME/bindings.zsh\n'
 bindkey -s "$key_info[Alt-Right]" 'cd_forward_dir\n'
 bindkey -s "$key_info[Alt-Left]" 'cd_previous_dir\n'
 bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
@@ -190,9 +236,67 @@ bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
 # Vi Key Bindings
 #
 
+# Undo/Redo
+bindkey -M vicmd "u" undo
+bindkey -M viins "$key_info[Ctrl]_" undo
+bindkey -M vicmd "$key_info[Ctrl]R" redo
+#
+# if (( $+widgets[history-incremental-pattern-search-backward] )); then
+#   bindkey -M vicmd "?" history-incremental-pattern-search-backward
+#   bindkey -M vicmd "/" history-incremental-pattern-search-forward
+# else
+#   bindkey -M vicmd "?" history-incremental-search-backward
+#   bindkey -M vicmd "/" history-incremental-search-forward
+# fi
+
+# Keybinds for all vi keymaps
+for keymap in viins vicmd; do
+  # Ctrl + Left and Ctrl + Right bindings to forward/backward word
+  for key in "${(s: :)key_info[Ctrl-Left]}"
+    bindkey -M "$keymap" "$key" vi-backward-word
+  for key in "${(s: :)key_info[Ctrl-Right]}"
+    bindkey -M "$keymap" "$key" vi-forward-word
+done
+
 #
 # Emacs and Vi Key Bindings
 #
+
+# history-substring-search bindings are defined in zshrc since they need be
+# defined when the plugin loads which is after this file.
+
+# Unbound keys in vicmd and viins mode will cause really odd things to happen
+# such as the casing of all the characters you have typed changing or other
+# undefined things. In emacs mode they just insert a tilde, but bind these keys
+# in the main keymap to a noop op so if there is no keybind in the users mode
+# it will fall back and do nothing.
+function _prezto-zle-noop {  ; }
+zle -N _prezto-zle-noop
+local -a unbound_keys
+unbound_keys=(
+  "${key_info[F1]}"
+  "${key_info[F2]}"
+  "${key_info[F3]}"
+  "${key_info[F4]}"
+  "${key_info[F5]}"
+  "${key_info[F6]}"
+  "${key_info[F7]}"
+  "${key_info[F8]}"
+  "${key_info[F9]}"
+  "${key_info[F10]}"
+  "${key_info[F11]}"
+  "${key_info[PageUp]}"
+  "${key_info[PageDown]}"
+  "${key_info[ControlPageUp]}"
+  "${key_info[ControlPageDown]}"
+)
+
+#  "${key_info[F12]}"
+
+for keymap in $unbound_keys; do
+  bindkey -M viins "${keymap}" _prezto-zle-noop
+  bindkey -M vicmd "${keymap}" _prezto-zle-noop
+done
 
 # All modes
 for keymap in 'emacs' 'viins' 'vicmd'; do
@@ -206,6 +310,7 @@ done
 
 # Keybinds for emacs and vi insert mode
 for keymap in 'emacs' 'viins'; do
+
   bindkey -M "$keymap" "$key_info[Ctrl]l" clear-screen
   bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
   bindkey -M "$keymap" "$key_info[Left]" backward-char
@@ -214,13 +319,24 @@ for keymap in 'emacs' 'viins'; do
   # Expand history on space.
   bindkey -M "$keymap" ' ' magic-space
 
+  # Expand command name to full path.
+  for key in "$key_info[Esc]"{E,e}
+  bindkey -M "$keymap" "$key" expand-cmd-path
+
+  # Duplicate the previous word.
+  for key in "$key_info[Esc]"{M,m}
+  bindkey -M "$keymap" "$key" copy-prev-shell-word
+
+  # Insert 'sudo ' at the beginning of the line.
+  bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
+
   # Bind Shift + Tab to go to the previous menu item.
   bindkey -M "$keymap" "$key_info[BackTab]" reverse-menu-complete
   bindkey -M "$keymap" "$key_info[Shift-Tab]" reverse-menu-complete
 
-done
+  # control-space expands all aliases, including global
+  bindkey -M "$keymap" "$key_info[Ctrl] " glob-alias
 
-# Set the default keymap
-bindkey -e
+done
 
 unset key{,map,_bindings}
