@@ -34,6 +34,13 @@ add-zsh-hook precmd show-elapsed-time
 # provide a simple prompt till the theme loads
 PS1="%~ ❯ "
 
+# Reset to default key bindings. Needs to be before any key binding changes.
+bindkey -d
+
+# Set the default keymap. Needs to be before sourcing fzf Zsh file.
+bindkey -e
+
+# Väliaikaisesti.
 source "$HOME/.profile"
 
 # Set the terminal multiplexer title format.
@@ -41,11 +48,6 @@ source "$HOME/.profile"
 # ----------------------------------
 # Uncomment if you want to skip plugins for tty.
 # if [[ ! "$TERM" == (dumb|linux) ]]; then
-
-# Helper function: check if command exists.
-function has() {
-  command -v "$@" &> /dev/null
-}
 
 # Load Zinit - Zsh plugin manager. https://github.com/zdharma-continuum/zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
@@ -57,6 +59,42 @@ ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 # cache time of 20 hours, so it should almost always regenerate the first time a
 # shell is opened each day.
 # Gives error if put aftere plugins
+
+function set_hs_keys2() {
+  # Define key bindings for up/down history search
+  local -A keys=(
+    [up]='\eOA' [up2]='^[[A' [down]='\eOB' [down2]='^[[B'
+  )
+
+  # Bind keys for emacs and viins keymaps
+  for keymap in emacs viins; do
+    bindkey -M "$keymap" "${keys[up]}" history-substring-search-up
+    bindkey -M "$keymap" "${keys[up2]}" history-substring-search-up
+    bindkey -M "$keymap" "${keys[down]}" history-substring-search-down
+    bindkey -M "$keymap" "${keys[down2]}" history-substring-search-down
+  done
+
+  # Bind keys for vicmd keymap (vi command mode)
+  bindkey -M vicmd 'k' history-substring-search-up
+  bindkey -M vicmd 'j' history-substring-search-down
+}
+
+function set_hs_keys() {
+  # Define key bindings for up and down actions
+  local -A keys=([up]='\eOA' [up2]='^[[A' [down]='\eOB' [down2]='^[[B')
+
+# Bind the up and down keys for each keymap in the array
+  for keymap in emacs vicmd viins; do
+    for action in up down; do
+      bindkey -M "$keymap" "${keys[$action]}" "history-substring-search-${action}"
+      bindkey -M "$keymap" "${keys[${action}2]}" "history-substring-search-${action}"
+    done
+  done
+
+  bindkey -M vicmd 'k' history-substring-search-up
+  bindkey -M vicmd 'j' history-substring-search-down
+}
+
 
 # Load plugins and snippets
 function load_common_plugins() { #{{{
@@ -78,22 +116,21 @@ function load_common_plugins() { #{{{
     zinit ice id-as"LS_COLORS"
     zinit snippet "$ls_colors"
   fi
+  # zinit ice atinit'dircolors -b ls_colors > ls_colors.zsh' pick"ls_colors.zsh"
 
-    # General Colorizer.
+  # General Colorizer.
   file="$HOME/.config/shells/grc.sh"
   if [[ -e $file ]]; then
-    zinit ice wait"1" lucid
+    zinit ice wait"1" id-as"grc.sh" lucid
     zi snippet $file
   fi
 
-  # zinit ice atinit'dircolors -b ls_colors > ls_colors.zsh' pick"ls_colors.zsh"
-
   if [[ $HOST == raspberry* ]]; then
     # Zinit's updating below didn't work on Raspberry's executables so it's
-    # updated manually.
+    # updated manually.§§
     # zinit ice from"github-rel" bpick"*arm-unknown-linux-musleabihf*" as"program" \
       atload'!eval $(starship init zsh)' lucid
-    if has starship; then
+    if (( $+commands[starship] )); then
       eval $(starship init zsh);
     else
       # Backup -theme.
@@ -120,6 +157,10 @@ function load_common_plugins() { #{{{
   # Sets history options and defines history aliases.
   zinit snippet PZT::modules/history/init.zsh
 
+  # Forked version of Prezto terminal. Use wait since this takes some time.
+  zinit ice wait lucid
+  zinit snippet "$ZDOTDIR/plugins/titles.zsh"
+
   # Sets history options and defines history aliases.
   #zinit snippet PZT::modules/editor/init.zsh
 
@@ -139,8 +180,7 @@ function load_common_plugins() { #{{{
   # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
   # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
   # for vi mode."
-  # set -o vi
-  has fzf && source <(fzf --zsh)
+  (( $+commands[fzf] )) && source <(fzf --zsh)
 
   # fzf-z: Plugin for zsh to integrate fzf and zsh's z plugin.
   # https://github.com/andrewferrier/fzf-z . Has to be after fzf.
@@ -219,7 +259,7 @@ function load_common_plugins() { #{{{
   # https://github.com/zsh-users/zsh-syntax-highlighting.
   if [[ $HOST != raspberry* ]]; then
     # Gives error if variable isn't set.
-    zinit ice atinit"zpcompinit; zpcdreplay; export region_highlight=''" lucid
+    zinit ice wait lucid atinit"zpcompinit; zpcdreplay;export region_highlight=''"
     zinit load zsh-users/zsh-syntax-highlighting
 
     # Defer: set the priority when loading. e.g., zsh-syntax-highlighting must
@@ -231,7 +271,7 @@ function load_common_plugins() { #{{{
 
     # zinit wait silent for \
     #   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
-    #   has eza && compdef eza=ls;\
+    #   (( $+commands[eza] )) && compdef eza=ls;\
     #   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
     #   ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
     #   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
@@ -249,17 +289,11 @@ function load_common_plugins() { #{{{
   # history-substring-search. Type in any part of any previously  entered
   # command and press the UP and DOWN arrow keys to cycle through the matching
   # commands. https://github.com/zsh-users/zsh-history-substring-search.
-  function set_history_substring_keys() {
-    declare -A key
-    key[up]='\eOA' key[up2]='^[[A' key[down]='\eOB' key[down2]='^[[B'
-    bindkey "$key[up]" history-substring-search-up
-    bindkey "$key[down]" history-substring-search-down
-    bindkey "$key[up2]" history-substring-search-up
-    bindkey "$key[down2]" history-substring-search-down
-    bindkey -a 'k' history-substring-search-up
-    bindkey -a 'j' history-substring-search-down
-  }
-  zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_history_substring_keys"
+
+#   bindkey -M vicmd "?" history-incremental-pattern-search-backward
+#   bindkey -M vicmd "/" history-incremental-pattern-search-forward
+
+  zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_hs_keys"
   zinit load zsh-users/zsh-history-substring-search
 
 } # }}}
@@ -284,18 +318,27 @@ function load_local_configs() { # {{{
 #   zinit ice multisrc"*.zsh" lucid
 #   zinit light $ZDOTDIR/plugins
 
-  # Alternative method if want to measure profile by file.
+  # snippetillä käytti joskus cachea.
+  source "$ZDOTDIR/bindings.zsh"
 
-  for file in $ZDOTDIR/plugins/*.zsh $ZDOTDIR/*.{zsh,sh}
+  # Alternative method if want to measure profile by file.
+  for file in $ZDOTDIR/*.zsh
   do
-    zinit ice wait"0" lucid
+    # Bindings have loaded earlier.
+    [[ $file == *bindings.zsh ]] && continue
+    # echo $file
+    #source "$file"
+    #zinit ice wait"0" lucid
     zinit snippet "$file"
   done
+
+  zinit ice id-as"aliases.sh"
+  zinit snippet $ZDOTDIR/aliases.sh
 
   # Note. Install local completions by running once in terminal:
   # zinit creinstall $ZDOTDIR/completions
 
-  # Does Konsole/Yakuake and Kitty already have this.
+  # Konsole/Yakuake and Kitty already have this.
   # zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
 
 } # }}}
