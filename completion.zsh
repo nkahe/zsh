@@ -35,9 +35,6 @@ setopt extended_glob       # Needed for file modification glob modifiers with co
 unsetopt menu_complete     # Do not autoselect the first completion entry.
 unsetopt flowcontrol       # Disable start/stop characters in shell editor.
 
-# Treat these characters as part of a word.
-WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
-
 # Styles
 
 if [[ -n "$LS_COLORS" ]]; then
