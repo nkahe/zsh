@@ -70,16 +70,10 @@ function edz() {
 }
 
 function check() {
-  if [[  -z $1 || $1 == "--help" || $1 == "h" ]]; then
-    echo "Usage: check <english word(s)>\n"
-    echo "Checks if your spelling is correct. If it's incorrect, it gives"
-    echo "you suggestions for possible correct format. Needs 'aspell'."
+  if (( $+commands[aspell] )); then
+    echo "$@" | aspell -a --lang=en
   else
-    if (( $+commands[aspell] )); then
-      echo "$@" | aspell -a --lang=en
-    else
-      echo "aspell not found."
-    fi
+    echo "aspell not found."
   fi
 }
 
@@ -94,21 +88,7 @@ function fzf-locate-widget() {
   zle redisplay
 }
 zle     -N    fzf-locate-widget
-bindkey -s '^[^F' fzf-locate-widget
-
-# Automatically Expanding Global Aliases (Space key to expand)
-# references: http://blog.patshead.com/2012/11/automatically-expaning-zsh-global-aliases---simplified.html
-function globalias() {
-  if [[ $LBUFFER =~ '[A-Z0-9]+$' ]]; then
-    zle _expand_alias
-    zle expand-word
-  fi
-  zle self-insert
-}
-zle -N globalias
-bindkey " " globalias    # space key to expand globalalias
-bindkey "^[[Z" magic-space            # shift-tab to bypass completion
-bindkey -M isearch " " magic-space    # normal space during searches
+bindkey -e '^[^F' fzf-locate-widget
 
 # demo video: http://www.youtube.com/watch?v=Ww7Sl4d8F8A
 # -a "käyttäjänimi", -b "serveri", -t "otsikko"

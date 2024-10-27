@@ -192,6 +192,20 @@ function glob-alias {
 }
 zle -N glob-alias
 
+# Automatically Expanding Global Aliases (Space key to expand)
+# references: http://blog.patshead.com/2012/11/automatically-expaning-zsh-global-aliases---simplified.html
+# function globalias() {
+#   if [[ $LBUFFER =~ '[A-Z0-9]+$' ]]; then
+#     zle _expand_alias
+#     zle expand-word
+#   fi
+#   zle self-insert
+# }
+
+#bindkey " " globalias    # space key to expand globalalias
+#bindkey "^[[Z" magic-space            # shift-tab to bypass completion
+#bindkey -M isearch " " magic-space    # normal space during searches
+
 # End of Prezto functions.
 
 # Show ls
@@ -364,7 +378,7 @@ for keymap in 'emacs' 'viins'; do
   # Bind Shift + Tab to go to the previous menu item.
   # Some different key-infos for these.
   for key in BackTab Shift-Tab
-    bindkey -M "$keymap" "$key_info[$key]"   reverse-menu-complete
+    bindkey -M "$keymap" "$key_info[$key]" reverse-menu-complete
 
   # Complete in the middle of word.
   bindkey -M "$keymap" "$key_info[Ctrl]I" expand-or-complete
