@@ -62,6 +62,7 @@ if has gio; then
   alias pt="gio trash" trash-empty='gio trash --empty'
 fi
 
+# Termbin - terminal pastebin. https://termbin.com/
 alias termbin="nc termbin.com 9999"
 
 # kuvan jakaminen tähän palveluun jotenkin?
@@ -89,7 +90,7 @@ function html-to-md () {
   'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
 }
 
-minitimer() {
+function minitimer() {
   (sleep "$1"; notify-send "Time is up" && paplay $HOME/Sounds/complete.wav) &
 }
 
@@ -257,11 +258,7 @@ fi
 function power() { upower -i "/org/freedesktop/UPower/devices/battery_BAT$1"; }
 
 function update-grub-alias() {
-  if [[ -d /sys/firmware/efi ]]; then
-    file='grub2-efi.cfg'
-  else
-    file='grub2.cfg'
-  fi
+  file=$([[ -d /sys/firmware/efi ]] && echo 'grub2-efi.cfg' || echo 'grub2.cfg')
   alias update-grub="sudo grub2-mkconfig -o /etc/$file"
 }
 
@@ -269,7 +266,6 @@ if has zypper; then
   file="$HOME/.config/shells/zypper.sh"
   [[ -s "$file" ]] && source "$file"
 fi
-
 
 # Find out distribution.
 if [[ -f /etc/os-release ]]; then
