@@ -30,6 +30,8 @@ function load_zinit() {
   source "$ZINIT_HOME/bin/zinit.zsh"
 
   ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
+  fpath+=("$ZDOTDIR/completions")
+
 }
 
 function set_hs_keys2() {
@@ -198,6 +200,19 @@ function load_misc_plugins() {
 
 # These plugins take some resources.
 function load_heavy_plugins() {
+
+  # Initializing thefuck is slow as fuck so we lazy-load it.
+  if (( $+commands[thefuck] )); then
+    function fuck() {
+      if [[ thefuck_initialized!="true" ]]; then
+        echo "init"
+        eval "$(thefuck --alias)"
+        thefuck_initialized="true"
+      fi
+      fuck "$@"
+    }
+  fi
+
   # Fish-like autosuggestions for zsh.
   # https://github.com/zsh-users/zsh-autosuggestions
   zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
@@ -288,9 +303,6 @@ function load_configs() {
   zinit ice wait"2" lucid
   zinit snippet OMZP::extract
 
-  # snippetillä käytti joskus cachea.
-  source "$ZDOTDIR/bindings.zsh"
-
   # Alternative method if want to measure profile by file.
   for file in $ZDOTDIR/*.zsh
   do
@@ -300,6 +312,9 @@ function load_configs() {
     #source "$file"
     zinit snippet "$file"
   done
+
+  # snippetillä käytti joskus cachea.
+  source "$ZDOTDIR/bindings.zsh"
 
   zinit ice id-as"aliases.sh"
   zinit snippet $ZDOTDIR/aliases.sh
@@ -347,6 +362,7 @@ bindkey -e
 # Väliaikaisesti.
 source "$HOME/.profile"
 
+
 load_zinit
 
 load_prompt
@@ -358,6 +374,11 @@ load_misc_plugins
 [[ $UID != 0 ]] && load_user_plugins
 
 load_configs
+
+# Normally is executed when loading syntax highlighting.
+if [[ $HOST == raspberry* ]]; then
+  zicompinit
+fi
 
 #autoload -Uz _zinit
 #(( ${+_comps} )) && _comps[zinit]=_zinit
