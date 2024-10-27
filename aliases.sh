@@ -89,6 +89,10 @@ function html-to-md () {
   'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
 }
 
+minitimer() {
+  (sleep "$1"; notify-send "Time is up" && paplay $HOME/Sounds/complete.wav) &
+}
+
 # Wayland Tools ---------------------------------------------------------------
 
 cppath() {
