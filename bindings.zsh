@@ -84,8 +84,9 @@ function lsbind() {
   Ctrl-G    Fzf cd to any dir
   Ctrl-R    Fzf search history
   Ctrl-T    Fzf select file
-  Ctrl-Z    2. press to continue process in background.
-  F12       Source settings
+  Ctrl-I    Complete in middle of a word
+  Ctrl-Z    2. press to continue process in background
+  F12       Source binding settings
   Ctrl-BS   Kill previous word
   Ctrl-Del  Kill next word
   Ctrl-Space    Expand aliases
@@ -250,7 +251,7 @@ for key in "$key_info[Esc]"{K,k}
   bindkey -M emacs "$key" backward-kill-line
 
 # Command insertion.
-bindkey -s "$key_info[F12]" 'source $HOME/bindings.zsh\n'
+bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
 bindkey -s "$key_info[Alt-Right]" 'cd_forward_dir\n'
 bindkey -s "$key_info[Alt-Left]" 'cd_previous_dir\n'
 bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
@@ -361,8 +362,12 @@ for keymap in 'emacs' 'viins'; do
   bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
 
   # Bind Shift + Tab to go to the previous menu item.
-  bindkey -M "$keymap" "$key_info[BackTab]"   reverse-menu-complete
-  bindkey -M "$keymap" "$key_info[Shift-Tab]" reverse-menu-complete
+  # Some different key-infos for these.
+  for key in BackTab Shift-Tab
+    bindkey -M "$keymap" "$key_info[$key]"   reverse-menu-complete
+
+  # Complete in the middle of word.
+  bindkey -M "$keymap" "$key_info[Ctrl]I" expand-or-complete
 
   # control-space expands all aliases, including global
   bindkey -M "$keymap" "$key_info[Ctrl] " glob-alias
