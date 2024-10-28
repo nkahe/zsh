@@ -221,8 +221,8 @@ lscolors () {
 
 # Grep from processer and list info with headers.
 psg () {
-  echo 'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START    TIME COMMAND'
-  ps aux | grep "$@" --color=always | grep -v grep
+  echo 'USER         PID %CPU  %MEM   VSZ   RSS TTY      STAT START    TIME COMMAND'
+  ps aux | grep --color=always -E "$@" | grep -v grep
 }
 
 # Aliases for ls
