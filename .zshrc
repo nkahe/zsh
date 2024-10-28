@@ -151,7 +151,11 @@ function load_misc_plugins() {
 
   # zsh-completions: Additional completion definitions for Zsh.
   # https://github.com/zsh-users/zsh-completions
-  zinit light zsh-users/zsh-completions
+  #zinit light zsh-users/zsh-completions
+
+  # zsh-completions: Additional completion definitions for Zsh.
+  # https://github.com/clarketm/zsh-completions
+  zinit light clarketm/zsh-completions
 
   # xiny: Simple command line tool for unit conversions
   # https://github.com/bcicen/xiny
