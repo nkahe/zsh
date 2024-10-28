@@ -81,6 +81,7 @@ function lsbind() {
   Alt-E     Expand command path
   Alt-L     ls
   Alt-M     Duplicate previous word
+  Alt-V     Toggle vi / emacs mode.
   Ctrl-G    Fzf cd to any dir
   Ctrl-R    Fzf search history
   Ctrl-T    Fzf select file
@@ -103,7 +104,6 @@ zle -N lsbind
 #   Alt-C     Copy command line to X-clipboard.
 #   Alt-Y     Redo
 #   Alt-Z     Undo
-
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   key_info[Opt-left]='^[^[[D'
@@ -192,21 +192,9 @@ function glob-alias {
 }
 zle -N glob-alias
 
-# Automatically Expanding Global Aliases (Space key to expand)
-# references: http://blog.patshead.com/2012/11/automatically-expaning-zsh-global-aliases---simplified.html
-# function globalias() {
-#   if [[ $LBUFFER =~ '[A-Z0-9]+$' ]]; then
-#     zle _expand_alias
-#     zle expand-word
-#   fi
-#   zle self-insert
-# }
-
-#bindkey " " globalias    # space key to expand globalalias
-#bindkey "^[[Z" magic-space            # shift-tab to bypass completion
-#bindkey -M isearch " " magic-space    # normal space during searches
-
+#
 # End of Prezto functions.
+#
 
 # Show ls
 _runcmdpushinput_ls () {
@@ -218,13 +206,13 @@ zle -N _runcmdpushinput_ls
 
 # Fast directory changing
 
-function cd {
+function cd() {
   BACK_HISTORY=$PWD:$BACK_HISTORY
   FORWARD_HISTORY=""
   builtin cd "$@"
 }
 
-function cd_previous_dir {
+function cd-previous-dir() {
   DIR=${BACK_HISTORY%%:*}
   if [[ -d "$DIR" ]]; then
     BACK_HISTORY=${BACK_HISTORY#*:}
@@ -233,7 +221,7 @@ function cd_previous_dir {
   fi
 }
 
-function cd_forward_dir {
+function cd-previous-dir() {
   DIR=${FORWARD_HISTORY%%:*}
   if [[ -d "$DIR" ]]; then
     FORWARD_HISTORY=${FORWARD_HISTORY#*:}
@@ -241,6 +229,21 @@ function cd_forward_dir {
     builtin cd "$DIR"
   fi
 }
+
+vi-mode() {
+  set -o vi
+  echo "Vi-mode on"
+  zle reset-prompt
+}
+
+emacs-mode() {
+  set -o emacs
+  echo "Emacs mode on"
+  zle reset-prompt
+}
+
+zle -N vi-mode
+zle -N emacs-mode
 
 #
 # Emacs Key Bindings
@@ -264,10 +267,12 @@ fi
 for key in "$key_info[Esc]"{K,k}
   bindkey -M emacs "$key" backward-kill-line
 
+bindkey -e "$key_info[Alt]v" vi-mode
+
 # Command insertion.
 bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
-bindkey -s "$key_info[Alt-Right]" 'cd_forward_dir\n'
-bindkey -s "$key_info[Alt-Left]" 'cd_previous_dir\n'
+bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
+bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
 bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
 
 #
@@ -294,6 +299,7 @@ for keymap in viins vicmd; do
     bindkey -M "$keymap" "$key" vi-backward-word
   for key in "${(s: :)key_info[Ctrl-Right]}"
     bindkey -M "$keymap" "$key" vi-forward-word
+  bindkey -M "$keymap" "$key_info[Alt]v" emacs-mode
 done
 
 #
@@ -389,5 +395,16 @@ for keymap in 'emacs' 'viins'; do
   # Execute ls
   bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
 done
+
+
+# Set the key layout.
+zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
+if [[ "$key_bindings" == (emacs|) ]]; then
+  bindkey -e
+elif [[ "$key_bindings" == vi ]]; then
+  bindkey -v
+else
+  print "prezto: editor: invalid key bindings: $key_bindings" >&2
+fi
 
 unset key{,map,_bindings}

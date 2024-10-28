@@ -283,13 +283,7 @@ function load_configs() {
     zinit snippet $file
   fi
 
-  # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
-  # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
-  # for vi mode."
   (( $+commands[fzf] )) && source <(fzf --zsh)
-
-  # Needs to be before Prezto modules.
-  zinit snippet "$ZDOTDIR"/.zpreztorc
 
   # Sets general shell options and defines termcap variables.
   zinit snippet PZT::modules/environment/init.zsh
@@ -339,7 +333,7 @@ function end_message() {
 }
 
 #
-# Bootstrap
+# Init
 #
 
 # Show how fast Zsh loaded.
@@ -356,16 +350,24 @@ add-zsh-hook precmd show-elapsed-time
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d
 
-# Set the default keymap. Needs to be before sourcing fzf Zsh file.
-bindkey -e
-
 # Väliaikaisesti.
 source "$HOME/.profile"
-
 
 load_zinit
 
 load_prompt
+
+# Needs to be before Prezto modules.
+# zinit snippet "$ZDOTDIR"/.zpreztorc
+source "$ZDOTDIR"/.zpreztorc
+
+# Fzf: "If you use vi mode on bash, you need to add set -o vi before source
+# ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
+# for vi mode."
+  zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
+if [[ "$key_bindings" == vi ]]; then
+  set -o vi
+fi
 
 load_misc_plugins
 

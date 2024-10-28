@@ -11,6 +11,7 @@
 # Reload Zsh user settings.
 alias reload="source $ZDOTDIR/.{zprofile,zshrc}"
 
+# Ctrl-G function similar to Zsh-z.
 zox_fzf_widget() {
   # Save the currently typed characters into a variable
   local query="$LBUFFER"
