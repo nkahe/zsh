@@ -127,9 +127,6 @@ function load_misc_plugins() {
     cp"keyd.1.gz -> $HOME/.local/man/man1"
   zinit load rvaiya/keyd
 
-  zinit ice wait"1" lucid as"program" pick"radcard"
-  zinit load superjamie/snippets
-
   # Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
   zinit ice wait"2" lucid as"program" pick"tungsten.sh" atload"alias ask=tungsten.sh"
   zinit load ASzc/tungsten
@@ -244,8 +241,12 @@ function load_heavy_plugins() {
   export YSU_MESSAGE_FORMAT="$(tput setaf 10)There is an alias for that: %alias$(tput sgr0)"
 
   # Forked version of Prezto terminal. Use wait since this takes some time.
-  zinit ice wait lucid
-  zinit snippet "$ZDOTDIR/plugins/titles.zsh"
+#   zinit ice wait lucid
+#   zinit snippet "$ZDOTDIR/plugins/titles.zsh"
+
+#   zinit snippet OMZ::/lib/functions.zsh
+#   zinit snippet OMZ::/lib/termsupport.zsh
+
 }
 
 # Configs which are skipped for root.
