@@ -31,7 +31,7 @@ function title {
         if [[ $UID == 0 ]] || [[ "$session_id" = "" ]]; then
           return
         fi
-#         qdbus org.kde.yakuake /yakuake/tabs setTabTitle $session_id "$1"
+        qdbus org.kde.yakuake /yakuake/tabs setTabTitle $session_id "$1"
       else
         print -Pn "\e]2;${2:q}\a" # set window name
         print -Pn "\e]1;${1:q}\a" # set tab name
@@ -121,8 +121,11 @@ function omz_termsupport_preexec {
 
 #   echo "CMD: $CMD"
 #   echo "LINE: $LINE"
-
-  title "$CMD" "%100>...>${LINE}%<<"
+  if [[ $TERMINAL == "yakuake" ]]; then
+    title "$CMD" "$LINE"
+  else
+    title "$CMD" "%100>...>${LINE}%<<"
+  fi
 }
 
 autoload -Uz add-zsh-hook
@@ -181,8 +184,12 @@ function omz_termsupport_cwd {
 #echo "URL_PATH: $URL_PATH"
 #   if [[ $TERMINAL != "yakuake" ]]; then
   # Konsole errors if the HOST is provided
-    [[ -z "$KONSOLE_PROFILE_NAME" && -z "$KONSOLE_DBUS_SESSION"  ]] || URL_HOST=""
+#   echo "terminal: $TERMINAL"
+#   if [[ $TERMINAL == "konsole" ]]; then
+#     echo "huomattiin"
+#     URL_HOST=""
 #   fi
+    [[ -z "$KONSOLE_PROFILE_NAME" && -z "$KONSOLE_DBUS_SESSION"  ]] || URL_HOST=""
   if [[ $TERMINAL == "yakuake" ]]; then
     emulate -L zsh
     setopt EXTENDED_GLOB
@@ -205,6 +212,8 @@ function omz_termsupport_cwd {
     unset MATCH
      qdbus org.kde.yakuake /yakuake/tabs setTabTitle $session_id "$abbreviated_path"
   else
+  #echo "host: $URL_HOST"
+  #echo "host: $URL_PATH"
     # common control sequence (OSC 7) to set current host and path
     printf "\e]7;file://%s%s\e\\" "${URL_HOST}" "${URL_PATH}"
   fi
