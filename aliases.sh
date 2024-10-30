@@ -55,12 +55,7 @@ fi
 
 # https://github.com/lord63/tldr.py
 # lord63/tldr.py: A python client for tldr: simplified and community-driven man pages.
-has gio && alias tldrf='/usr/bin/tldr find'
-
-if has gio; then
-  # Put files to trash
-  alias pt="gio trash" trash-empty='gio trash --empty'
-fi
+alias tldrf='/usr/bin/tldr find'
 
 # Termbin - terminal pastebin. https://termbin.com/
 alias termbin="nc termbin.com 9999"
@@ -184,6 +179,8 @@ alias p="$PAGER"
 alias sctl='systemctl'
 alias jctl='journalctl'
 alias his=' history'
+# Put trash
+alias pt='trash"'
 alias xo='xdg-open'
 # z=zoxide
 # x=extract (Prezto module)
