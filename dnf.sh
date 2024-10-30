@@ -5,7 +5,7 @@ alias copr="sudo dnf copr"    \
       lu="dnf check-update" \
       rem="sudo dnf remove"   \
       se="dnf search --exclude '*i686'"  \
-      up="sudo dnf upgrade --refresh"
+      up="sudo dnf upgrade"
 
 
 whyfile() {
