@@ -28,40 +28,37 @@ fi
 
 # ADDED. Which terminal we are running. ! Doesn't work properly if many different
 # types of terminals are running.
-function get-terminal-name() {
+# function get-terminal-name() {
   # Check if a process $1 is running.
-  function running() {
-    pgrep "$1" &> /dev/null
-  }
-  if running yakuake; then
-    if [[ $UID != 0 ]]; then   # Doesn't work for root.
-      # Find out the right Yakuake session id.
-      if command -v qdbus &>/dev/null; then
-        local session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
-          tr , "\n" | sort -g | tail -1 | tr -d '\n')"
-        echo "yakuake" "$session_id"
-      fi
-    fi
-  elif running terminator; then
-    echo terminator
-  elif running konsole; then
-    echo konsole
-  elif running terminology; then
-    echo terminology
-  fi
-}
-
+#   function running() {
+#     pgrep "$1" &> /dev/null
+#   }
+#   if running yakuake; then
+#     if [[ $UID != 0 ]]; then   # Doesn't work for root.
+#       # Find out the right Yakuake session id.
+#       if command -v qdbus &>/dev/null; then
+#         local session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
+#           tr , "\n" | sort -g | tail -1 | tr -d '\n')"
+#         echo "yakuake" "$session_id"
+#       fi
+#     fi
+#   elif running terminator; then
+#     echo terminator
+#   elif running konsole; then
+#     echo konsole
+#   elif running terminology; then
+#     echo terminology
+#   fi
+# }
 #read TERMINAL session_id <<< $(get-terminal-name)
 
-# FIXME: ei toimi jos on esim. tmux.
 
+# FIXME: ei toimi jos on esim. tmux.
 TERMINAL=$(ps -o comm= "$PPID")
 
 if [[ $TERMINAL == "yakuake" ]]; then
-  session_id="$(qdbus org.kde.yakuake /yakuake/sessions sessionIdList | \
-    tr , "\n" | sort -g | tail -1 | tr -d '\n')"
+  session_id=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.activeSessionId)
 elif [[ $TERMINAL == "konsole" ]]; then
-
   # FIXME: konsolella numerotunnus perässä.
   #session_id="$(qdbus org.kde.konsole /konsole/sessions sessionIdList | \
   #  tr , "\n" | sort -g | tail -1 | tr -d '\n')"
@@ -85,7 +82,7 @@ function set-tab-title {
       fi
       qdbus org.kde.yakuake /yakuake/tabs setTabTitle $session_id "${(V%)title_formatted}"
     ;;
-    terminator|terminology)
+    terminator|terminology|konsole)
       printf '\033]0;%s\a' "${(V%)title_formatted}" ;;
     *)
       printf '\e]1;%s\a' "${(V%)title_formatted}" ;;
