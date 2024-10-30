@@ -4,11 +4,11 @@
 # Set the terminal multiplexer title format.
 # zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 
-# Terminal titles. (I use customized version).
-zstyle ':prezto:module:terminal' auto-title 'yes'
-
 # Set the window title format. Comment if don't want to change window title.
 # zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
+
+# Terminal titles. (I use customized version).
+zstyle ':prezto:module:terminal' auto-title 'yes'
 
 # Set the tab title format.
 zstyle ':prezto:module:terminal:tab-title' format '%s'
@@ -16,7 +16,7 @@ zstyle ':prezto:module:terminal:tab-title' format '%s'
 zstyle ':prezto:environment:termcap' color
 
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':prezto:module:editor' key-bindings 'vi'
+zstyle ':prezto:module:editor' key-bindings 'emacs'
 
 # In some distros like openSUSE this is defined in /etc/zshrc so this doesn't
 # work but must be changed there.

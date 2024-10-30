@@ -51,6 +51,8 @@ key_info=(
   "Shift-Tab"    '^[[Z'
 )
 
+# ! Ctrl-b on monesti tmuxille.
+
 # Display bindings defined here and in some plugins.
 function lsbind() {
   (echo; echo -e "
@@ -270,7 +272,8 @@ for key in "$key_info[Esc]"{K,k}
 bindkey -e "$key_info[Alt]v" vi-mode
 
 # Command insertion.
-bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
+bindkey -s "$key_info[F12]" 'source $ZDOTDIR/plugins/termsupport.zsh\n'
+# bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
 bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
 bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
 bindkey -s "$key_info[Alt-Up]" 'cd ..\n'

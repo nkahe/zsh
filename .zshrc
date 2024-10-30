@@ -242,10 +242,13 @@ function load_heavy_plugins() {
 
   # Forked version of Prezto terminal. Use wait since this takes some time.
 #   zinit ice wait lucid
-#   zinit snippet "$ZDOTDIR/plugins/titles.zsh"
+  #zinit snippet "$ZDOTDIR/plugins/titles.zsh"
+  source "$ZDOTDIR/plugins/titles.zsh"
 
-#   zinit snippet OMZ::/lib/functions.zsh
-#   zinit snippet OMZ::/lib/termsupport.zsh
+  # OMZ terminal titles.
+  # source $ZDOTDIR/plugins/termsupport.zsh
+  #zinit snippet OMZ::/lib/functions.zsh
+#  zinit snippet OMZ::/lib/termsupport.zsh
 
 }
 
@@ -309,7 +312,8 @@ function load_configs() {
     [[ $file == *bindings.zsh ]] && continue
     # echo $file
     #source "$file"
-    zinit snippet "$file"
+    #zinit snippet "$file"
+    source "$file"
   done
 
   # snippetillä käytti joskus cachea.
