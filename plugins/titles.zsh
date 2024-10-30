@@ -26,8 +26,9 @@ function set-window-title {
  printf '\e]2;%s\a' "${(V%)title_formatted}"
 }
 
-# ADDED. Which terminal we are running. ! Doesn't work properly if many different
-# types of terminals are running.
+# Which terminal we are running. ! Doesn't work properly if many different
+# types of terminals are running. tmuxia käyttäessä jos ei parempaa ratkaisua
+# löydy.
 # function get-terminal-name() {
   # Check if a process $1 is running.
 #   function running() {
@@ -52,44 +53,53 @@ function set-window-title {
 # }
 #read TERMINAL session_id <<< $(get-terminal-name)
 
-
-# FIXME: ei toimi jos on esim. tmux.
 TERMINAL=$(ps -o comm= "$PPID")
 
 if [[ $TERMINAL == "yakuake" ]]; then
   session_id=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.activeSessionId)
-elif [[ $TERMINAL == "konsole" ]]; then
-  # FIXME: konsolella numerotunnus perässä.
-  #session_id="$(qdbus org.kde.konsole /konsole/sessions sessionIdList | \
-  #  tr , "\n" | sort -g | tail -1 | tr -d '\n')"
 fi
 
 #echo "Terminal: ${TERMINAL}"
 #echo "session id: $session_id"
 
 # Sets the terminal tab title.
-function set-tab-title {
+function set-tab-title () {
   local title_format{,ted}
   zstyle -s ':prezto:module:terminal:tab-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
 
-  # ADDED. Support for additional terminals.
   case "$TERMINAL" in
     yakuake)
-      # Setting title work if we are root or we couldn't figure out session id.
-      if [[ $UID == 0 ]] || [[ "$session_id" = "" ]]; then
-        return 1
-      fi
-      qdbus org.kde.yakuake /yakuake/tabs setTabTitle $session_id "${(V%)title_formatted}"
+      # Getting session id doesn't work for root user.
+      [[ $UID == 0 || -z "$session_id" ]] && return 1
+      qdbus >/dev/null org.kde.yakuake /yakuake/tabs setTabTitle $session_id "${(V%)title_formatted}"
     ;;
+    konsole)
+    set-konsole-tab-title-type "${(V%)title_formatted}"
     # Lisätty: konsole. Näyttää asettavan window titlen, sillä jos tab titleksi
     # laittaa terminaalissa shellin asettaman window titlen %w, niin toimii.
-    terminator|terminology|konsole)
-      printf '\033]0;%s\a' "${(V%)title_formatted}" ;;
+    ;;
+    terminator|terminology)
+      printf '\033]0;%s\a' "${(V%)title_formatted}"
+    ;;
     *)
-      printf '\e]1;%s\a' "${(V%)title_formatted}" ;;
+      printf '\e]1;%s\a' "${(V%)title_formatted}"
+    ;;
     esac
  }
+
+# Form of the function is by Stefan Becker and Smar:
+# https://stackoverflow.com/questions/19897787/change-konsole-tab-title-from-command-line-and-make-it-persistent
+set-konsole-tab-title-type () {
+  local _title="$1"
+  # Default type to 0.
+  local _type=${2:-0}
+  [[ -z "${_title}" ]]               && return 1
+  [[ -z "${KONSOLE_DBUS_SERVICE}" ]] && return 1
+  [[ -z "${KONSOLE_DBUS_SESSION}" ]] && return 1
+  qdbus >/dev/null "${KONSOLE_DBUS_SERVICE}" "${KONSOLE_DBUS_SESSION}" \
+    setTabTitleFormat "${_type}" "${_title}"
+}
 
 # Sets the terminal multiplexer tab title.
  function set-multiplexer-title {
@@ -159,7 +169,7 @@ function _terminal-set-titles-with-command {
       _terminal-set-titles-with-command "${(e):-\$jobtexts_from_parent_shell$index}"
     )
   else
-    # Set the command name, or in the case of sudo or ssh, the next command.
+    # Set the command name, or in the case of these commands, the next command.
     local cmd="${${2[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]}:t}"
 
     # Find the first non-option argument that is not identical to `cmd`.
@@ -205,7 +215,7 @@ function _terminal-set-titles-with-path {
   if [[ "$TERM" == screen* ]]; then
     set-multiplexer-title "$truncated_path"
   fi
-  echo "aseta titleksi $truncated_path"
+
   set-tab-title "$truncated_path"
   # set-window-title "$abbreviated_path"
 }
