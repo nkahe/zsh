@@ -19,12 +19,12 @@ if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
 fi
 
 # Sets the terminal _window_ title.
-# function set-window-title {
-#  local title_format{,ted}
-#  zstyle -s ':prezto:module:terminal:window-title' format 'title_format' || title_format="%s"
-#  zformat -f title_formatted "$title_format" "s:$argv"
-#  printf '\e]2;%s\a' "${(V%)title_formatted}"
-#}
+function set-window-title {
+ local title_format{,ted}
+ zstyle -s ':prezto:module:terminal:window-title' format 'title_format' || title_format="%s"
+ zformat -f title_formatted "$title_format" "s:$argv"
+ printf '\e]2;%s\a' "${(V%)title_formatted}"
+}
 
 # ADDED. Which terminal we are running. ! Doesn't work properly if many different
 # types of terminals are running.
@@ -82,6 +82,8 @@ function set-tab-title {
       fi
       qdbus org.kde.yakuake /yakuake/tabs setTabTitle $session_id "${(V%)title_formatted}"
     ;;
+    # Lisätty: konsole. Näyttää asettavan window titlen, sillä jos tab titleksi
+    # laittaa terminaalissa shellin asettaman window titlen %w, niin toimii.
     terminator|terminology|konsole)
       printf '\033]0;%s\a' "${(V%)title_formatted}" ;;
     *)
@@ -98,7 +100,7 @@ function set-tab-title {
 }
 
 # Sets the tab and window titles with a given command.
-function _terminal-set-titles-with-command {
+function _terminal-set-titles-with-command-orig {
   emulate -L zsh
   setopt EXTENDED_GLOB
 
@@ -137,6 +139,54 @@ function _terminal-set-titles-with-command {
    # set-window-title "$cmd"
   fi
 }
+
+function _terminal-set-titles-with-command {
+  emulate -L zsh
+  setopt EXTENDED_GLOB
+
+  # Get the command name that is under job control.
+  if [[ "${2[(w)1]}" == (fg|%*)(\;|) ]]; then
+    # Get the job name, and, if missing, set it to the default %+.
+    local job_name="${${2[(wr)%*(\;|)]}:-%+}"
+
+    # Make a local copy for use in the subshell.
+    local -A jobtexts_from_parent_shell
+    jobtexts_from_parent_shell=(${(kv)jobtexts})
+
+    jobs "$job_name" 2> /dev/null > >(
+      read index discarded
+      # The index is already surrounded by brackets: [1].
+      _terminal-set-titles-with-command "${(e):-\$jobtexts_from_parent_shell$index}"
+    )
+  else
+    # Set the command name, or in the case of sudo or ssh, the next command.
+    local cmd="${${2[(wr)^(*=*|sudo|ssh|-*)]}:t}"
+
+    # Find the first non-option argument that is not identical to `cmd`.
+    local second_word=""
+    for word in "${2[(w)2,-1]}"; do
+      if [[ "$word" != -* && "$word" != "$cmd" ]]; then
+        second_word="$word"
+        break
+      fi
+    done
+
+    # Append second_word to cmd only if it’s non-empty and distinct from cmd.
+    [[ -n "$second_word" ]] && cmd="$cmd $second_word"
+
+    # Truncate if longer than 15 characters.
+    local truncated_cmd="${cmd/(#m)?(#c15,)/${MATCH[1,12]}...}"
+    unset MATCH
+
+    # Use set-tab-title to update the tab title.
+    set-tab-title "$truncated_cmd"
+
+    # Set the window title without truncation.
+    set-window-title "$cmd"
+  fi
+}
+
+
 
 # Sets the tab and window titles with a given path.
 function _terminal-set-titles-with-path {
