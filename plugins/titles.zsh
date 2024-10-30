@@ -160,7 +160,7 @@ function _terminal-set-titles-with-command {
     )
   else
     # Set the command name, or in the case of sudo or ssh, the next command.
-    local cmd="${${2[(wr)^(*=*|sudo|ssh|-*)]}:t}"
+    local cmd="${${2[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]}:t}"
 
     # Find the first non-option argument that is not identical to `cmd`.
     local second_word=""
@@ -182,11 +182,9 @@ function _terminal-set-titles-with-command {
     set-tab-title "$truncated_cmd"
 
     # Set the window title without truncation.
-    set-window-title "$cmd"
+#     set-window-title "$cmd"
   fi
 }
-
-
 
 # Sets the tab and window titles with a given path.
 function _terminal-set-titles-with-path {
@@ -207,6 +205,7 @@ function _terminal-set-titles-with-path {
   if [[ "$TERM" == screen* ]]; then
     set-multiplexer-title "$truncated_path"
   fi
+  echo "aseta titleksi $truncated_path"
   set-tab-title "$truncated_path"
   # set-window-title "$abbreviated_path"
 }
