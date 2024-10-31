@@ -51,7 +51,8 @@ if has trans; then
 fi
 
 # Trayer. System Tray for WMs. Program has no config file.
-# alias run-trayer='trayer --edge bottom --align right --widthtype request --heighttype pixel --height 34 --SetDockType true --transparent true --alpha 90 --tint blue --monitor 1 --padding 10'
+# alias run-trayer='trayer --edge bottom --align right --widthtype request --heighttype pixel \
+# --height 34 --SetDockType true --transparent true --alpha 90 --tint blue --monitor 1 --padding 10'
 
 # https://github.com/lord63/tldr.py
 # lord63/tldr.py: A python client for tldr: simplified and community-driven man pages.
@@ -73,7 +74,7 @@ has yank-cli && alias yank=yank-cli
 # Functions {{{1
 
 # Print alphabets
-alp() {
+function alp() {
   for char in {A..Z} ; do
     printf $char" "
   done
@@ -89,9 +90,19 @@ function minitimer() {
   (sleep "$1"; notify-send "Time is up" && paplay $HOME/Sounds/complete.wav) &
 }
 
-# Wayland Tools ---------------------------------------------------------------
+function define() {
+  if [[ $# -ge 2 ]]; then
+    echo "define: too many arguments" >&2
+    return 1
+  fi
+  curl -s "dict://dict.org/d:${1}" | $PAGER
+}
 
-cppath() {
+#
+# Wayland Tools
+#
+
+function cppath {
   if [[ -n "$1" ]]; then
     # If a filename is provided, get the full path of the file
     fullpath=$(realpath "$1" 2>/dev/null)
@@ -108,14 +119,12 @@ cppath() {
   fi
 }
 
-# -----------------------------------------------------------------------------
-
-irc() {
+function irc() {
   ssh -tt $USER@rasp screen -rdU
 }
 
 # Restart applications
-function restart() {
+function restart {
   [[ -z "$1" ]] && exit
   killall "$1"
   "$1" &>/dev/null &
@@ -141,9 +150,9 @@ if [[ $UID != 0 ]]; then
   alias updatedb='sudo updatedb'
 fi
 
-# Add additional default flags
+# Better default flags for interactive use
 
-# Mac versions has some different flags.
+# OS X versions has some different flags.
 if [[ $OSTYPE != 'darwin'* ]]; then
   cflags='--preserve-root -v'
   alias df='df --human-readable'
@@ -180,7 +189,8 @@ alias sctl='systemctl'
 alias jctl='journalctl'
 alias his=' history'
 # Put trash
-alias pt='trash"'
+alias pt='trash'
+alias y='yadm'
 alias xo='xdg-open'
 # z=zoxide
 # x=extract (Prezto module)
@@ -194,13 +204,12 @@ alias dud='du --separate-dirs | sort --numeric-sort --reverse'
 alias logoff='loginctl terminate-session $XDG_SESSION_ID'
 alias susp='systemctl suspend'
 
-# List things more nicely.
+# List things more nicely
 
 alias lspath='echo -e ${PATH//:/\\n}'
-# Hakemistojen viemä tila. Ei alihakemistojen kokoa.
-# Ei toimi edellisen aliaksen kanssa.  pitäis korjata.
+
 alias lsip='ip -brief -family inet addr'
-# List environment variables.
+
 # Don't show some long entires.
 alias lsenv='env | grep -vE "LS_COLORS|LESS_TERMCAP" | sort -f | column -t -s "=" -E 2'
 
