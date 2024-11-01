@@ -327,8 +327,8 @@ function load_configs() {
   # snippetillä käytti joskus cachea.
   source "$ZDOTDIR/bindings.zsh"
 
-  zinit ice id-as"aliases.sh"
-  zinit snippet $ZDOTDIR/aliases.sh
+  file="$HOME/.config/shells/aliases.sh"
+  [[ -f "$file" ]] && source "$file"
 
   # Note. Install local completions by running once in terminal:
   # zinit creinstall $ZDOTDIR/completions
