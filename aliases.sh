@@ -213,22 +213,28 @@ alias lsip='ip -brief -family inet addr'
 # Don't show some long entires.
 alias lsenv='env | grep -vE "LS_COLORS|LESS_TERMCAP" | sort -f | column -t -s "=" -E 2'
 
-lsmount() {
+function lsmount {
   echo "DEVICE PATH TYPE FLAGS"
   mount | awk '$2="";1' | column -t
 }
 
 # List 256 foreground colors. There's separate script file for background colors.
-lscolors () {
+function lscolors {
   for i in {0..255}
     do echo -e "\e[38;05;${i}m${i}"
   done | column -c 180 -s ' '
 }
 
 # Grep from processer and list info with headers.
-psg () {
+function psg {
   echo 'USER         PID %CPU  %MEM   VSZ   RSS TTY      STAT START    TIME COMMAND'
   ps aux | grep --color=always -E "$@" | grep -v grep
+}
+
+# termdown: Countdown timer and stopwatch in your terminal
+# https://github.com/trehn/termdown
+function td {
+  termdown "$@" && notify-send "Time is up!" && paplay "/home/henri/Sounds/complete.wav"
 }
 
 # Aliases for ls
