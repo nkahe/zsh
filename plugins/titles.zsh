@@ -108,28 +108,39 @@ function _terminal-set-titles-with-command {
     )
   else
     # Set the command name, or in the case of these commands, the next command.
-    local cmd="${${2[(wr)^(*=*|sudo|su|ssh|mosh|rake|-*)]}:t}"
+#     local cmd="${${2[(wr)^(*=*|sudo|su|ssh|mosh|rake|-*)]}:t}"
+
+  # Assuming $2 contains the entire command line.
+  # Split the command into an array
+  local cmd_array=(${(z)2})
+
+  # Check if the first word is one of the specified prefixes.
+  if [[ "${cmd_array[1]}" == (sudo|su|ssh|mosh|rake) ]]; then
+    # Remove the first word and keep the rest of the line.
+    local cmd="${(j: :)${cmd_array[2,-1]}}"
+  else
+    # Otherwise, keep the whole command line.
+    local cmd="${(j: :)${cmd_array[@]}}"
+  fi
 
     # Find the first non-option argument that is not identical to `cmd`.
-    local second_word=""
-    for word in "${2[(w)2,-1]}"; do
-      if [[ "$word" != -* && "$word" != "$cmd" ]]; then
-        second_word="$word"
-        break
-      fi
-    done
+  #     local second_word=""
+  #     for word in "${2[(w)2,-1]}"; do
+  #       if [[ "$word" != -* && "$word" != "$cmd" ]]; then
+  #         second_word="$word"
+  #         break
+  #       fi
+  #     done
 
-    # Append second_word to cmd only if it’s non-empty and distinct from cmd.
-    [[ -n "$second_word" ]] && cmd="$cmd $second_word"
+    # Truncate if longer than 20 characters.
+    local truncated_cmd="${cmd/(#m)?(#c20,)/${MATCH[1,17]}...}"
 
-    # Truncate if longer than 15 characters.
-    local truncated_cmd="${cmd/(#m)?(#c15,)/${MATCH[1,12]}...}"
     unset MATCH
 
-    # Use set-tab-title to update the tab title.
+    if [[ "$TERM" == screen* ]]; then
+      set-multiplexer-title "$truncated_cmd"
+    fi
     set-tab-title "$truncated_cmd"
-
-    # Set the window title without truncation.
     set-window-title "$cmd"
   fi
 }
