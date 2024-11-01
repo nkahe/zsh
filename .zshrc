@@ -127,6 +127,9 @@ function load_misc_plugins() {
     cp"keyd.1.gz -> $HOME/.local/man/man1"
   zinit load rvaiya/keyd
 
+  zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moar* -> moar"
+  zinit load walles/moar
+
   # Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
   zinit ice wait"2" lucid as"program" pick"tungsten.sh" atload"alias ask=tungsten.sh"
   zinit load ASzc/tungsten
@@ -292,6 +295,11 @@ function load_configs() {
   fi
 
   (( $+commands[fzf] )) && source <(fzf --zsh)
+
+  file="$ZDOTDIR/plugins/navi.zsh"
+  if [[ -f $file ]]; then
+    source $file
+  fi
 
   # Sets general shell options and defines termcap variables.
   zinit snippet PZT::modules/environment/init.zsh
