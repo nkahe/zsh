@@ -197,6 +197,7 @@ alias xo='xdg-open'
 
 # Handy aliases
 
+alias cpp='rsync --archive -verbose --human-readable --info=progress2'
 # Työhakemistossa olevien hakemistojen viemä tila.
 alias du1='du --max-depth=1 | sort --numeric-sort'
 # Ei alihakemistojen kokoa.
@@ -205,6 +206,11 @@ alias logoff='loginctl terminate-session $XDG_SESSION_ID'
 alias susp='systemctl suspend'
 
 # List things more nicely
+
+function lsblk {
+  lsblk_default_args=('--output' 'NAME,SIZE,TYPE,FSTYPE,FSUSE%,MOUNTPOINTS,MODEL')
+  grc lsblk "${@:-${lsblk_default_args[@]}}"
+}
 
 alias lspath='echo -e ${PATH//:/\\n}'
 
@@ -263,8 +269,13 @@ fi
 #echo "Package Manager" $MNGR "detected."
 
 if has rpm; then
-  alias rpm-isot='rpm -qa --queryformat="%{NAME} %{VERSION} %{SIZE}\n" \
-    | sort -k 3 -n | tail -n 100'
+  function rpm-isot {
+    rpm -qa --queryformat="%{SIZE} %{NAME} %{VERSION}\n" \
+        | sort -k 1 -n \
+        | tail -n 100 \
+        | awk '{size=$1; $1=""; print size, $0}' \
+        | numfmt --field=1 --to=iec --suffix=B
+  }
 fi
 
 function power() { upower -i "/org/freedesktop/UPower/devices/battery_BAT$1"; }
