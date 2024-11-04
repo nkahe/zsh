@@ -157,26 +157,10 @@ function load_misc_plugins() {
   # fi
   # unset compfiles
 
-  # zdharma-continuum/fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH
-  # https://github.com/zdharma-continuum/fast-syntax-highlighting
-
-  # zinit wait silent for \
-  #   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
-  #   (( $+commands[eza] )) && compdef eza=ls;\
-  #   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
-  #   ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
-  #   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
-  #     zdharma-continuum/fast-syntax-highlighting \
-  #   blockf \
-  #     zsh-users/zsh-completions \
-  #   atload"!_zsh_autosuggest_start" \
-  #     zsh-users/zsh-autosuggestions
-
   # ! Load after syntax-highlighting !
   # history-substring-search. Type in any part of any previously  entered
   # command and press the UP and DOWN arrow keys to cycle through the matching
   # commands. https://github.com/zsh-users/zsh-history-substring-search.
-
   #   bindkey -M vicmd "?" history-incremental-pattern-search-backward
   #   bindkey -M vicmd "/" history-incremental-pattern-search-forward
   zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_hs_keys"
@@ -201,6 +185,22 @@ function load_heavy_plugins() {
     }
   fi
 
+  # zdharma-continuum/fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH
+ #  https://github.com/zdharma-continuum/fast-syntax-highlighting
+
+  # zinit wait silent for \
+  #   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay;\
+  #   (( $+commands[eza] )) && compdef eza=ls;\
+  #   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8' \
+  #   ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd \
+  #   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30" \
+  #     zdharma-continuum/fast-syntax-highlighting \
+  #   blockf \
+  #     zsh-users/zsh-completions \
+  #   atload"!_zsh_autosuggest_start" \
+  #     zsh-users/zsh-autosuggestions
+
+
   # Fish-like autosuggestions for zsh.
   # https://github.com/zsh-users/zsh-autosuggestions
   zinit ice wait"2" lucid atload"_zsh_autosuggest_start" \
@@ -218,7 +218,9 @@ function load_heavy_plugins() {
   # Gives error if variable isn't set.
   zinit ice wait lucid atinit"zpcompinit; zpcdreplay;export region_highlight='';\
     (( $+commands[eza] )) && compdef eza=ls"
-  zinit load zsh-users/zsh-syntax-highlighting
+  # zinit load zsh-users/zsh-syntax-highlighting
+  zinit light zdharma-continuum/fast-syntax-highlighting
+
 
   # ZSH plugin that reminds you to use existing aliases for commands you
   # just typed. https://github.com/MichaelAquilina/zsh-you-should-use
