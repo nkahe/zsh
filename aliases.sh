@@ -184,14 +184,14 @@ alias dd='dd status=progress'
 alias cs='cheat'
 alias e="$EDITOR"
 alias g='git'
-alias p="$PAGER"
-alias sctl='systemctl'
-alias jctl='journalctl'
 alias his=' history'
+alias jctl='journalctl'
+alias o='xdg-open'
+alias p="$PAGER"
 # Put trash
 alias pt='trash'
+alias sctl='systemctl'
 alias y='yadm'
-alias xo='xdg-open'
 # z=zoxide
 # x=extract (Prezto module)
 
