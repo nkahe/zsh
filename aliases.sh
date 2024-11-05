@@ -195,7 +195,7 @@ alias p="$PAGER"
 # Put trash
 alias pt='trash'
 alias sctl='systemctl'
-alias y='yadm'
+alias yd='yadm'
 # z=zoxide
 # x=extract (Prezto module)
 
