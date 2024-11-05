@@ -354,7 +354,7 @@ add-zsh-hook precmd show-elapsed-time
 bindkey -d
 
 # Väliaikaisesti.
-source "$HOME/.profile"
+# source "$HOME/.profile"
 
 load_zinit
 

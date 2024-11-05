@@ -13,7 +13,7 @@
 [[ -f $HOME/.profile ]] && source $HOME/.profile
 
 # Helper function: check if command exists.
-has() {
+function has {
   (( $+commands["$@"] ))
 }
 
