@@ -1,5 +1,9 @@
 # This file is for common aliases compatible for Zsh, Bash and Fish -shells.
 
+function has() {
+  command -v "$@" &> /dev/null
+}
+
 alias game="kscreen-doctor output.DP-1.mode.12"
 alias normal="kscreen-doctor output.DP-1.mode.2"
 
