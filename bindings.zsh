@@ -194,6 +194,27 @@ function glob-alias {
 }
 zle -N glob-alias
 
+# Toggle the comment character at the start of the line. This is meant to work
+# around a buggy implementation of pound-insert in zsh.
+#
+# This is currently only used for the emacs keys because vi-pound-insert has
+# been reported to work properly.
+function pound-toggle {
+  if [[ "$BUFFER" = '#'* ]]; then
+    # Because of an oddity in how zsh handles the cursor when the buffer size
+    # changes, we need to make this check before we modify the buffer and let
+    # zsh handle moving the cursor back if it's past the end of the line.
+    if [[ $CURSOR != $#BUFFER ]]; then
+      (( CURSOR -= 1 ))
+    fi
+    BUFFER="${BUFFER:1}"
+  else
+    BUFFER="#$BUFFER"
+    (( CURSOR += 1 ))
+  fi
+}
+zle -N pound-toggle
+
 #
 # End of Prezto functions.
 #
@@ -269,7 +290,17 @@ fi
 for key in "$key_info[Esc]"{K,k}
   bindkey -M emacs "$key" backward-kill-line
 
+# Change to Vi-mode
 bindkey -e "$key_info[Alt]v" vi-mode
+
+# Search previous character.
+bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]B" vi-find-prev-char
+
+# Match bracket.
+bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]]" vi-match-bracket
+
+# Edit command in an external editor.
+bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
 
 # Command insertion.
 bindkey -s "$key_info[F12]" 'source $ZDOTDIR/plugins/termsupport.zsh\n'
@@ -277,6 +308,13 @@ bindkey -s "$key_info[F12]" 'source $ZDOTDIR/plugins/termsupport.zsh\n'
 bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
 bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
 bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
+
+
+# Toggle comment at the start of the line. Note that we use pound-toggle which
+# is similar to pount insert, but meant to work around some issues that were
+# being seen in iTerm.
+# Keybind Ctrl-7
+bindkey -M emacs "$key_info[Ctrl]_" pound-toggle
 
 #
 # Vi Key Bindings
