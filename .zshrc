@@ -9,6 +9,8 @@ PS1="%~ ❯ "
 file="$ZDOTDIR/plugins/startup-time.zsh"
 [[ -f "$file" ]] && source "$file"
 
+#ZSH_DISABLE_COMPFIX=true
+
 function load_zinit() {
   # Load Zinit - Zsh plugin manager. https://github.com/zdharma-continuum/zinit
   ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
@@ -221,6 +223,9 @@ function load_heavy_plugins() {
   # zinit load zsh-users/zsh-syntax-highlighting
   zinit light zdharma-continuum/fast-syntax-highlighting
 
+  zinit ice wait"2" lucid as"program" has"git" pick"yadm" \
+    cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
+  zinit load TheLocehiliosan/yadm
 
   # ZSH plugin that reminds you to use existing aliases for commands you
   # just typed. https://github.com/MichaelAquilina/zsh-you-should-use
@@ -246,10 +251,6 @@ function load_user_plugins() {
 
   zinit ice wait"1" lucid as"program" pick"todo.sh" atload"alias todo=todo.sh"
   zinit load todotxt/todo.txt-cli
-
-  zinit ice wait"2" lucid as"program" has"git" pick"yadm" \
-    cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
-  zinit load TheLocehiliosan/yadm
 
 }
 
