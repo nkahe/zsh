@@ -1,12 +1,22 @@
 #!/bin/zsh
 
+#historyfile="${XDG_DATA_HOME:-$HOME/.local/share}"/fzf/history/fzf_cheat
+
+# Need to make the dir too.
+# if [[ ! -f $historyfile ]]; then
+  # touch $historyfile
+# fi
+
+# Add flag to enable history
+                   # --history $historyfile
+
 function fzcheat() {
   local fzf_args=( -d ':' --ansi --with-nth '2..'
                    --bind 'ctrl-y:execute-silent(echo {1} | clip)'
                    --bind 'alt-e:execute(cheat -e {1})'
                    --bind 'ctrl-m:execute:cheat -c {1} | $PAGER'
                    --bind 'enter:execute:cheat {1}'
-                   --history "${XDG_DATA_HOME:-$HOME/.local/share}"/fzf/history/fzf_cheat )
+                  )
   [ -z "$*" ] || fzf_args+=( -q "$*" )
 
   cheat -l |
