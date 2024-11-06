@@ -11,33 +11,6 @@
 # Reload Zsh user settings.
 alias reload="source $ZDOTDIR/.{zprofile,zshrc}"
 
-# Ctrl-G function similar to Zsh-z.
-zox_fzf_widget() {
-  # Save the currently typed characters into a variable
-  local query="$LBUFFER"
-
-  # Use fzf to search in the Zoxide database, pre-filtered by the typed characters
-  local dir=$(zoxide query -ls | awk '{print $2}' | fzf --query="$query" --height 40% --reverse --inline-info)
-
-  # If a directory is selected, replace the current command line buffer with 'cd' to that directory
-  if [[ -n $dir ]]; then
-    LBUFFER="cd '$dir'"
-    zle accept-line  # Simulate pressing Enter to execute the command
-  fi
-}
-
-# Bind Ctrl-G to the custom widget
-zle -N zox_fzf_widget
-bindkey '^G' zox_fzf_widget
-
-# Search in Surfraw bookmarks using Fzf. Note: surfraw has native alias "sr".
-if (( $+commands[surfraw] )); then
-  function srfb() {
-    zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
-      \ awk 'NF != 0 && !/^#/ {print $1}' ) ;
-  }
-fi
-
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw
 
@@ -78,19 +51,6 @@ function check() {
   fi
 }
 
-# Paste the selected entry from locate output into the command line
-# https://github.com/junegunn/fzf/wiki/examples#changing-directory
-# Ctrl-Alt-F (Find).
-function fzf-locate-widget() {
-  local selected
-  if selected=$(locate / | fzf -q "$LBUFFER"); then
-    LBUFFER=$selected
-  fi
-  zle redisplay
-}
-zle     -N    fzf-locate-widget
-bindkey -e '^[^F' fzf-locate-widget
-
 # demo video: http://www.youtube.com/watch?v=Ww7Sl4d8F8A
 # -a "käyttäjänimi", -b "serveri", -t "otsikko"
 # http://ix.io
@@ -118,6 +78,49 @@ function fancy-ctrl-z () {
 }
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
+
+
+# FZF
+#
+
+# Ctrl-G function similar to Zsh-z.
+zox_fzf_widget() {
+  # Save the currently typed characters into a variable
+  local query="$LBUFFER"
+
+  # Use fzf to search in the Zoxide database, pre-filtered by the typed characters
+  local dir=$(zoxide query -ls | awk '{print $2}' | fzf --query="$query" --height 40% --reverse --inline-info)
+
+  # If a directory is selected, replace the current command line buffer with 'cd' to that directory
+  if [[ -n $dir ]]; then
+    LBUFFER="cd '$dir'"
+    zle accept-line  # Simulate pressing Enter to execute the command
+  fi
+}
+# Bind Ctrl-G to the custom widget
+zle -N zox_fzf_widget
+bindkey '^G' zox_fzf_widget
+
+# Search in Surfraw bookmarks using Fzf. Note: surfraw has native alias "sr".
+if (( $+commands[surfraw] )); then
+  function srfb() {
+    zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
+      \ awk 'NF != 0 && !/^#/ {print $1}' ) ;
+  }
+fi
+
+# Paste the selected entry from locate output into the command line
+# https://github.com/junegunn/fzf/wiki/examples#changing-directory
+# Ctrl-Alt-F (Find).
+function fzf-locate-widget() {
+  local selected
+  if selected=$(locate / | fzf -q "$LBUFFER"); then
+    LBUFFER=$selected
+  fi
+  zle redisplay
+}
+zle     -N    fzf-locate-widget
+bindkey -e '^[^F' fzf-locate-widget
 
 #}}}
 # Tietoa järjestelmästä {{{
