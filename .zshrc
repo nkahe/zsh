@@ -97,14 +97,6 @@ function load_misc_plugins() {
   zinit ice wait"1" lucid as"program" pick"ch"
   zinit load learnbyexample/command_help
 
-  # fzf-z: Plugin for zsh to integrate fzf and zsh's z plugin.
-  # https://github.com/andrewferrier/fzf-z . Has to be after fzf.
-  #zinit ice wait lucid atinit"export FZFZ_SUBDIR_LIMIT=0"
-  #zinit load andrewferrier/fzf-z
-  # Directories under the current directory. The number of these shown in
-  # fzf is limited by the FZFZ_SUBDIR_LIMIT environment variable, which defaults
-  # to 50. If you don't want those to be shown, simply set this to 0.
-
   # rvaiya/keyd: A key remapping daemon for linux.
   # https://github.com/rvaiya/keyd
   # make'!...' -> run make before atclone & atpull
@@ -124,10 +116,6 @@ function load_misc_plugins() {
   # instant and concise answers. https://github.com/Bugswriter/tuxi
   zinit ice wait"2" as"program" pick"tuxi" lucid
   zinit load Bugswriter/tuxi
-
-  # Binary is installed by distro package manager.
-  #zinit ice wait lucid multisrc"shell/{completion,key-bindings}.zsh"
-  #zinit load junegunn/fzf
 
   # agkozak/zsh-z: Jump quickly to directories that you have visited "frecently."
   # A native Zsh port of z.sh. https://github.com/agkozak/zsh-z
@@ -237,7 +225,7 @@ function load_heavy_plugins() {
   # Forked version of Prezto terminal. Use wait since this takes some time.
 #   zinit ice wait lucid
   #zinit snippet "$ZDOTDIR/plugins/titles.zsh"
-   source "$ZDOTDIR/plugins/titles.zsh"
+   # source "$ZDOTDIR/plugins/titles.zsh"
 
   # OMZ terminal titles.
   # source $ZDOTDIR/plugins/termsupport.zsh
@@ -283,10 +271,10 @@ function load_configs() {
 
   (( $+commands[fzf] )) && source <(fzf --zsh)
 
-  file="$ZDOTDIR/plugins/navi.zsh"
-  if [[ -f $file ]]; then
-    source $file
-  fi
+  # file="$ZDOTDIR/plugins/navi.zsh"
+  # if [[ -f $file ]]; then
+    # source $file
+  # fi
 
   # Sets general shell options and defines termcap variables.
   zinit snippet PZT::modules/environment/init.zsh
@@ -301,7 +289,7 @@ function load_configs() {
   zinit snippet OMZP::extract
 
   # Alternative method if want to measure profile by file.
-  for file in $ZDOTDIR/*.zsh
+  for file in $ZDOTDIR/*.zsh $ZDOTDIR/plugins/*.zsh
   do
     # Bindings have loaded earlier.
     [[ $file == *bindings.zsh ]] && continue
