@@ -17,4 +17,6 @@ function nvims() {
   NVIM_APPNAME=$config nvim $@
 }
 
+alias lvim="NVIM_APPNAME=LazyVim nvim $@"
+
 bindkey -s '^a' "nvims\n"
