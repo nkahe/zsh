@@ -10,7 +10,7 @@
 zstyle ':prezto:environment:termcap' color
 
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':prezto:module:editor' key-bindings 'emacs'
+zstyle ':prezto:module:editor' key-bindings 'vi'
 
 # In some distros like openSUSE this is defined in /etc/zshrc so this doesn't
 # work but must be changed there.
