@@ -3,6 +3,8 @@
 # If not running interactively
 [[ $- != *i* ]] && return
 
+export EDITOR="lvim"
+
 # provide a simple prompt till the proper loads.
 PS1="%~ ❯ "
 
@@ -116,6 +118,12 @@ function load_misc_plugins() {
   # instant and concise answers. https://github.com/Bugswriter/tuxi
   zinit ice wait"2" as"program" pick"tuxi" lucid
   zinit load Bugswriter/tuxi
+
+  # jeffreytse/zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.
+  # https://github.com/jeffreytse/zsh-vi-mode
+  zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
+  zinit ice depth=1 if"[[ $key_bindings == vi ]]"
+  zinit light jeffreytse/zsh-vi-mode
 
   # agkozak/zsh-z: Jump quickly to directories that you have visited "frecently."
   # A native Zsh port of z.sh. https://github.com/agkozak/zsh-z
@@ -356,7 +364,7 @@ source "$ZDOTDIR"/.zpreztorc
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
 # for vi mode."
-  zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
+zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
 if [[ "$key_bindings" == vi ]]; then
   set -o vi
 fi
