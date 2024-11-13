@@ -3,7 +3,7 @@
 # If not running interactively
 [[ $- != *i* ]] && return
 
-export EDITOR="lvim"
+export EDITOR="nvim"
 
 # provide a simple prompt till the proper loads.
 PS1="%~ ❯ "
@@ -293,14 +293,14 @@ function load_configs() {
   # Sets history options and defines history aliases.
   zinit snippet PZT::modules/history/init.zsh
 
-  zinit ice wait"2" lucid
-  zinit snippet OMZP::extract
+  # zinit ice wait"2" lucid
+  # zinit snippet OMZP::extract
 
   # Alternative method if want to measure profile by file.
   for file in $ZDOTDIR/*.zsh $ZDOTDIR/plugins/*.zsh
   do
     # Bindings have loaded earlier.
-    [[ $file == *bindings.zsh ]] && continue
+    # [[ $file == *bindings.zsh ]] && continue
     # echo $file
     #source "$file"
     #zinit snippet "$file"
@@ -308,7 +308,7 @@ function load_configs() {
   done
 
   # snippetillä käytti joskus cachea.
-  source "$ZDOTDIR/bindings.zsh"
+  # source "$ZDOTDIR/bindings.zsh"
 
   file="$HOME/.config/shells/aliases.sh"
   [[ -f "$file" ]] && source "$file"
@@ -376,6 +376,8 @@ load_misc_plugins
 [[ $UID != 0 ]] && load_user_plugins
 
 load_configs
+
+
 
 # Normally is executed when loading syntax highlighting.
 if [[ $HOST == raspberry* ]]; then
