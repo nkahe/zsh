@@ -215,6 +215,11 @@ function pound-toggle {
 }
 zle -N pound-toggle
 
+testbind() {
+  echo "Key binding works!"
+}
+zle -N testbind
+
 #
 # End of Prezto functions.
 #
@@ -256,13 +261,15 @@ function cd-previous-dir() {
 vi-mode() {
   set -o vi
   echo "Vi-mode on"
-  zle reset-prompt
+  sleep 0.5
+  zle redisplay
 }
 
 emacs-mode() {
   set -o emacs
-  echo "Emacs mode on"
-  zle reset-prompt
+  echo "Emacs-mode on"
+  sleep 0.5
+  zle redisplay
 }
 
 zle -N vi-mode
