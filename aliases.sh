@@ -4,6 +4,13 @@ function has() {
   command -v "$@" &> /dev/null
 }
 
+function upvibre() {
+  cd "$HOME/projects/vibreoffice/Nazo1412" || true
+  unopkg remove vibreoffice
+  VIBREOFFICE_VERSION="0.5.0" \make extension
+  unopkg add "$HOME/projects/vibreoffice/Nazo1412/dist/vibreoffice-0.5.0.oxt"
+}
+
 alias game="kscreen-doctor output.DP-1.mode.12"
 alias normal="kscreen-doctor output.DP-1.mode.2"
 
@@ -258,8 +265,9 @@ if [[ $OSTYPE == 'darwin'* ]]; then
   alias lsd='ls -d' lld='lsd -l'
 else
   alias lsa='ls --all' la='lsa'
-  alias ll='ls --long --group' lla='ll --all'
-  alias lsd='ls --list-dirs'   lld='lsd --long'
+  # eza:lla myös --group
+  alias ll='ls -l' lla='ll --all'
+  alias lsd='ls --list-dirs'   lld='lsd -l'
 fi
 
 # Package management {{{1
