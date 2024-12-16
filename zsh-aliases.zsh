@@ -188,7 +188,7 @@ function background() {
 
 ##### Global and suffix aliases ##### {{{
 
-alias -g C='column' G='grep' H='head' L='less' S='sort' T='tail'
+alias -g C='column' H='head' L='less' P="$PAGER" S='sort' T='tail'
 alias -g DN='/dev/null'
 # For DNF
 alias -g NW='--setopt=install_weak_deps=False'
