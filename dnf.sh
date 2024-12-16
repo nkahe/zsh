@@ -1,11 +1,11 @@
-alias copr="sudo dnf5 copr"    \
-      inf="dnf5 info"      \
-      ins="sudo dnf5 install"  \
-      list="dnf5 list --exclude '*i686'"  \
-      lu="dnf5 check-update" \
-      rem="sudo dnf5 remove"   \
-      se="dnf5 search --exclude '*i686'"  \
-      up="sudo dnf5 upgrade"
+alias copr="sudo dnf copr"    \
+      inf="dnf info"      \
+      ins="sudo dnf install"  \
+      list="dnf list --exclude '*i686'"  \
+      lu="dnf check-update" \
+      rem="sudo dnf remove"   \
+      se="dnf search --exclude '*i686'"  \
+      up="sudo dnf upgrade"
 
 
 whyfile() {
