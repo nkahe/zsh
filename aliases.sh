@@ -22,12 +22,6 @@ alias restart-xdg='systemctl --user restart plasma-xdg-desktop-portal-kde'
 has kitty && alias icat="kitty +kitten icat"
   # Show images with Kitty's icat. https://sw.kovidgoyal.net/kitty/kittens/icat.html
 
-if has eza; then
-  alias ls="eza --group-directories-first --color=always --icons"
-elif has exa; then
- alias ls="exa --group-directories-first --color=always --icons"
-fi
-
 # vimwiki: Personal Wiki for Vim. https://github.com/vimwiki/vimwiki
 # ( <Leader>ww is keymap for VimWiki in Vim)
 
@@ -256,19 +250,27 @@ function td {
 
 # Aliases for ls
 
-alias sl='ls'
+opts="--group-directories-first --color=always"
+
+# Base ls command used after for aliases.
+if has eza; then
+  ls="eza --icons $opts"
+elif has exa; then
+  ls="exa --icons $opts"
+else
+  ls="ls $opts"
+fi
 
 # note: --group-directories-first doesn't apply to symlinks.
-if [[ $OSTYPE == 'darwin'* ]]; then
-  alias lsa='ls -a' la='lsa'
-  alias ll='ls -lg' lla='ll -a'
-  alias lsd='ls -d' lld='lsd -l'
-else
-  alias lsa='ls --all' la='lsa'
-  # eza:lla myös --group
-  alias ll='ls -l' lla='ll --all'
-  alias lsd='ls --list-dirs'   lld='lsd -l'
-fi
+# eza:lla myös --group
+alias ls="$ls" \
+  sl=ls \
+  ll="$ls -l" \
+  lsa="$ls -a" \
+  la="lsa" \
+  lla="$ls -l -a" \
+  lsd="$ls -d */" \
+  lld="$ls -l -d */"
 
 # Package management {{{1
 
