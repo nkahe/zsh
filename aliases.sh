@@ -11,6 +11,7 @@ function upvibre() {
   unopkg add "$HOME/projects/vibreoffice/Nazo1412/dist/vibreoffice-0.5.0.oxt"
 }
 
+alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
 alias game="kscreen-doctor output.DP-1.mode.12"
 alias normal="kscreen-doctor output.DP-1.mode.2"
 
