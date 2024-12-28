@@ -190,7 +190,6 @@ alias dd='dd status=progress'
 alias cs='cheat'
 alias e="$EDITOR"
 alias g='git'
-alias his=' history'
 alias jctl='journalctl'
 alias o='xdg-open'
 alias p="$PAGER"
