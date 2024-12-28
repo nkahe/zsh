@@ -9,7 +9,7 @@
 # [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s"  # Ei oo asennettu.
 
 # Reload Zsh user settings.
-alias reload="source $ZDOTDIR/.{zprofile,zshrc}"
+alias reload="source $ZDOTDIR/{.zprofile,.zshrc,aliases.sh}"
 
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw
@@ -129,7 +129,7 @@ bindkey -e '^[^F' fzf-locate-widget
 
 alias lsfpath='echo -e ${FPATH//:/\\n}'  # List $FPATH (zsh functions path) nicely
 
-alias lshist=' fc -El 1 | tail -n 100'
+alias hist=' fc -El 1 | tail -n $1'
 
 #alias tv="w3m -dump http://www.iltapulu.fi/\?timeframe\=2 | awk '/tv-ohjelmat/,/^$/'"  pipetys sekoaa tästä.
 
