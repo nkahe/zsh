@@ -2,6 +2,7 @@
 
 function has() {
   command -v "$@" &> /dev/null
+
 }
 
 function upvibre() {
@@ -14,6 +15,7 @@ function upvibre() {
 alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
 alias game="kscreen-doctor output.DP-1.mode.12"
 alias normal="kscreen-doctor output.DP-1.mode.2"
+alias nvp='nvimpager'
 
 # Extra applications {{{1
 
