@@ -247,7 +247,7 @@ function psg {
 # termdown: Countdown timer and stopwatch in your terminal
 # https://github.com/trehn/termdown
 function td {
-  termdown "$@" && notify-send "Time is up!" && paplay "/home/henri/Sounds/complete.wav"
+  termdown "$@" && notify-send "Time is up!" && paplay "$HOME/Sounds/complete.wav"
 }
 
 # Aliases for ls
