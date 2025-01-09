@@ -189,6 +189,8 @@ function background() {
 ##### Global and suffix aliases ##### {{{
 
 alias -g C='column' H='head' L='less' P="$PAGER" S='sort' T='tail'
+# Compile flags for C++
+alias -g Cflags='-Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion -pedantic-errors -Werror -fdiagnostics-color=always'
 alias -g DN='/dev/null'
 # For DNF
 alias -g NW='--setopt=install_weak_deps=False'
