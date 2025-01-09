@@ -107,8 +107,7 @@ function load_misc_plugins() {
     cp"keyd.1.gz -> $HOME/.local/man/man1"
   zinit load rvaiya/keyd
 
-  zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" \
-    mv"moar* -> moar"
+  zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moar* -> moar"
   zinit load walles/moar
 
   # Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
@@ -246,7 +245,7 @@ function load_heavy_plugins() {
 # Configs which are skipped for root.
 #
 function load_user_plugins() {
-  zinit ice wait"1" lucid as"program" pick"todo.sh" atload"alias todo=todo.sh"
+  zinit ice wait"1" lucid as"program" pick"todo.sh"
   zinit load todotxt/todo.txt-cli
 }
 
@@ -350,8 +349,6 @@ add-zsh-hook precmd show-elapsed-time
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d
 
-# Väliaikaisesti.
-# source "$HOME/.profile
 # Ei ole PATH:ssa niin ei profilessa löydy.
 export PAGER=moar
 
@@ -378,8 +375,6 @@ load_misc_plugins
 [[ $UID != 0 ]] && load_user_plugins
 
 load_configs
-
-
 
 # Normally is executed when loading syntax highlighting.
 if [[ $HOST == raspberry* ]]; then
