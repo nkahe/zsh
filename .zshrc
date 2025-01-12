@@ -3,12 +3,13 @@
 # If not running interactively
 [[ $- != *i* ]] && return
 
-export EDITOR="nvim"
-
 # provide a simple prompt till the proper loads.
 PS1="%~ ❯ "
 
-file="$ZDOTDIR/plugins/startup-time.zsh"
+# If change directory name, delete old cache in $ZINIT_HOME/snippets
+snippets_dir="$ZDOTDIR/snippets"
+
+file="$snippets_dir/startup-time.zsh"
 [[ -f "$file" ]] && source "$file"
 
 #ZSH_DISABLE_COMPFIX=true
@@ -164,8 +165,9 @@ function load_misc_plugins() {
   zinit ice wait"1" lucid atload"_zsh_highlight" atinit"set_hs_keys"
   zinit load zsh-users/zsh-history-substring-search
 
-  eval "$(zoxide init zsh)"
-
+  if (( $+commands[zoxide] )); then
+    eval "$(zoxide init zsh)"
+  fi
 }
 
 # These plugins take some resources.
@@ -231,15 +233,14 @@ function load_heavy_plugins() {
   export YSU_MESSAGE_FORMAT="$(tput setaf 10)There is an alias for that: %alias$(tput sgr0)"
 
   # Forked version of Prezto terminal. Use wait since this takes some time.
-#   zinit ice wait lucid
-  #zinit snippet "$ZDOTDIR/plugins/titles.zsh"
-   # source "$ZDOTDIR/plugins/titles.zsh"
+  # zinit ice wait lucid
+  # zinit snippet "$snippets_dir/titles.zsh"
+  # source "$snippets_dir/titles.zsh"
 
   # OMZ terminal titles.
-  # source $ZDOTDIR/plugins/termsupport.zsh
-  #zinit snippet OMZ::/lib/functions.zsh
-#  zinit snippet OMZ::/lib/termsupport.zsh
-
+  # source $snippets_dir/termsupport.zsh
+  # zinit snippet OMZ::/lib/functions.zsh
+  # zinit snippet OMZ::/lib/termsupport.zsh
 }
 
 # Configs which are skipped for root.
@@ -256,7 +257,7 @@ function load_configs() {
 #   zinit light $ZDOTDIR
 #
 #   zinit ice multisrc"*.zsh" lucid
-#   zinit light $ZDOTDIR/plugins
+#   zinit light $snippets_dir
 
   # ! Needs to be before completion settings.
   # Colors for ls/eza/exa. Doesn't work if put in .zprofile.
@@ -278,7 +279,7 @@ function load_configs() {
 
   (( $+commands[fzf] )) && source <(fzf --zsh)
 
-  # file="$ZDOTDIR/plugins/navi.zsh"
+  # file="$snippets_dir/navi.zsh"
   # if [[ -f $file ]]; then
     # source $file
   # fi
@@ -295,8 +296,9 @@ function load_configs() {
   # zinit ice wait"2" lucid
   # zinit snippet OMZP::extract
 
-  # Alternative method if want to measure profile by file.
-  for file in $ZDOTDIR/*.zsh $ZDOTDIR/plugins/*.zsh
+  # Alternative method if want to measure profile by file. Using 'zinit snippet'
+  # command can cause issues with cache when files are changed.
+  for file in $ZDOTDIR/*.zsh $snippets_dir/*.zsh
   do
     # Bindings have loaded earlier.
     # [[ $file == *bindings.zsh ]] && continue
@@ -306,7 +308,6 @@ function load_configs() {
     source "$file"
   done
 
-  # snippetillä käytti joskus cachea.
   # source "$ZDOTDIR/bindings.zsh"
 
   file="$HOME/.config/shells/aliases.sh"
@@ -317,7 +318,6 @@ function load_configs() {
 
   # Konsole/Yakuake and Kitty already have this.
   # zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
-
 }
 
 function end_message() {
@@ -348,9 +348,6 @@ add-zsh-hook precmd show-elapsed-time
 
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d
-
-# Ei ole PATH:ssa niin ei profilessa löydy.
-export PAGER=moar
 
 load_zinit
 

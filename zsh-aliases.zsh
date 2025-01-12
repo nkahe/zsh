@@ -6,7 +6,8 @@
 # Misc {{{
 
 # make less more friendly for non-text input files, see lesspipe(1)
-# [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s"  # Ei oo asennettu.
+# [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s" 
+# Ei ole asennettu.
 
 # Reload Zsh user settings.
 alias reload="source $ZDOTDIR/{.zprofile,.zshrc,aliases.sh}"

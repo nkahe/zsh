@@ -8,8 +8,6 @@
 # anything that outputs something here. Can break things like ssh and scp.
 # KDE Plasma: link to ~/.config/plasma-workspace/env
 
-# LESS_TERMCAP_* variables are defined in Environment -Prezto -snippet.
-
 [[ -f $HOME/.profile ]] && source $HOME/.profile
 
 # Helper function: check if command exists.
@@ -94,8 +92,8 @@ has fzf && export FZF_DEFAULT_OPTS='--height 40%'
 # LibreOffice, use gtk.
 # export SAL_USE_VCLPLUGIN=gtk
 
+# Task warrior
 if has task; then
-  # Task warrior
   export TASKRC="~/.config/taskrc"
   export TASKDATA="~/MegaSync/task"
 fi
