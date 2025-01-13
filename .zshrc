@@ -18,46 +18,6 @@ file="$snippets_dir/startup-time.zsh"
 
 # Configs not loaded from external sources.
 function load_configs() {
-
-#   zinit ice multisrc"*.{zsh,sh}" lucid
-#   zinit light $ZDOTDIR
-#
-#   zinit ice multisrc"*.zsh" lucid
-#   zinit light $snippets_dir
-
-  # Alternative method if want to measure profile by file. Using 'zinit snippet'
-  # command can cause issues with cache when files are changed.
-  for file in $ZDOTDIR/*.zsh $snippets_dir/*.zsh
-  do
-    # Bindings have loaded earlier.
-    # [[ $file == *bindings.zsh ]] && continue
-    # echo $file
-    #source "$file"
-    #zinit snippet "$file"
-    source "$file"
-  done
-
-  # source "$ZDOTDIR/bindings.zsh"
-
-  file="$HOME/.config/shells/aliases.sh"
-  [[ -f "$file" ]] && source "$file"
-
-  # Note. Install local completions by running once in terminal:
-  # zinit creinstall $ZDOTDIR/completions
-
-  # Konsole/Yakuake and Kitty already have this.
-  # zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
-}
-
-function end_message() {
-  #  Most important part of config.
-  if [[ $UID == 0 ]]; then
-    echo "\nBy the Power of Grayskull, you are a root!"
-    # If not launched inside NeoVim
-    # elif which fortune &>/dev/null && [[ -z "$NVIM_LISTEN_ADDRESS" ]] ; then
-    #   echo
-    #   fortune
-  fi
 }
 
 #
@@ -103,7 +63,34 @@ for file in $plugins_dir/*.zsh; do
  source "$file"
 done
 
-load_configs
+#   zinit ice multisrc"*.{zsh,sh}" lucid
+#   zinit light $ZDOTDIR
+#
+#   zinit ice multisrc"*.zsh" lucid
+#   zinit light $snippets_dir
+
+# Alternative method if want to measure profile by file. Using 'zinit snippet'
+# command can cause issues with cache when files are changed.
+for file in $ZDOTDIR/*.zsh $snippets_dir/*.zsh
+do
+  # Bindings have loaded earlier.
+  # [[ $file == *bindings.zsh ]] && continue
+  # echo $file
+  #source "$file"
+  #zinit snippet "$file"
+  source "$file"
+done
+
+# source "$ZDOTDIR/bindings.zsh"
+
+file="$HOME/.config/shells/aliases.sh"
+[[ -f "$file" ]] && source "$file"
+
+# Note. Install local completions by running once in terminal:
+# zinit creinstall $ZDOTDIR/completions
+
+# Konsole/Yakuake and Kitty already have this.
+# zinit snippet OMZ::plugins/last-working-dir/last-working-dir.plugin.zsh
 
 # Normally is executed when loading syntax highlighting.
 if [[ $HOST == raspberry* ]]; then
@@ -119,6 +106,14 @@ fi
 # `compinit` is ran; zinit solves this via intercepting the `compdef'-calls
 # and storing them for later use with `zinit cdreplay')
 
-end_message
+#  Most important part of config.
+if [[ $UID == 0 ]]; then
+  echo "\nBy the Power of Grayskull, you are a root!"
+  # If not launched inside NeoVim
+  # elif which fortune &>/dev/null && [[ -z "$NVIM_LISTEN_ADDRESS" ]] ; then
+  #   echo
+  #   fortune
+fi
+
 # Uncomment to show speed profiling stats.
 #zprof
