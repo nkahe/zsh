@@ -22,7 +22,7 @@ autoload -Uz add-zsh-hook
 add-zsh-hook precmd show-elapsed-time
 
 # Uncomment to profile speed.
-#zmodload zsh/zprof
+# zmodload zsh/zprof
 
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d
@@ -87,4 +87,4 @@ if [[ $UID == 0 ]]; then
 fi
 
 # Uncomment to show speed profiling stats.
-#zprof
+# zprof
