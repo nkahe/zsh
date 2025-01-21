@@ -1,7 +1,11 @@
-#
+# Forked from Prezto editor module. See "LICENSE" -file.
+
 # Sets key bindings.
 #
-# Forked from Prezto editor module.
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+#   Henri K.
 
 # Treat these characters as part of a word.
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
@@ -51,14 +55,15 @@ key_info=(
   "Shift-Tab"    '^[[Z'
 )
 
-# ! Ctrl-b on monesti tmuxille.
+# NOTE: Ctrl-b is often used with Tmux so avoid binding that.
 
-# Display bindings defined here and in some plugins.
+# Display bindings defined here and in some plugins. Defined in this file so
+# they're easier to keep in sync with bindings.
 function lsbind() {
   (echo; echo -e "
   \nDefaults
   Ctrl-A    Move to start of line
-  Ctrl-B    Move to end of line
+  Ctrl-E    Move to end of line
   Ctrl-U    Kill whole line
   Ctrl-K    Kill to end of line
   Alt-K     Kill to beginning of line
@@ -83,7 +88,7 @@ function lsbind() {
   Alt-E     Expand command path
   Alt-L     ls
   Alt-M     Duplicate previous word
-  Alt-V     Toggle vi / emacs mode.
+  Alt-V     Toggle Vi / Emacs mode.
   Ctrl-G    Fzf cd to any dir
   Ctrl-R    Fzf search history
   Ctrl-T    Fzf select file
@@ -310,7 +315,6 @@ bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]]" vi-match-bracket
 bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
 
 # Command insertion.
-bindkey -s "$key_info[F12]" 'source $ZDOTDIR/plugins/termsupport.zsh\n'
 # bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
 bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
 bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
@@ -437,13 +441,12 @@ for keymap in 'emacs' 'viins'; do
   # Complete in the middle of word.
   bindkey -M "$keymap" "$key_info[Ctrl]I" expand-or-complete
 
-  # control-space expands all aliases, including global
+  # Ctrl-Space expands all aliases, including global.
   bindkey -M "$keymap" "$key_info[Ctrl] " glob-alias
 
   # Execute ls
   bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
 done
-
 
 # Set the key layout.
 zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
