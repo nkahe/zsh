@@ -1,5 +1,9 @@
-# These plugins take some resources. May want to set of skipping these if
-# only want lightweight shell.
+# These plugins take some resources.
+
+# Skip these for weaker Raspberry. ID is set in /etc/os-release
+if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
+  return
+fi
 
 # Lazyloading thefuck
 if (( $+commands[thefuck] )); then
