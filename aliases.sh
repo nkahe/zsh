@@ -1,8 +1,10 @@
 # This file is for common aliases compatible for Zsh, Bash and Fish -shells.
 
+# Variables expand when defined which is fine for these use cases.
+# shellcheck disable=SC2139
+
 function has() {
   command -v "$@" &> /dev/null
-
 }
 
 function upvibre() {
@@ -84,7 +86,7 @@ has yank-cli && alias yank=yank-cli
 # Print alphabets
 function alp() {
   for char in {A..Z} ; do
-    printf $char" "
+    printf "%s " "$char"
   done
   echo "Å Ä Ö"
 }
@@ -95,7 +97,7 @@ function html-to-md () {
 }
 
 function minitimer() {
-  (sleep "$1"; notify-send "Time is up" && paplay $HOME/Sounds/complete.wav) &
+  (sleep "$1"; notify-send "Time is up" && paplay "$HOME/Sounds/complete.wav") &
 }
 
 function define() {
@@ -106,10 +108,7 @@ function define() {
   curl -s "dict://dict.org/d:${1}" | $PAGER
 }
 
-#
-# Wayland Tools
-#
-
+# Copy file's path or CWD to clipboard.
 function cppath {
   if [[ -n "$1" ]]; then
     # If a filename is provided, get the full path of the file
@@ -128,7 +127,7 @@ function cppath {
 }
 
 function irc() {
-  ssh -tt $USER@rasp screen -rdU
+  ssh -tt "$USER@rasp screen -rdU"
 }
 
 # Restart applications
@@ -239,6 +238,7 @@ function lscolors {
 }
 
 # Grep from processer and list info with headers.
+# shellcheck disable=SC2009
 function psg {
   echo 'USER         PID %CPU  %MEM   VSZ   RSS TTY      STAT START    TIME COMMAND'
   ps aux | grep --color=always -E "$@" | grep -v grep
@@ -274,6 +274,7 @@ alias ls="$ls" \
   lsd="$ls -d */" \
   lld="$ls -l -d */"
 
+unset ls
 # Package management {{{1
 
 # find alternative apps if it is installed on your system
@@ -287,10 +288,10 @@ alias ls="$ls" \
 if has rpm; then
   function rpm-isot {
     rpm -qa --queryformat="%{SIZE} %{NAME} %{VERSION}\n" \
-        | sort -k 1 -n \
-        | tail -n 100 \
-        | awk '{size=$1; $1=""; print size, $0}' \
-        | numfmt --field=1 --to=iec --suffix=B
+      | sort -k 1 -n \
+      | tail -n 100 \
+      | awk '{size=$1; $1=""; print size, $0}' \
+      | numfmt --field=1 --to=iec --suffix=B
   }
 fi
 
@@ -303,7 +304,8 @@ function update-grub-alias() {
 
 if has zypper; then
   file="$HOME/.config/shells/zypper.sh"
-  [[ -s "$file" ]] && source "$file"
+  # shellcheck disable=SC1090
+  [[ -s "$file" ]] && source "${file}"
 fi
 
 # Find out distribution.
@@ -319,6 +321,7 @@ fi
 if [[ $OS == *fedora* ]]; then
   update-grub-alias
   file="$HOME/.config/shells/dnf.sh"
+  # shellcheck disable=SC1090
   [[ -f "$file" ]] && source "$file"
 elif [[ $OSTYPE == 'darwin'* ]]; then
   alias inf="brew info" \
