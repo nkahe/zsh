@@ -40,8 +40,14 @@ zle -N _navi_widget
 
 # jeffreytse/zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.
 # https://github.com/jeffreytse/zsh-vi-mode
+
+# Different environments may give different codes for F4.
+local F4_key='^[OS'
+
+# When using Zsh-Vi-Mode bindings are added this way.
+
 for keymap in 'emacs' 'viins' 'vicmd'; do
-  zvm_after_init_commands+=("bindkey -M $keymap '$key_info[F4]' _navi_widget")
+  zvm_after_init_commands+=("bindkey -M $keymap '$F4_key' _navi_widget")
 done
 
 (( $+commands[fzf] )) && zvm_after_init_commands+=("source <(fzf --zsh)")
