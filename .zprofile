@@ -38,8 +38,6 @@ export _ZO_DATA_DIR="$HOME/.local/state/zsh"
 
 [[ ! -d "$_ZO_DATA_DIR" ]] && mkdir -p "$_ZO_DATA_DIR"
 
-export ZCALC_HISTFILE="$HOME/.local/state/zsh/zcalc_history"
-
 
 # Other software  -------------------------------------------------------------
 
@@ -98,16 +96,18 @@ if has task; then
   export TASKDATA="~/MegaSync/task"
 fi
 
-# tldr installed with pip. https://pypi.org/project/tldr/
-export TLDR_COLOR_BLANK="cyan"
-export TLDR_COLOR_NAME="green"
-export TLDR_COLOR_DESCRIPTION="cyan"
-# Example tells what command does.
-export TLDR_COLOR_EXAMPLE="white"
-export TLDR_COLOR_COMMAND="blue"
-export TLDR_COLOR_PARAMETER="cyan"
-export TLDR_CACHE_ENABLED=1
-export TLDR_CACHE_MAX_AGE=720
+if has tldr; then
+  # tldr installed with pip. https://pypi.org/project/tldr/
+  export TLDR_COLOR_BLANK="cyan"
+  export TLDR_COLOR_NAME="green"
+  export TLDR_COLOR_DESCRIPTION="cyan"
+  # Example tells what command does.
+  export TLDR_COLOR_EXAMPLE="white"
+  export TLDR_COLOR_COMMAND="blue"
+  export TLDR_COLOR_PARAMETER="cyan"
+  export TLDR_CACHE_ENABLED=1
+  export TLDR_CACHE_MAX_AGE=720
+fi
 
 # Don't populate ~ with historyfile. Ei toimi susella, kun määritellään
 # uudestaan /etc/zshrc. on sen sijaan määritelty zshrc:ssä.
