@@ -1,13 +1,23 @@
 #!/bin/zsh
-### Completions
 
-# Forked from Prezto completion module.
-#https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
+# Forked from Prezto completion module. See "LICENSE" -file.
+# https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
+
+#
+# Sets completion options.
+#
+# Authors:
+#   Robby Russell <robby@planetargon.com>
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+#   Henri K.
 
 # zmodload zsh/zprof
 
 # Return if requirements are not found.
-[[ "$TERM" == 'dumb' ]] && return 1
+if [[ $TERM == dumb ]]; then
+  return 1
+fi
 
 # Add completion for keg-only brewed curl on macOS when available.
 if (( $+commands[brew] )); then
@@ -20,7 +30,9 @@ if (( $+commands[brew] )); then
   unset brew_prefix
 fi
 
+#
 # Options
+#
 
 setopt correct             # try to correct spelling...
 setopt correctall          # ...for all arguments
@@ -36,11 +48,17 @@ setopt extended_glob       # Needed for file modification glob modifiers with co
 unsetopt menu_complete     # Do not autoselect the first completion entry.
 unsetopt flowcontrol       # Disable start/stop characters in shell editor.
 
+#
 # Styles
+#
 
+# Defaults.
 if [[ -n "$LS_COLORS" ]]; then
-  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+  echo "completion.zsh: length ${#LS_COLORS}"
+  # zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
   zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+  zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 fi
 
 # Addons elsewhere than Prezto/Zim:
@@ -170,7 +188,9 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-# End of Prezto settings--------------------------------------------------------
+#
+# Additons to Prezto settings
+#
 
 zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
 
