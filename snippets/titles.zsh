@@ -1,20 +1,23 @@
-# Forked from Prezto module terminal.zsh
-#
+# Forked from Prezto "terminal" module. See "LICENSE" -file.
+# https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
+
 # Sets terminal window and tab titles.
 #
-# Original authors:
+# Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #   Olaf Conradi <olaf@conradi.org>
 #
+#   Henri K.
 
-# Original https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
+# NOTE: While setting tab title works in Yakuake, it gives message to journalctl:
+# yakuake: Skipped method "setTabTitle" : Type not registered with QtDBus in parameter list: TabBar::InteractiveType
 
 # Return if requirements are not found.
-if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
+if [[ $TERM == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi
 
-# Settings
+# Settings. In Prezto these are defined in .zpreztorc.
 
 # Auto set the tab and window titles.
 zstyle ':prezto:module:terminal' auto-title 'yes'
@@ -28,8 +31,7 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 # Set the terminal multiplexer title format.
 # zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 
-
-# Sets the terminal _window_ title.
+# Sets the terminal window title.
 function set-window-title {
   # Yakuake window titles are controlled by the application.
   # In Konsole window title is same as tab title.
@@ -47,12 +49,6 @@ TERMINAL=$(ps -o comm= "$PPID")
 if [[ $TERMINAL == "yakuake" ]]; then
   session_id=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.activeSessionId)
 fi
-
-#echo "Terminal: ${TERMINAL}"
-#echo "session id: $session_id"
-
-# FIXME: joskus "micro " + pitkä litannia palautti "micro micro".
-
 # Sets the terminal tab title.
 function set-tab-title {
   local title_format{,ted}
@@ -65,8 +61,8 @@ function set-tab-title {
       # Getting needed session id doesn't work for root user.
       [[ $UID == 0 || -z "$session_id" ]] && return
       # echo "session_id: $session_id title: ${(V%)title_formatted}"
-      qdbus org.kde.yakuake /yakuake/tabs setTabTitle "$session_id" "${(V%)title_formatted}" 2>>~/.cache/titles-errors.log
-      # qdbus >/dev/null org.kde.yakuake /yakuake/tabs setTabTitle $session_id "${(V%)title_formatted}"
+      qdbus org.kde.yakuake /yakuake/tabs setTabTitle "$session_id" "${(V%)title_formatted}"
+      # echo "qdbus org.kde.yakuake /yakuake/tabs setTabTitle \"$session_id\" \"${(V%)title_formatted}\""
     ;;
     konsole)
       set-konsole-tab-title "${(V%)title_formatted}"
@@ -79,9 +75,6 @@ function set-tab-title {
     ;;
     esac
  }
-
-
- # TODO: type on varmaan kutsuttaessa aina 0, vaikka ei aina oikeasti olisi.
 
 # Set tab title for Konsole. Konsole uses this also for window title.
 # Function originally by Stefan Becker and Smar:
@@ -98,13 +91,14 @@ function set-konsole-tab-title {
 }
 
 # Sets the terminal multiplexer tab title.
- function set-multiplexer-title {
+function set-multiplexer-title {
   local title_format{,ted}
   zstyle -s ':prezto:module:terminal:multiplexer-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
   printf '\ek%s\e\\' "${(V%)title_formatted}"
 }
 
+# Sets the tab and window titles with a given command.
 function _terminal-set-titles-with-command {
   emulate -L zsh
   setopt EXTENDED_GLOB
@@ -125,36 +119,28 @@ function _terminal-set-titles-with-command {
     )
   else
     # Set the command name, or in the case of these commands, the next command.
-#     local cmd="${${2[(wr)^(*=*|sudo|su|ssh|mosh|rake|-*)]}:t}"
+    # local cmd="${${2[(wr)^(*=*|sudo|su|ssh|mosh|rake|-*)]}:t}"
 
-  # Assuming $2 contains the entire command line.
-  # Split the command into an array
-  local cmd_array=(${(z)2})
+    # Changed from Prezto: dropping first word of title in certain cases.
 
-  # Check if the first word is one of the specified prefixes.
-  if [[ "${cmd_array[1]}" == (sudo|su|ssh|mosh|rake) ]]; then
-    # Remove the first word and keep the rest of the line.
-    local cmd="${(j: :)${cmd_array[2,-1]}}"
-  else
-    # Otherwise, keep the whole command line.
-    local cmd="${(j: :)${cmd_array[@]}}"
-  fi
+    # Assuming $2 contains the entire command line.
+    # Split the command into an array
+    local cmd_array=(${(z)2})
 
-    # Find the first non-option argument that is not identical to `cmd`.
-  #     local second_word=""
-  #     for word in "${2[(w)2,-1]}"; do
-  #       if [[ "$word" != -* && "$word" != "$cmd" ]]; then
-  #         second_word="$word"
-  #         break
-  #       fi
-  #     done
+    # Check if the first word is one of the specified prefixes.
+    if [[ "${cmd_array[1]}" == (sudo|su|ssh|mosh|rake) ]]; then
+      # Remove the first word and keep the rest of the line.
+      local cmd="${(j: :)${cmd_array[2,-1]}}"
+    else
+      # Otherwise, keep the whole command line.
+      local cmd="${(j: :)${cmd_array[@]}}"
+    fi
 
     # Truncate if longer than 20 characters.
     local truncated_cmd="${cmd/(#m)?(#c20,)/${MATCH[1,17]}...}"
-
     unset MATCH
 
-    if [[ "$TERM" == screen* ]]; then
+    if [[ $TERM == screen* ]]; then
       set-multiplexer-title "$truncated_cmd"
     fi
     set-tab-title "$truncated_cmd"
@@ -166,6 +152,7 @@ function _terminal-set-titles-with-command {
 function _terminal-set-titles-with-path {
   emulate -L zsh
   setopt EXTENDED_GLOB
+
   local absolute_path="${${1:a}:-$PWD}"
   local abbreviated_path="${absolute_path/#$HOME/~}"
 
@@ -175,12 +162,9 @@ function _terminal-set-titles-with-path {
   local truncated_path="${abbreviated_path/(#m)?(#c15,)/...${MATCH[$width,-1]}}"
   unset MATCH
 
-  if [[ "$TERM" == screen* ]]; then
+  if [[ $TERM == screen* ]]; then
     set-multiplexer-title "$truncated_path"
   fi
-
-  #echo "truncated_path: $truncated_path"
-  #echo "abbreviated_path: $abbreviated_path"
   set-tab-title "$truncated_path"
   set-window-title "$abbreviated_path"
 }
@@ -189,7 +173,7 @@ function _terminal-set-titles-with-path {
 autoload -Uz add-zsh-hook
 
 # Set up the Apple Terminal.
-if [[ "$TERM_PROGRAM" == 'Apple_Terminal' ]] \
+if [[ $TERM_PROGRAM == Apple_Terminal ]] \
   && ( ! [[ -n "$STY" || -n "$TMUX" || -n "$DVTM" ]] )
 then
   # Sets the Terminal.app current working directory before the prompt is
