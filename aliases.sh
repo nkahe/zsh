@@ -41,11 +41,15 @@ ww() { $WikiEditor -c ":execute 'cd ~/Documents/notes|NERDTreeToggle|wincmd w|Vi
 # ffind: A sane replacement for find. https://github.com/jaimebuelta/ffind
 # alias ffind='ffind --hidden'    # Show also hidden files.
 
-if has neomutt && [[ -f ~/.config/mutt/muttrc ]]; then
-  alias mutt="neomutt -F ~/.config/mutt/muttrc"
-elif has mutt && [[ -f ~/.config/mutt/muttrc ]]; then
-  alias mutt="mutt -F ~/.config/mutt/muttrc"
+muttrc="$HOME/.config/mutt/muttrc"
+if [[ -f ~/.config/mutt/muttrc ]]; then
+  if has neomutt; then
+    alias mutt="neomutt -F $muttrc"
+  elif has mutt; then
+    alias mutt="mutt -F $muttrc"
+  fi
 fi
+unset muttrc
 
 # Tail with colors.
 has ccze && tailc () { tail "$@" | ccze -A; }
@@ -183,6 +187,7 @@ fi
 alias chmod="chmod $cflags"
 alias chown="chown $cflags"
 alias dd='dd status=progress'
+unset cflags
 
 # Abbrevations
 
@@ -273,8 +278,8 @@ alias ls="$ls" \
   lla="$ls -l -a" \
   lsd="$ls -d */" \
   lld="$ls -l -d */"
-
 unset ls
+
 # Package management {{{1
 
 # find alternative apps if it is installed on your system
