@@ -7,13 +7,22 @@
 #
 #   Henri K.
 
+# Return if requirements are not found.
+if [[ "$TERM" == 'dumb' ]]; then
+  return 1
+fi
+
 # Treat these characters as part of a word.
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
+#
+# Variables
+#
+
+# Use human-friendly identifiers.
+# Only some terminals supports Ctrl-Backspace
 zmodload zsh/terminfo
 typeset -gA key_info
-
-# Only some terminals supports Ctrl-Backspace
 key_info=(
   'Alt-Up'        '^[[1;3A'
   'Alt-Left'      '^[[1;3D'
@@ -57,8 +66,8 @@ key_info=(
 
 # NOTE: Ctrl-b is often used with Tmux so avoid binding that.
 
-# Display bindings defined here and in some plugins. Defined in this file so
-# they're easier to keep in sync with bindings.
+# Display bindings defined here and in some plugins.
+# Defined in this file so they're easier to keep in sync with bindings.
 function lsbind() {
   (echo; echo -e "
   \nDefaults
@@ -125,10 +134,17 @@ for key in "${(k)key_info[@]}"; do
   fi
 done
 
+#
+# External Editor
+#
+
 # Allow command line editing in an external editor.
 autoload -Uz edit-command-line
 zle -N edit-command-line
 
+#
+# Functions
+#
 # Runs bindkey but for all of the keymaps. Running it with no arguments will
 # print out the mappings for all of the keymaps.
 function bindkey-all {
@@ -138,10 +154,6 @@ function bindkey-all {
     bindkey -M "${keymap}" "$@"
   done
 }
-
-#
-# Functions overrides
-# These override default Zsh functions.
 
 # Reset the prompt based on the current context and
 # the ps-context option.
@@ -293,17 +305,9 @@ for key in "$key_info[Esc]"{F,f} "${(s: :)key_info[Ctrl-Right]}" \
   "${key_info[Esc]}${key_info[Right]}"
   bindkey -M emacs "$key" emacs-forward-word
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  bindkey "$key_info[Opt-right]" forward-word
-  bindkey "$key_info[Opt-left]"  backward-word
-fi
-
 # Kill to the beginning of the line.
 for key in "$key_info[Esc]"{K,k}
   bindkey -M emacs "$key" backward-kill-line
-
-# Change to Vi-mode
-bindkey -e "$key_info[Alt]v" vi-mode
 
 # Search previous character.
 bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]B" vi-find-prev-char
@@ -314,12 +318,21 @@ bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]]" vi-match-bracket
 # Edit command in an external editor.
 bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
 
-# Command insertion.
+# Additions to Prezto
+
+# Change to Vi-mode
+bindkey -e "$key_info[Alt]v" vi-mode
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  bindkey "$key_info[Opt-right]" forward-word
+  bindkey "$key_info[Opt-left]"  backward-word
+fi
+
+# Command insertions.
 # bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
 bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
 bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
 bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
-
 
 # Toggle comment at the start of the line. Note that we use pound-toggle which
 # is similar to pount insert, but meant to work around some issues that were
@@ -331,18 +344,13 @@ bindkey -M emacs "$key_info[Ctrl]_" pound-toggle
 # Vi Key Bindings
 #
 
+# Edit command in an external editor emacs style (v is used for visual mode)
+bindkey -M vicmd "$key_info[Control]X$key_info[Control]E" edit-command-line
+
 # Undo/Redo
 bindkey -M vicmd "u" undo
 bindkey -M viins "$key_info[Ctrl]_" undo
 bindkey -M vicmd "$key_info[Ctrl]R" redo
-#
-# if (( $+widgets[history-incremental-pattern-search-backward] )); then
-#   bindkey -M vicmd "?" history-incremental-pattern-search-backward
-#   bindkey -M vicmd "/" history-incremental-pattern-search-forward
-# else
-#   bindkey -M vicmd "?" history-incremental-search-backward
-#   bindkey -M vicmd "/" history-incremental-search-forward
-# fi
 
 # Keybinds for all vi keymaps
 for keymap in viins vicmd; do
@@ -394,7 +402,7 @@ for keymap in $unbound_keys; do
   bindkey -M vicmd "${keymap}" _prezto-zle-noop
 done
 
-# All modes
+# Support for some common keys and shortcuts.
 for keymap in 'emacs' 'viins' 'vicmd'; do
   bindkey -M "$keymap" "$key_info[Delete]" delete-char
   bindkey -M "$keymap" "$key_info[Home]" beginning-of-line
@@ -406,7 +414,6 @@ done
 
 # Keybinds for emacs and vi insert mode
 for keymap in 'emacs' 'viins'; do
-
   bindkey -M "$keymap" "$key_info[Ctrl]l"  clear-screen
   bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
   bindkey -M "$keymap" "$key_info[Left]"   backward-char
@@ -414,9 +421,6 @@ for keymap in 'emacs' 'viins'; do
 
   # Expand history on space.
   bindkey -M "$keymap" ' ' magic-space
-
-  # List bindings
-  bindkey -M "$keymap" "$key_info[Ctrl]b" lsbind
 
   # Expand command name to full path.
   for key in "$key_info[Esc]"{E,e}
@@ -430,9 +434,6 @@ for keymap in 'emacs' 'viins'; do
   for key in "$key_info[Ctrl]Q" "$key_info[Esc]"{q,Q}
     bindkey -M "$keymap" "$key" push-line-or-edit
 
-  # Insert 'sudo ' at the beginning of the line.
-  bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
-
   # Bind Shift + Tab to go to the previous menu item.
   # Some different key-infos for these.
   for key in BackTab Shift-Tab
@@ -441,8 +442,16 @@ for keymap in 'emacs' 'viins'; do
   # Complete in the middle of word.
   bindkey -M "$keymap" "$key_info[Ctrl]I" expand-or-complete
 
+  # Insert 'sudo ' at the beginning of the line.
+  bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
+
   # Ctrl-Space expands all aliases, including global.
   bindkey -M "$keymap" "$key_info[Ctrl] " glob-alias
+
+  # Additions to Prezto
+
+  # List bindings
+  bindkey -M "$keymap" "$key_info[Ctrl]b" lsbind
 
   # Execute ls
   bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
