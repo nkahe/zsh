@@ -14,6 +14,7 @@ fpath+=("$ZDOTDIR/completions")
 # Measure Zsh setup startup time.
 file="$snippets_dir/startup-time.zsh"
 [[ -f "$file" ]] && source "$file"
+unset file
 
 #ZSH_DISABLE_COMPFIX=true
 
@@ -45,10 +46,13 @@ if [[ "$key_bindings" == vi ]]; then
   set -o vi
 fi
 
-# Source plugin definitions
-for file in $plugins_dir/*.zsh; do
+# Source plugin specs and snippets.
+# NOTE: Using 'zinit snippet' command instead can cause issues with cache when
+# files are changed.
+for file in $plugins_dir/*.zsh $snippets_dir/*.zsh; do
  source "$file"
 done
+unset file plugins_dir snippets_dir
 
 #  zinit ice multisrc"*.{zsh,sh}" lucid
 #  zinit light $ZDOTDIR
@@ -56,8 +60,7 @@ done
 #  zinit ice multisrc"*.zsh" lucid
 #  zinit light $snippets_dir
 
-# Using 'zinit snippet' command can cause issues with cache when files are changed.
-for file in $ZDOTDIR/*.zsh $ZDOTDIR/aliases.sh $snippets_dir/*.zsh
+for file in $ZDOTDIR/*.zsh $ZDOTDIR/aliases.sh
 do
   # Bindings have loaded earlier.
   # [[ $file == *bindings.zsh ]] && continue
@@ -65,10 +68,11 @@ do
   #zinit snippet "$file"
   source "$file"
 done
+unset file
 # source "$ZDOTDIR/bindings.zsh"
 
 # Normally is executed when loading syntax highlighting.
-if [[ $HOST == raspberry* ]]; then
+if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
   zicompinit
 fi
 
