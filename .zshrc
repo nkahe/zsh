@@ -28,8 +28,11 @@ add-zsh-hook precmd show-elapsed-time
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d
 
-# Load Zinit - Zsh plugin manager. https://github.com/zdharma-continuum/zinit
+# Load Zinit - Zsh plugin manager. Install if not present.
+# https://github.com/zdharma-continuum/zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/bin/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "$ZINIT_HOME/bin/zinit.zsh"
 
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
@@ -62,14 +65,9 @@ unset file plugins_dir snippets_dir
 
 for file in $ZDOTDIR/*.zsh $ZDOTDIR/aliases.sh
 do
-  # Bindings have loaded earlier.
-  # [[ $file == *bindings.zsh ]] && continue
-  #source "$file"
-  #zinit snippet "$file"
   source "$file"
 done
 unset file
-# source "$ZDOTDIR/bindings.zsh"
 
 # Normally is executed when loading syntax highlighting.
 if [[ -n "$ID" && "$ID" == "raspbian" ]]; then

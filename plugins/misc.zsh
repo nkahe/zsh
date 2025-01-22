@@ -29,34 +29,20 @@ zinit ice wait"2" lucid as"program" make'!' pick"bin/keyd" \
 zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moar* -> moar"
 zinit load walles/moar
 
-# Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
-zinit ice wait"2" lucid as"program" pick"tungsten.sh" atload"alias ask=tungsten.sh"
-zinit load ASzc/tungsten
-
-# A CLI tool that scrapes Google search results and SERPs that provides
-# instant and concise answers. https://github.com/Bugswriter/tuxi
-zinit ice wait"2" as"program" pick"tuxi" lucid
-zinit load Bugswriter/tuxi
-
 # jeffreytse/zsh-vi-mode: A better and friendly vi(vim) mode plugin for ZSH.
 # https://github.com/jeffreytse/zsh-vi-mode
 zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
 zinit ice depth=1 if"[[ $key_bindings == vi ]]"
 zinit light jeffreytse/zsh-vi-mode
 
-# agkozak/zsh-z: Jump quickly to directories that you have visited "frecently."
-# A native Zsh port of z.sh. https://github.com/agkozak/zsh-z
-#local file="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/z"
-#zinit ice wait lucid atinit"export _Z_DATA=$file" atclone"touch $file"
-#zinit load agkozak/zsh-z
-
-# zsh-completions: Additional completion definitions for Zsh.
-# https://github.com/zsh-users/zsh-completions
-#zinit light zsh-users/zsh-completions
-
 # zsh-completions: Additional completion definitions for Zsh.
 # https://github.com/clarketm/zsh-completions
 zinit light clarketm/zsh-completions
+
+# Alternative to previous.
+# zsh-completions: Additional completion definitions for Zsh.
+# https://github.com/zsh-users/zsh-completions
+#zinit light zsh-users/zsh-completions
 
 # xiny: Simple command line tool for unit conversions
 # https://github.com/bcicen/xiny
@@ -74,6 +60,10 @@ zinit load bcicen/xiny
 # fi
 # unset compfiles
 
+# ajeetdsouza/zoxide: A smarter cd command.
+# https://github.com/ajeetdsouza/zoxide
 if (( $+commands[zoxide] )); then
+  export _ZO_DATA_DIR="$HOME/.local/state/zsh"
+  [[ ! -d "$_ZO_DATA_DIR" ]] && mkdir -p "$_ZO_DATA_DIR"
   eval "$(zoxide init zsh)"
 fi

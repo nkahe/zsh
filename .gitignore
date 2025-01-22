@@ -1,5 +1,5 @@
+# Settings that are no longer in use.
 archive
 
-# These shouldn't be created here but sometimes are.
 zcompdump
 .zcalc_history

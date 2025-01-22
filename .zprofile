@@ -1,12 +1,11 @@
 #!/bin/zsh
 # Needs to be named .sh or doesn't work in KDE Plasma.
-# Executes commands at *login* shells pre-zshrc, e.g. at system startup.
+# Executes commands at login shells pre-zshrc, e.g. at system startup.
 # /etc/zprofile gets executed before this
-# ! settings in /etc/zshrc override these.
+# NOTE: settings in /etc/zshrc override these.
 
-# Initialization file. DE should set run this file at startup. Don't put
-# anything that outputs something here. Can break things like ssh and scp.
-# KDE Plasma: link to ~/.config/plasma-workspace/env
+# WARNING: Don't put anything that outputs something here. Can break things
+# like ssh and scp.
 
 [[ -f $HOME/.profile ]] && source $HOME/.profile
 
@@ -23,9 +22,7 @@ function has {
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
 # Used by OMZ plugins like last-working-dir and completions.
-cachedir="${XDG_CACHE_HOME:-$HOME/.cache}"
-export ZSH_CACHE_DIR="$cachedir/zsh"
-
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
 
 # Siirryin käyttämään ~/dotfiles/init_scripts, joka DE:stä käsin ajetaan.
@@ -33,10 +30,6 @@ export ZSH_CACHE_DIR="$cachedir/zsh"
 # Device-specific settings here.
 
 [[ -f "$ZDOTDIR/.zprofile.priv" ]] && source "$ZDOTDIR/.zprofile.priv"
-
-export _ZO_DATA_DIR="$HOME/.local/state/zsh"
-
-[[ ! -d "$_ZO_DATA_DIR" ]] && mkdir -p "$_ZO_DATA_DIR"
 
 
 # Other software  -------------------------------------------------------------
@@ -120,4 +113,6 @@ if has npm; then
   export NO_UPDATE_NOTIFIER
 fi
 
-export WGETRC=${XDG_CONFIG_HOME:-$HOME/.config}/wgetrc
+if has wget; then
+  export WGETRC=${XDG_CONFIG_HOME:-$HOME/.config}/wgetrc
+fi
