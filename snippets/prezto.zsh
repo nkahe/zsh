@@ -1,5 +1,5 @@
 # Settings and definitions for selected modules from Prezto -configuration
-# framework as snippets. Forked Prezto modules are in their own snippets files.
+# framework. Forked Prezto modules are in their own snippets files.
 
 # Directory
 

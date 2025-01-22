@@ -44,6 +44,7 @@ function edz() {
   fi
 }
 
+# Check spelling of word.
 function check() {
   if (( $+commands[aspell] )); then
     echo "$@" | aspell -a --lang=en
@@ -57,7 +58,7 @@ function check() {
 # http://ix.io
 function post-ix() { "$@" | curl -F 'f:1=<-' ix.io ;}
 
-# Calculator
+# Simple calculator
 autoload -U zcalc
 function __calculate {
   zcalc -e -f "$*"

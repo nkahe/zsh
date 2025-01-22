@@ -1,5 +1,5 @@
+archive
+
 # These shouldn't be created here but sometimes are.
-prezto
-*.priv
 zcompdump
 .zcalc_history

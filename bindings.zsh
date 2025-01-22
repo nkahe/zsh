@@ -1,4 +1,4 @@
-# Forked from Prezto editor module. See "LICENSE" -file.
+# Forked from Prezto "editor" module. See "LICENSE" -file.
 
 # Sets key bindings.
 #
