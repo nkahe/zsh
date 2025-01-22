@@ -1,8 +1,6 @@
 # My Zsh setup
 
-This is my maximalistic [Z shell aka Zsh](https://zsh.sourceforge.io/) setup. It uses flexible and fast [Zinit plugin manager](https://github.com/zdharma-continuum/zinit). Some modules from [Prezto configuration framework](https://github.com/sorin-ionescu/prezto) are used and some are forked from them (files marked with asterisk in section Contents).
-
-Why I use this instead of Prezto you might ask. With incorporating Zinit it's easier and faster to handle any external plugins. Zinit allows deferring plugin loading (aka Turbo mode) which makes startup faster and has lot other features like time profiling.
+This is my maximalistic [Z shell aka Zsh](https://zsh.sourceforge.io/) setup. It uses flexible and fast [Zinit plugin manager](https://github.com/zdharma-continuum/zinit). Some modules from [Prezto configuration framework](https://github.com/sorin-ionescu/prezto) are used and [some are forked from them](#forked-prezto-modules). Mainly used in Linux but should work in Mac too.
 
 ## Features
 
@@ -18,22 +16,43 @@ Why I use this instead of Prezto you might ask. With incorporating Zinit it's ea
 - Autosuggestions
 - more
 
-## Contents
+## Requirements
 
-Files and their function. They should be in $HOME/.config/zsh/.
+- Must have: zsh, git
+- Recommended: [Nerd Fonts](https://www.nerdfonts.com/) for nicer prompt and for [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended.
+- Optional: neovim/vim, Zoxide, curl, grc, ccze, wl-copy, termdown, mutt, cheat, tldr, yadm, translate-shell.
 
-- .zshenv - In user's home directory should be symlink to this file or copy of it. It tells Zsh where rest of the files are.
-- .zprofile - Mainly Zsh -specific environment variables.
+## Installation
+
+1. Install requirements.
+2. Git clone this repo to directory of your choice. Default is ~/.config/zsh.
+3. If ~/.zshenv already exists backup by renaming it. Make a hidden symlink to home directory pointing zshenv -file:
+```
+ln -s ~/.config/zsh/zshenv $HOME/.zshenv
+```
+ or copy it:
+```
+cp ~/.config/zsh/zshenv $HOME/.zshenv
+```
+
+4. If using different directory for the config, change it in .zshenv accordingly.
+5. Start a new shell. If Zinit installation is not found, it is installed automatically
+and all defined external plugins and snippets are being pulled.
+
+## Configuration files
+
+- .zshenv - Tells Zsh where rest of the files are. In home directory should be a symlink with same the name to this file or a copy of it.
+- .zprofile - Zsh -specific environment variables and settings.
 - .zshrc - First file that is processed during init and main configuration file of which rest of configurations are sourced.
-- settings.zsh - Setting definitions which overwrite or add settings from Prezto modules.
-- completion.zsh - Completion settings *
+- settings.zsh - General settings.
+- completion.zsh - Completion settings. *
 - aliases.sh - Common aliases that are compatible with Bash and can be sourced from Bash -settings.
 - zsh-aliases.zsh - Zsh -specific aliases and functions.
-- bindings.zsh - Keybindings *
+- bindings.zsh - Keybindings. *
 
-All zsh-files directly under these directories are sourced from .zshrc during init.
-- plugins/ - Directory containing plugin specs for Zinit. Files can contain many definitions.
-- snippets/ - Directory containing different snippets. Some are Zinit specs for external snippets, some contain local snippet.
+All .zsh-files directly under these directories are sourced from .zshrc during init.
+- plugins/ - Plugin specs mainly for Zinit. Files can contain many specs.
+- snippets/ - Different snippets. Some are Zinit specs for external snippet.
   - titles.zsh *
   - prezto.zsh - Specs for used Prezto modules.
 - completions/ - Additional locally added completions.
@@ -53,7 +72,7 @@ Changes, added:
 - Bindings:
 - Toggle Vi / Emacs command mode.
 - cd to previous / next directory, ls
-# Support for some more common keys and shortcuts.
+- Support for some more common keys and shortcuts.
 
 Removed:
 - Functions for prompts since prompt is defined as plugin instead in plugins/prompt.zsh
@@ -62,7 +81,7 @@ Removed:
 
 ### titles.zsh
 
-- Terminal module in Prezto.
+- Forked from terminal module in Prezto.
 
 Changes:
 - Added support for Yakuake and Konsole -terminals which set titles differently using qdbus.
@@ -71,6 +90,8 @@ Changes:
 - Allow longer titles for Terminator -terminal which has wide tabs.
 
 ### completion.zsh
+
+- Forked from completion module in Prezto.
 
 Changes:
 - No LS_COLORS definition since I use fork of  [LS_COLORS: A collection of LS_COLORS definitions; needs your contribution!](https://github.com/trapd00r/LS_COLORS) instead.
