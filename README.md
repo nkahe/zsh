@@ -20,7 +20,7 @@ This is my maximalistic [Z shell aka Zsh](https://zsh.sourceforge.io/) setup. It
 
 - Must have: zsh, git
 - Recommended: [Nerd Fonts](https://www.nerdfonts.com/) for nicer prompt and for [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended.
-- Optional: neovim/vim, Zoxide, curl, grc, ccze, wl-copy, termdown, mutt, cheat, tldr, yadm, translate-shell.
+- Optional: Zoxide, curl, grc, ccze, wl-copy, termdown, cheat, tldr, yadm, translate-shell.
 
 ## Installation
 
@@ -46,7 +46,6 @@ and all defined external plugins and snippets are being pulled.
 - .zshrc - First file that is processed during init and main configuration file of which rest of configurations are sourced.
 - settings.zsh - General settings.
 - completion.zsh - Completion settings. *
-- aliases.sh - Common aliases that are compatible with Bash and can be sourced from Bash -settings.
 - zsh-aliases.zsh - Zsh -specific aliases and functions.
 - bindings.zsh - Keybindings. *
 
@@ -61,7 +60,7 @@ All .zsh-files directly under these directories are sourced from .zshrc during i
 
 ## Forked Prezto modules
 
-For license see LICENSE -file. Settings are changed directly in the file instead of .zpreztorc like in Prezto.
+For license see [LICENSE -file](./LICENSE). Settings are changed directly in the file instead of .zpreztorc like in Prezto.
 
 ### bindings.zsh
 
@@ -100,3 +99,7 @@ Changes:
 - Use $ZSH_CACHE_DIR for caching.
 - Completion settings for more text editors, killall, Taskwarrior, Docker, Angular cli.
 - When new programs is installed, auto update autocomplete without reloading shell.
+
+## License
+
+See [LICENSE -file](./LICENSE)
