@@ -1,6 +1,6 @@
 # My Zsh setup
 
-This is my maximalistic [Z shell aka Zsh](https://zsh.sourceforge.io/) setup. It uses flexible and fast [Zinit plugin manager](https://github.com/zdharma-continuum/zinit). Some modules from [Prezto configuration framework](https://github.com/sorin-ionescu/prezto) are used and [some are forked from them](#forked-prezto-modules). Mainly used in Linux but should work in Mac too.
+This is my maximalistic [Z shell aka Zsh](https://zsh.sourceforge.io/) setup. It uses flexible and fast [Zinit plugin manager](https://github.com/zdharma-continuum/zinit). Some modules from [Prezto configuration framework](https://github.com/sorin-ionescu/prezto) are used and [some are forked from them](#forked-prezto-modules). This setup is mainly used in Linux but should work in Mac too although isn't actively tested.
 
 ## Features
 
