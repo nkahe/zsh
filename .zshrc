@@ -32,14 +32,15 @@ bindkey -d
 # https://github.com/zdharma-continuum/zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
 [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/bin/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+if [ ! -d $ZINIT_HOME/bin/.git ]; then
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
 source "$ZINIT_HOME/bin/zinit.zsh"
 
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 
-# Fzf: "If you use vi mode on bash, you need to add set -o vi before source
-
 # Set the key mapping style to 'emacs' or 'vi'.
+# Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 zstyle ':prezto:module:editor' key-bindings 'vi'
 
 # ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
@@ -53,7 +54,7 @@ fi
 # NOTE: Using 'zinit snippet' command instead can cause issues with cache when
 # files are changed.
 for file in $plugins_dir/*.zsh $snippets_dir/*.zsh; do
- source "$file"
+  source "$file"
 done
 unset file plugins_dir snippets_dir
 
