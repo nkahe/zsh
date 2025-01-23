@@ -3,12 +3,6 @@
 # These settings are an addition or overwrite to Prezto settings.
 # Completion settings are at completion.zsh
 
-# FIXME Ei toiminut
-# For local there's already empty line before prompt.
-# if [[ -n $SSH_CONNECTION ]]; then
-#   precmd() { echo }
-# fi
-
 # Named directories
 hash -d cheat="$HOME/Nextcloud/cheat" config="$HOME/.config" \
   share="$HOME/.local/share" zsh="$ZDOTDIR"
