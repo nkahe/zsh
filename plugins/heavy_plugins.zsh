@@ -5,18 +5,6 @@ if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
   return
 fi
 
-# Lazyloading thefuck
-if (( $+commands[thefuck] )); then
-  function fuck() {
-    if [[ thefuck_initialized!="true" ]]; then
-      echo "init"
-      eval "$(thefuck --alias)"
-      thefuck_initialized="true"
-    fi
-    fuck "$@"
-  }
-fi
-
 # Fish-like autosuggestions for zsh.
 # https://github.com/zsh-users/zsh-autosuggestions
 

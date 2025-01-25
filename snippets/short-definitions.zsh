@@ -13,6 +13,17 @@ if [[ -e $ls_colors ]]; then
 fi
 # zinit ice atinit'dircolors -b ls_colors > ls_colors.zsh' pick"ls_colors.zsh"
 
+# Lazyloading thefuck
+if (( $+commands[thefuck] )); then
+  function fuck() {
+    if [[ thefuck_initialized!="true" ]]; then
+      eval "$(thefuck --alias)"
+      thefuck_initialized="true"
+    fi
+    fuck "$@"
+  }
+fi
+
 # garabik/grc: generic colouriser
 # https://github.com/garabik/grc
 file="$HOME/.config/shells/grc.sh"
@@ -24,4 +35,12 @@ fi
 # fuzzy-finder/fzf: Fast Fuzzy Finder for Command-Line Search
 # https://github.com/fuzzy-finder/fzf
 (( $+commands[fzf] )) && source <(fzf --zsh)
+
+# ajeetdsouza/zoxide: A smarter cd command.
+# https://github.com/ajeetdsouza/zoxide
+if (( $+commands[zoxide] )); then
+  export _ZO_DATA_DIR="$HOME/.local/state/zsh"
+  [[ ! -d "$_ZO_DATA_DIR" ]] && mkdir -p "$_ZO_DATA_DIR"
+  eval "$(zoxide init zsh)"
+fi
 

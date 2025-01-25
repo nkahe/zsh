@@ -1,6 +1,7 @@
 # Load misc plugins
 
-# Don't rename executables if want completion to work.
+# NOTE: Don't rename executables if want completion to work.
+
 # Raspille:
 # https://github.com/starship/starship/releases/latest/download/starship-arm-unknown-linux-musleabihf.tar.gz
 
@@ -59,11 +60,3 @@ zinit load bcicen/xiny
 #   echo "[zshrc]" running compinit -i -d "$compfiles"
 # fi
 # unset compfiles
-
-# ajeetdsouza/zoxide: A smarter cd command.
-# https://github.com/ajeetdsouza/zoxide
-if (( $+commands[zoxide] )); then
-  export _ZO_DATA_DIR="$HOME/.local/state/zsh"
-  [[ ! -d "$_ZO_DATA_DIR" ]] && mkdir -p "$_ZO_DATA_DIR"
-  eval "$(zoxide init zsh)"
-fi
