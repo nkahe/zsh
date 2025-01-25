@@ -1,7 +1,7 @@
 
-if [[ $HOST == raspberry* ]]; then
+if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
   # Zinit's updating below didn't work on Raspberry's executables so it's
-  # updated manually.§§
+  # updated manually.
   # zinit ice from"github-rel" bpick"*arm-unknown-linux-musleabihf*" as"program" \
   atload'!eval $(starship init zsh)' lucid
   if (( $+commands[starship] )); then
