@@ -1,5 +1,3 @@
-#!/bin/zsh
-
 # Forked from Prezto completion module. See "LICENSE" -file.
 # https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 
