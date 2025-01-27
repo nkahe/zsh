@@ -56,7 +56,8 @@ All .zsh-files directly under these directories are sourced from .zshrc during i
   - prezto.zsh - Specs for used Prezto modules.
 - completions/ - Additional locally added completions.
 
-> [!NOTE] `*` These are derived from Prezto modules. Changes can be seen in next section.
+> [!NOTE]
+> `*` These are derived from Prezto modules. Changes can be seen in next section.
 
 ## Forked Prezto modules
 
