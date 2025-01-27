@@ -18,7 +18,7 @@ This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuratio
 
 ## Requirements
 
-- Must have: zsh, git
+- zsh, git
 - Recommended: [Nerd Fonts](https://www.nerdfonts.com/) for nicer prompt and for [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended.
 - Optional: Zoxide, curl, grc, ccze, wl-copy, termdown, cheat, tldr, yadm, translate-shell.
 
