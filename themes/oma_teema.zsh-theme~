@@ -1,0 +1,110 @@
+#!/bin/zsh
+# vim:ft=zsh ts=2 sw=2 sts=2
+#
+# # README
+#
+# In order for this theme to render correctly, you will need a
+# [Powerline-patched font](https://gist.github.com/1595572).
+#
+# Goals: Fast, simple and only show relevant information. Inspired by Agnoster and Pure.
+#
+# %F (%f) : Start (stop) using a different foreground colour
+#
+#
+
+
+# autoload -U colors && colors
+
+### Segment drawing
+# A few utility functions to make it easy and re-usable to draw segmented prompts
+CURRENT_BG=''
+PRIMARY_FG='82'      # Green
+PRIMARY_BG='black'   # ADDED
+PROMPT_COLOR='42'    # $ or # -sign
+DEFAULT_USER=''
+DEFAULT_HOST='linux-3vlk'
+
+# Characters
+CROSS="\u2718"
+LIGHTNING="\u26a1"
+GEAR="\u2699"
+
+# Begin a segment
+# Takes two arguments, background and foreground. Both can be omitted,
+# rendering default background/foreground.
+prompt_segment() {
+  local bg fg
+  [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
+  [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
+  print -n "%{$bg%}%{$fg%}"
+  CURRENT_BG=$1
+  [[ -n $3 ]] && print -n $3
+}
+
+## Main prompt
+the_prompt() {
+  CURRENT_BG='NONE'
+
+  # Status:
+  # - was there an error
+  # - am I root
+  # - are there background jobs?
+  local symbols
+  symbols=()
+
+  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}$GEAR"
+
+  [[ -n "$symbols" ]] && prompt_segment default $PRIMARY_FG "$symbols "
+
+  local host=""
+  # Set host if we are on SSH.
+  if [[ -n "$SSH_CONNECTION" ]]; then host="@%m"; fi
+
+  # Print user if it's not default.
+  local user=$(whoami)
+  if [[ $user != "$DEFAULT_USER" ]]; then
+     # If we are root.
+    if [[ $UID -eq 0 ]]; then
+      prompt_segment default $PRIMARY_FG "%(!.%{%F{yellow}%}.)root"$host" "
+    else
+      prompt_segment default $PRIMARY_FG "%(!.%{%F{yellow}%}.)$user$host"
+    fi
+  fi
+
+  # Print dir red if user doesn't have permission to write it, else use
+  # default colors.
+  if [[ ! -w "$PWD" ]]; then
+   print -n "%F{124}[%F{196}%~%f%F{124}]%f "
+  else
+    prompt_segment default $PRIMARY_FG "[%~] "
+  fi   
+
+  CURRENT_BG=''
+}
+
+prompt_precmd() {
+  echo   # Empty line before prompt
+  PROMPT='%{%f%b%k%}$(the_prompt)'
+  # Use # -prompt sign if we are root.
+  if [[ $UID -eq 0 ]]; then
+    # Turn prompt red if previous command didn't exit with 0.
+    PROMPT+='%(?.%F{$PROMPT_COLOR}.%F{red})#%f '
+  else
+    PROMPT+='%(?.%F{$PROMPT_COLOR}.%F{red})$%f '
+  fi
+}
+
+autoload -Uz add-zsh-hook
+
+# The prompt function will set these prompt_* options after the setup function
+# returns. We need prompt_subst so we can safely run commands in the prompt
+# without them being double expanded and we need prompt_percent to expand the
+# common percent escape sequences.
+prompt_opts=(cr subst percent)
+
+# Borrowed from promptinit, sets the prompt options in case the theme was
+# not initialized via promptinit.
+setopt noprompt{bang,cr,percent,subst} "prompt${^prompt_opts[@]}"
+
+add-zsh-hook precmd prompt_precmd
+

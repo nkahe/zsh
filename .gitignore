@@ -1,0 +1,5 @@
+# These shouldn't be created here but sometimes are.
+
+*.priv
+zcompdump
+.zcalc_history
