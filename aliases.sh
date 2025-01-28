@@ -7,19 +7,10 @@ function has() {
   command -v "$@" &> /dev/null
 }
 
-function upvibre() {
-  cd "$HOME/projects/vibreoffice/Nazo1412" || true
-  unopkg remove vibreoffice
-  VIBREOFFICE_VERSION="0.5.0" \make extension
-  unopkg add "$HOME/projects/vibreoffice/Nazo1412/dist/vibreoffice-0.5.0.oxt"
-}
+# Extra applications {{{1
 
 alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
-alias game="kscreen-doctor output.DP-1.mode.12"
-alias normal="kscreen-doctor output.DP-1.mode.2"
 alias nvp='nvimpager'
-
-# Extra applications {{{1
 
 alias restart-xdg='systemctl --user restart plasma-xdg-desktop-portal-kde'
 
@@ -73,7 +64,7 @@ fi
 alias tldrf='/usr/bin/tldr find'
 
 # Termbin - terminal pastebin. https://termbin.com/
-alias termbin="nc termbin.com 9999"
+has nc && alias termbin="nc termbin.com 9999"
 
 # kuvan jakaminen tähän palveluun jotenkin?
 # https://imgbb.com/upload
@@ -87,7 +78,7 @@ has yank-cli && alias yank=yank-cli
 
 # Functions {{{1
 
-# Print alphabets
+# Print alphabets including scandic.
 function alp() {
   for char in {A..Z} ; do
     printf "%s " "$char"
@@ -100,9 +91,11 @@ function html-to-md () {
   'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
 }
 
-function minitimer() {
-  (sleep "$1"; notify-send "Time is up" && paplay "$HOME/Sounds/complete.wav") &
-}
+if has paplay; then
+  function minitimer() {
+    (sleep "$1"; notify-send "Time is up" && paplay "$HOME/Sounds/complete.wav") &
+  }
+fi
 
 function define() {
   if [[ $# -ge 2 ]]; then
@@ -140,11 +133,6 @@ function restart {
   killall "$1"
   "$1" &>/dev/null &
 }
-
-# ud() {
-#   curl -s "https://api.urbandictionary.com/v0/tooltip?term=${1}" |
-#   python3 -c "import sys, json, html; print(html.unescape(json.load(sys.stdin)['string']).split('\n',2)[1])"
-# }
 
 # Core tools {{{1
 
@@ -251,14 +239,14 @@ function psg {
 
 # termdown: Countdown timer and stopwatch in your terminal
 # https://github.com/trehn/termdown
-function td {
-  termdown "$@" && notify-send "Time is up!" && paplay "$HOME/Sounds/complete.wav"
-}
+if has termdown; then
+  function td {
+    termdown "$@" && notify-send "Time is up!" && paplay "$HOME/Sounds/complete.wav"
+  }
+fi
 
 # Aliases for ls
-
 opts="--group-directories-first --color=always"
-
 # Base ls command used after for aliases.
 if has eza; then
   ls="eza --icons $opts"
@@ -267,6 +255,7 @@ elif has exa; then
 else
   ls="ls $opts"
 fi
+unset opts
 
 # note: --group-directories-first doesn't apply to symlinks.
 # eza:lla myös --group
@@ -302,11 +291,6 @@ fi
 
 function power() { upower -i "/org/freedesktop/UPower/devices/battery_BAT$1"; }
 
-function update-grub-alias() {
-  file=$([[ -d /sys/firmware/efi ]] && echo 'grub2-efi.cfg' || echo 'grub2.cfg')
-  alias update-grub="sudo grub2-mkconfig -o /etc/$file"
-}
-
 if has zypper; then
   file="$HOME/.config/shells/zypper.sh"
   # shellcheck disable=SC1090
@@ -324,7 +308,8 @@ elif has lsb_release; then
 fi
 
 if [[ $OS == *fedora* ]]; then
-  update-grub-alias
+  file=$([[ -d /sys/firmware/efi ]] && echo 'grub2-efi.cfg' || echo 'grub2.cfg')
+  alias update-grub="sudo grub2-mkconfig -o /etc/$file"
   file="$HOME/.config/shells/dnf.sh"
   # shellcheck disable=SC1090
   [[ -f "$file" ]] && source "$file"
@@ -336,6 +321,7 @@ elif [[ $OSTYPE == 'darwin'* ]]; then
         list="brew list" \
         se="brew search"
 fi
+unset file
 #}}}
 # DEs and WMs {{{1
 
@@ -343,7 +329,7 @@ if [[ -n "$XDG_SESSION_DESKTOP" ]]; then
   if [[ "$XDG_SESSION_DESKTOP" == "plasma5" || "$XDG_SESSION_DESKTOP" == "KDE" ]]
   then
     qdbus="qdbus org.kde.ksmserver /KSMServer logout"
-    # Don't use shutdown on KDE but these:
+    # Don't use "shutdown"" on KDE but these:
     alias kpoweroff="$qdbus 0 2 0" \
           kreboot="$qdbus 0 1 0" \
           klogout="$qdbus 0 0 0" \
