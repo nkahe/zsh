@@ -4,28 +4,47 @@ This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuratio
 
 ## Features
 
-- Reasonable settings.
-- Many plugins and snippets with deferred loading using Zinit.
+- Good settings mainly from Prezto.
+- Many plugins and snippets and their settings loaded with deferred loading for faster startup.
 - Many aliases and user functions.
 - Custom keybindings
+- Automatical ls after directory change.
 
 ### Plugins
 
-- Advanced and fast Starship -prompt
-- Fast syntax highlighting
-- Autosuggestions
+- [Advanced and fast Starship -prompt](https://starship.rs)
+- [fast-syntax-highlighting: Feature-rich syntax highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting)
+- [zsh-autosuggestions: Fish-like autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
+- [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search) with key bindings for emacs, vi -insert and normal modes.
+- [zsh-completions: Additional completion definitions for Zsh.](https://github.com/clarketm/zsh-completions)
+- [zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.](https://github.com/jeffreytse/zsh-vi-mode)
+- [moar: Pager designed to just do the right thing without any configuration.](https://github.com/walles/moar)
+- [command_help: Extract help text from builtin commands and man pages](https://github.com/learnbyexample/command_help)
+- [bashmount: Tool to mount and unmount removable media from the command-line](https://github.com/jamielinux/bashmount)
 - more
 
 ## Requirements
 
 - zsh, git
-- Recommended: [Nerd Fonts](https://www.nerdfonts.com/) for nicer prompt and for [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended.
-- Optional: Zoxide, curl, grc, ccze, wl-copy, termdown, cheat, tldr, yadm, translate-shell.
+
+Recommended:
+- [Nerd Fonts](https://www.nerdfonts.com/) for nicer prompt
+- [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended, fzf fuzzy finder, for Wayland desktop: wl-copy for clipboard operations.
+
+Optional:
+- Zoxide - fast file jumping
+- curl - for scripts getting information from web.
+- grc and ccze - colorized command outputs and logs
+- cheat, navi, tldr - fast cheatsheets
+- surfraw - web searches
+- translate-shell - language translations
+- termdown - terminal countdown
+- aspell - spell checking
 
 ## Installation
 
 1. Install requirements.
-2. Git clone this repo to directory of your choice. Default is ~/.config/zsh.
+2. Git clone this repo in ~/.config which makes sub-directory "zsh". Custom directory can also be used.
 3. If ~/.zshenv already exists backup by renaming it. Make a hidden symlink to home directory pointing zshenv -file:
 ```
 ln -s ~/.config/zsh/zshenv $HOME/.zshenv
@@ -59,11 +78,11 @@ All .zsh-files directly under these directories are sourced from .zshrc during i
 > [!NOTE]
 > `*` These are derived from Prezto modules. Changes can be seen in next section.
 
-## Forked Prezto modules
+### Forked Prezto modules
 
 For license see [LICENSE -file](./LICENSE). Settings are changed directly in the file instead of .zpreztorc like in Prezto.
 
-### bindings.zsh
+#### bindings.zsh
 
 - Forked from Prezto editor -module.
 
@@ -79,7 +98,7 @@ Removed:
 - No definitions for plugins since deferred loading is used.
 - Some bindings I don't use.
 
-### titles.zsh
+#### titles.zsh
 
 - Forked from terminal module in Prezto.
 
@@ -89,7 +108,7 @@ Changes:
 - Fix: drop first word of title if it's sudo, su, ssh, mosh or rake.
 - Allow longer titles for Terminator -terminal which has wide tabs.
 
-### completion.zsh
+#### completion.zsh
 
 - Forked from completion module in Prezto.
 
