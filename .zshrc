@@ -39,6 +39,10 @@ source "$ZINIT_HOME/bin/zinit.zsh"
 
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 
+# Used by OMZ plugins like last-working-dir and completions.
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
+
 # Set the key mapping style to 'emacs' or 'vi'.
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 zstyle ':prezto:module:editor' key-bindings 'vi'
