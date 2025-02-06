@@ -1,4 +1,8 @@
-#!/bin/bash
+
+if ! command -v zypper &>/dev/null; then
+  return
+fi
+
 # set -eu
 
 alias zyp='zyp.sh'

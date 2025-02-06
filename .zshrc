@@ -57,10 +57,13 @@ fi
 # Source plugin specs and snippets.
 # NOTE: Using 'zinit snippet' command instead can cause issues with cache when
 # files are changed.
-for file in $plugins_dir/*.zsh $snippets_dir/*.zsh; do
+for file in $plugins_dir/*.zsh $snippets_dir/*.zsh $snippets_dir/*.sh; do
   source "$file"
 done
 unset file plugins_dir snippets_dir
+
+# Local settings.
+[[ -f profile.local ]] && source profile.local
 
 #  zinit ice multisrc"*.{zsh,sh}" lucid
 #  zinit light $ZDOTDIR

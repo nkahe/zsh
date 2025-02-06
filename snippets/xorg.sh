@@ -2,15 +2,10 @@
 
 # This file is not currently sourced.
 
-# Xorg could be detected like this:
-
-# if [[ -n "$WAYLAND_DISPLAY" ]]; then
-# 	echo "Running under Wayland"
-# elif [[ -n "$DISPLAY" && (pgrep -x Xorg || pgrep -x X) ]]; then
-# 	echo "Running under X11"
-# else
-# 	echo "Not running under X11 or Wayland"
-# fi
+# Don't continue if Xorg isn't running.
+if ! pgrep -x Xorg >/dev/null || ! pgrep -x X >/dev/null; then
+  return
+fi
 
 function xclip_aliases() {
   # Handling clipboard with xclip. https://github.com/astrand/xclip

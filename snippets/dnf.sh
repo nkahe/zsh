@@ -1,3 +1,7 @@
+if ! command -v dnf &>/dev/null; then
+  return
+fi
+
 alias copr="sudo dnf copr"    \
       inf="dnf info"      \
       ins="sudo dnf install"  \
