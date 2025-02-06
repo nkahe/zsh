@@ -1,1 +1,0 @@
-../shells/aliases.sh
