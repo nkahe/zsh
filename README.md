@@ -65,6 +65,7 @@ and all defined external plugins and snippets are being pulled.
 - .zshrc - First file that is processed during init and main configuration file of which rest of configurations are sourced.
 - settings.zsh - General settings.
 - completion.zsh - Completion settings. *
+- aliases.sh - Misc aliases and functions that can be sourced from Bash too.
 - zsh-aliases.zsh - Zsh -specific aliases and functions.
 - bindings.zsh - Keybindings. *
 
@@ -73,6 +74,7 @@ All .zsh-files directly under these directories are sourced from .zshrc during i
 - snippets/ - Different snippets. Some are Zinit specs for external snippet.
   - titles.zsh *
   - prezto.zsh - Specs for used Prezto modules.
+  - *.sh - Snippets that can be sourced from Bash too.
 - completions/ - Additional locally added completions.
 
 > [!NOTE]
