@@ -4,15 +4,13 @@ This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuratio
 
 ## Features
 
+- Full featured, yet fast.
 - Good settings mainly from Prezto.
 - Many plugins and snippets and their settings loaded with deferred loading for faster startup.
-- Many aliases and user functions.
-- Custom keybindings
-- Automatical ls after directory change.
+- Many aliases, user functions and keybindings.
 
 ### Plugins
 
-- [Advanced and fast Starship -prompt](https://starship.rs)
 - [fast-syntax-highlighting: Feature-rich syntax highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting)
 - [zsh-autosuggestions: Fish-like autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
 - [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search) with key bindings for emacs, vi -insert and normal modes.
@@ -28,18 +26,20 @@ This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuratio
 - zsh, git
 
 Recommended:
-- [Nerd Fonts](https://www.nerdfonts.com/) for nicer prompt
+- [Nerd Fonts](https://www.nerdfonts.com/) - fonts with glyphs for Starship prompt and eza, etc.
+- [Advanced and fast Starship -prompt](https://starship.rs)
 - [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended, fzf fuzzy finder, for Wayland desktop: wl-copy for clipboard operations.
 
 Optional:
-- Zoxide - fast file jumping
+- [zoxide: A smarter cd command. Supports all major shells.](https://github.com/ajeetdsouza/zoxide)
 - curl - for scripts getting information from web.
-- grc and ccze - colorized command outputs and logs
-- cheat, navi, tldr - fast cheatsheets
-- surfraw - web searches
-- translate-shell - language translations
-- termdown - terminal countdown
-- aspell - spell checking
+- [grc - generic colouriser](https://github.com/garabik/grc)
+- [ccze - a fast log colorizer](https://github.com/cornet/ccze)
+[cheat - allows you to create and view interactive cheatsheets on the command-line](https://github.com/cheat/cheat)
+- [navi: An interactive cheatsheet tool for the command-line](https://github.com/denisidoro/navi)
+- [tldr-pages/tldr-python-client: Python command-line client for tldr pages 📚](https://github.com/tldr-pages/tldr-python-client)
+- [translate-shell: Command-line translator using Google Translate, Bing Translator, Yandex.Translate, etc.](https://github.com/soimort/translate-shell)
+- [termdown: Countdown timer and stopwatch in your terminal](https://github.com/trehn/termdown)
 
 ## Installation
 
