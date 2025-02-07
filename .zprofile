@@ -22,8 +22,6 @@ fi
 export GEM_HOME="$HOME/.local/rubygems"
 [[ -d $GEM_HOME ]] && export PATH="$PATH:$GEM_HOME/bin"
 
-# Local settings.
-[[ -f $HOME/shells/profile.local ]] && source $HOME/shells/profile.local
 
 # Check if a command exists.
 function has() {

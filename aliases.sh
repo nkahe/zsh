@@ -26,6 +26,7 @@ if has nvim; then
 elif has vim; then
   WikiEditor="vim"
 fi
+
 # Add 'wincmd w' if want to focus file.
 ww() { $WikiEditor -c ":execute 'cd ~/Documents/notes|NERDTreeToggle|wincmd w|VimwikiIndex'"; }
 
@@ -291,12 +292,6 @@ fi
 
 function power() { upower -i "/org/freedesktop/UPower/devices/battery_BAT$1"; }
 
-if has zypper; then
-  file="$HOME/.config/shells/zypper.sh"
-  # shellcheck disable=SC1090
-  [[ -s "$file" ]] && source "${file}"
-fi
-
 # Find out distribution.
 if [[ -f /etc/os-release ]]; then
     # freedesktop.org and systemd
@@ -310,9 +305,6 @@ fi
 if [[ $OS == *fedora* ]]; then
   file=$([[ -d /sys/firmware/efi ]] && echo 'grub2-efi.cfg' || echo 'grub2.cfg')
   alias update-grub="sudo grub2-mkconfig -o /etc/$file"
-  file="$HOME/.config/shells/dnf.sh"
-  # shellcheck disable=SC1090
-  [[ -f "$file" ]] && source "$file"
 elif [[ $OSTYPE == 'darwin'* ]]; then
   alias inf="brew info" \
         ins="brew install" \
