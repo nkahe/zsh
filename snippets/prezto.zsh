@@ -1,6 +1,10 @@
 # Settings and definitions for selected modules from Prezto -configuration
 # framework. Forked Prezto modules are in their own snippets files.
 
+if [[ -z $(functions zinit) ]]; then
+  return
+fi
+
 # Directory
 
 # Sets directory options and defines directory aliases.
