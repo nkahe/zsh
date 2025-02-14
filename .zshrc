@@ -54,13 +54,21 @@ if [[ "$key_bindings" == vi ]]; then
   set -o vi
 fi
 
-# Source plugin specs and snippets.
+# Source Zinit plugin specs.
+if [[ -n $(functions zinit) ]]; then
+  for file in $plugins_dir/*.zsh; do
+    source "$file"
+  done
+  unset file plugins_dir
+fi
+
+# Source snippets.
 # NOTE: Using 'zinit snippet' command instead can cause issues with cache when
 # files are changed.
-for file in $plugins_dir/*.zsh $snippets_dir/*.zsh $snippets_dir/*.sh; do
+for file in $snippets_dir/*.zsh $snippets_dir/*.sh; do
   source "$file"
 done
-unset file plugins_dir snippets_dir
+unset file snippets_dir
 
 # Local settings.
 [[ -f profile.local ]] && source profile.local
