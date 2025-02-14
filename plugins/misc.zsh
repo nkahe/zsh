@@ -30,6 +30,11 @@ zinit ice wait"2" lucid as"program" make'!' pick"bin/keyd" \
 zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moar* -> moar"
 zinit load walles/moar
 
+# Yet Another Dotfiles Manager - yadm https://yadm.io
+zinit ice wait"2" lucid as"program" has"git" pick"yadm" \
+  cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
+zinit load TheLocehiliosan/yadm
+
 # jeffreytse/zsh-vi-mode: A better and friendly vi(vim) mode plugin for ZSH.
 # https://github.com/jeffreytse/zsh-vi-mode
 zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'

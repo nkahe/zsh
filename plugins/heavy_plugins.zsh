@@ -50,11 +50,6 @@ zinit wait silent for \
 # https://github.com/zsh-users/zsh-syntax-highlighting.
 # zinit load zsh-users/zsh-syntax-highlighting
 
-# Yet Another Dotfiles Manager - yadm https://yadm.io
-zinit ice wait"2" lucid as"program" has"git" pick"yadm" \
-  cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
-zinit load TheLocehiliosan/yadm
-
 # ZSH plugin that reminds you to use existing aliases for commands you
 # just typed. https://github.com/MichaelAquilina/zsh-you-should-use
 
