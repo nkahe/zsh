@@ -61,7 +61,9 @@ function set-tab-title {
       # Getting needed session id doesn't work for root user.
       [[ $UID == 0 || -z "$session_id" ]] && return
       # echo "session_id: $session_id title: ${(V%)title_formatted}"
-      qdbus org.kde.yakuake /yakuake/tabs setTabTitle "$session_id" "${(V%)title_formatted}"
+      # Without redirection to /dev/null extra line change is printed.
+      qdbus org.kde.yakuake /yakuake/tabs setTabTitle "$session_id" \
+        "${(V%)title_formatted}" &>/dev/null
       # echo "qdbus org.kde.yakuake /yakuake/tabs setTabTitle \"$session_id\" \"${(V%)title_formatted}\""
     ;;
     konsole)
