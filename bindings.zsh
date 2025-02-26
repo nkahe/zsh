@@ -12,6 +12,9 @@ if [[ "$TERM" == 'dumb' ]]; then
   return 1
 fi
 
+# Auto convert .... to ../..
+zstyle ':prezto:module:editor' dot-expansion 'yes'
+
 # Treat these characters as part of a word.
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
@@ -193,6 +196,16 @@ function zle-line-finish {
   fi
 }
 zle -N zle-line-finish
+
+# Expands .... to ../..
+function expand-dot-to-parent-directory-path {
+  if [[ $LBUFFER = *.. ]]; then
+    LBUFFER+='/..'
+  else
+    LBUFFER+='.'
+  fi
+}
+zle -N expand-dot-to-parent-directory-path
 
 # Inserts 'sudo ' at the beginning of the line.
 function prepend-sudo {
@@ -434,13 +447,18 @@ for keymap in 'emacs' 'viins'; do
   for key in "$key_info[Ctrl]Q" "$key_info[Esc]"{q,Q}
     bindkey -M "$keymap" "$key" push-line-or-edit
 
-  # Bind Shift + Tab to go to the previous menu item.
+  # Bind Shift + Tab to go to the previous menu item
   # Some different key-infos for these.
   for key in BackTab Shift-Tab
     bindkey -M "$keymap" "$key_info[$key]" reverse-menu-complete
 
   # Complete in the middle of word.
   bindkey -M "$keymap" "$key_info[Ctrl]I" expand-or-complete
+
+  # Expand .... to ../..
+  if zstyle -t ':prezto:module:editor' dot-expansion; then
+    bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
+  fi
 
   # Insert 'sudo ' at the beginning of the line.
   bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
