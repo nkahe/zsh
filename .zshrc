@@ -31,8 +31,8 @@ bindkey -d
 # Load Zinit - Zsh plugin manager. Install if not present.
 # https://github.com/zdharma-continuum/zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
 if [ ! -d $ZINIT_HOME/bin/.git ]; then
+  [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "$ZINIT_HOME/bin/zinit.zsh"
@@ -54,12 +54,17 @@ if [[ "$key_bindings" == vi ]]; then
   set -o vi
 fi
 
-# Source Zinit plugin specs.
+# Source Zinit plugin specs if Zinit is loaded.
 if [[ -n $(functions zinit) ]]; then
   for file in $plugins_dir/*.zsh; do
     source "$file"
   done
   unset file plugins_dir
+else
+  # Else use backup theme.
+  file=$ZDOTDIR/themes/oma_teema.zsh-theme
+  [[ -f $file ]] && source $file
+  unset file
 fi
 
 # Source snippets.
