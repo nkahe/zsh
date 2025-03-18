@@ -246,6 +246,10 @@ if has termdown; then
   }
 fi
 
+function tm {
+  timer "$@" && notify-send "Time is up!" && paplay "$HOME/Sounds/complete.wav"
+}
+
 # Aliases for ls
 opts="--group-directories-first --color=always"
 # Base ls command used after for aliases.
