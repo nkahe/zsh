@@ -10,10 +10,11 @@ if [ "$ZSH_NAME" ]; then
 fi
 
 alias copr="sudo dnf copr"    \
-      inf="dnf info"      \
+      cu="dnf check-upgrade"  \
+      inf="dnf info"          \
       ins="sudo dnf install"  \
       list="dnf list --exclude '*i686'"  \
-      lu="dnf check-update" \
+      lu="dnf check-update"   \
       rem="sudo dnf remove"   \
       se="dnf search --exclude '*i686'"  \
       up="sudo dnf upgrade"
