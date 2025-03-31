@@ -69,7 +69,7 @@ key_info=(
 
 # NOTE: Ctrl-b is often used with Tmux so avoid binding that.
 
-# Display bindings defined here and in some plugins.
+# Display bindings with short description.
 # Defined in this file so they're easier to keep in sync with bindings.
 function lsbind() {
   (echo; echo -e "
@@ -111,7 +111,8 @@ function lsbind() {
   Ctrl-Del  Kill next word
   Ctrl-Space    Expand aliases
   Ctrl- ← | ->  Move to previous / next word
-  C-x C-s   Prepend line with sudo" | column)
+  C-X C-S   Prepend line with sudo
+  C-X C-E   Edit in external editor" | column)
 
   zle reset-prompt
 }
@@ -142,9 +143,10 @@ done
 #
 
 # Allow command line editing in an external editor.
-autoload -Uz edit-command-line
-zle -N edit-command-line
-
+if ! zle -l edit-command-line; then
+  autoload -Uz edit-command-line
+  zle -N edit-command-line
+fi
 #
 # Functions
 #
@@ -358,7 +360,7 @@ bindkey -M emacs "$key_info[Ctrl]_" pound-toggle
 #
 
 # Edit command in an external editor emacs style (v is used for visual mode)
-bindkey -M vicmd "$key_info[Control]X$key_info[Control]E" edit-command-line
+bindkey -M vicmd "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
 
 # Undo/Redo
 bindkey -M vicmd "u" undo
