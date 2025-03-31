@@ -76,7 +76,7 @@ done
 unset file snippets_dir
 
 # Local settings.
-[[ -f profile.local ]] && source profile.local
+[[ -f $ZDOTDIR/profile.local ]] && source $ZDOTDIR/profile.local
 
 #  zinit ice multisrc"*.{zsh,sh}" lucid
 #  zinit light $ZDOTDIR
