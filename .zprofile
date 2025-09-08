@@ -51,7 +51,7 @@ unset $editor
 # moar pager is installed as zinit -plugin so it's executable is not
 # available when this file is sourced.
 # if has moar; then
-  export PAGER='moar'
+  export PAGER='moor'
   export MOOR='-style github-dark'
 # elif has most; then
 #   export PAGER='most'
