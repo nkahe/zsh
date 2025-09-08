@@ -16,7 +16,7 @@ This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuratio
 - [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search) with key bindings for emacs, vi -insert and normal modes.
 - [zsh-completions: Additional completion definitions for Zsh.](https://github.com/clarketm/zsh-completions)
 - [zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.](https://github.com/jeffreytse/zsh-vi-mode)
-- [moar: Pager designed to just do the right thing without any configuration.](https://github.com/walles/moar)
+[moor: Moor is a pager. It's designed to just do the right thing without any configuration.](https://github.com/walles/moor)
 - [command_help: Extract help text from builtin commands and man pages](https://github.com/learnbyexample/command_help)
 - [bashmount: Tool to mount and unmount removable media from the command-line](https://github.com/jamielinux/bashmount)
 - more

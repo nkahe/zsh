@@ -27,8 +27,8 @@ zinit ice wait"2" lucid as"program" make'!' pick"bin/keyd" \
   cp"keyd.1.gz -> $HOME/.local/man/man1"
     zinit load rvaiya/keyd
 
-zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moar* -> moar"
-zinit load walles/moar
+zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moor* -> moor"
+zinit load walles/moor
 
 # Yet Another Dotfiles Manager - yadm https://yadm.io
 zinit ice wait"2" lucid as"program" has"git" pick"yadm" \
@@ -51,17 +51,10 @@ zinit light jeffreytse/zsh-vi-mode
 # Ensure zsh-vi-mode initializes after other keybindings
 export ZVM_INIT_MODE=sourcing
 zvm_after_init() {
-#   bindkey -v
-  # bindkey -M vicmd 'c' zsh-system-clipboard-vicmd-vi-change
-  # bindkey -M vicmd 'ccc' zsh-system-clipboard-vicmd-vi-change-whole-line
-  # bindkey -M vicmd 'cc$' zsh-system-clipboard-vicmd-vi-change-eol
   bindkey -M vicmd 'cd' zsh-system-clipboard-vicmd-vi-delete
-#   bindkey -M vicmd 'cd$' zsh-system-clipboard-vicmd-kill-eol
   bindkey -M vicmd 'cp' zsh-system-clipboard-vicmd-vi-put-after
   bindkey -M vicmd 'cP' zsh-system-clipboard-vicmd-vi-put-before
   bindkey -M vicmd 'cy' zsh-system-clipboard-vicmd-vi-yank
-  # bindkey -M vicmd 'cY' zsh-system-clipboard-vicmd-vi-yank-eol
-  # bindkey -M vicmd 'cyy' zsh-system-clipboard-vicmd-vi-yank-whole-line
 }
 
 function zvm_after_lazy_keybindings() {

@@ -52,7 +52,7 @@ unset $editor
 # available when this file is sourced.
 # if has moar; then
   export PAGER='moar'
-  export MOAR='-style github-dark'
+  export MOOR='-style github-dark'
 # elif has most; then
 #   export PAGER='most'
 # else
