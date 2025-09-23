@@ -9,7 +9,25 @@ function has() {
 
 # Extra applications {{{1
 
+## AppImages
+
+# Neovide - Simple, no-nonsense, cross-platform GUI for Neovim. https://neovide.dev
+file="$HOME/Applications/neovide.AppImage"
+has file && alias neovide="$file"
+
+# AppImageUpdate. https://github.com/AppImageCommunity/AppImageUpdate
+file="$HOME/Applications/AppImageUpdate-x86_64.AppImage"
+has file && alias AppImageUpdate="$file"
+
+file="$HOME/Applications/appimageupdatetool-x86_64.AppImage"
+has file && alias appimage="$file"
+
+
+# firenvim: Embed Neovim in Chrome, Firefox & others. https://github.com/glacambre/firenvim
 alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
+
+# nvimpager: Use nvim as a pager to view manpages, diffs, etc with nvim's syntax
+# highlighting. https://github.com/lucc/nvimpager
 alias nvp='nvimpager'
 
 alias restart-xdg='systemctl --user restart plasma-xdg-desktop-portal-kde'

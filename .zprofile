@@ -48,7 +48,7 @@ unset $editor
 # has zathura && export PDFVIEWER='zathura'
 # export AUDIOPLAYER="xdg-open"
 
-# moar pager is installed as zinit -plugin so it's executable is not
+# moor pager is installed as zinit -plugin so it's executable is not
 # available when this file is sourced.
 # if has moar; then
   export PAGER='moor'
