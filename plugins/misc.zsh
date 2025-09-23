@@ -38,8 +38,7 @@ zinit load TheLocehiliosan/yadm
 # zsh-system-clipboard: System clipboard key bindings for Zsh Line Editor with vi mode.
 # https://github.com/kutsan/zsh-system-clipboard
 # Use Wayland + clipboard.
-# Doesn't work itself if Zsh-Vi-Mode is also used. Instead own bindings are
-# bindings are used.
+# NOTE: Doesn't work without defining own keybindings if Zsh-Vi-Mode is also used.
 zinit load kutsan/zsh-system-clipboard
 
 # jeffreytse/zsh-vi-mode: A better and friendly vi(vim) mode plugin for ZSH.
@@ -57,22 +56,11 @@ zvm_after_init() {
   bindkey -M vicmd 'cy' zsh-system-clipboard-vicmd-vi-yank
 }
 
+# Need to use this hook to define bindings in Vi mode when using Zsh-Vi-Mode.
 function zvm_after_lazy_keybindings() {
-  if ! zle -l edit-command-line; then
-    autoload -Uz edit-command-line
-    zle -N edit-command-line
-  fi
-
-  for keymap in 'emacs' 'viins' 'vicmd'; do
-    # Search previous character.
-    zvm_bindkey $keymap "^X^B" vi-find-prev-char
-
-    # Match bracket.
-    zvm_bindkey $keymap "^X^]" vi-match-bracket
-
-    # Edit command in an external editor.
-    zvm_bindkey $keymap "^X^E" edit-command-line
-  done
+  # Insert 'sudo ' at the beginning of the line.
+  # FIXME: Doesn't work. Use different keybinding?
+  # zvm_bindkey 'vicmd' '\s' prepend-sudo
 }
 
 # zsh-completions: Additional completion definitions for Zsh.

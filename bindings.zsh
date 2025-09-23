@@ -12,6 +12,8 @@ if [[ "$TERM" == 'dumb' ]]; then
   return 1
 fi
 
+# NOTE: Emacs or Vi input mode is set in .zshrc.
+
 # Auto convert .... to ../..
 zstyle ':prezto:module:editor' dot-expansion 'yes'
 
@@ -68,6 +70,8 @@ key_info=(
 )
 
 # NOTE: Ctrl-b is often used with Tmux so avoid binding that.
+
+# TODO: Show Vi or Emacs bindings depending input mode.
 
 # Display bindings with short description.
 # Defined in this file so they're easier to keep in sync with bindings.
@@ -331,7 +335,12 @@ bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]B" vi-find-prev-char
 bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]]" vi-match-bracket
 
 # Edit command in an external editor.
+# INFO: In Vi mode, Zsh Vi Mode -plugin's vv -command is used.
 bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
+
+# Insert 'sudo ' at the beginning of the line.
+bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
+
 
 # Additions to Prezto
 
@@ -358,9 +367,6 @@ bindkey -M emacs "$key_info[Ctrl]_" pound-toggle
 #
 # Vi Key Bindings
 #
-
-# Edit command in an external editor emacs style (v is used for visual mode)
-bindkey -M vicmd "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
 
 # Undo/Redo
 bindkey -M vicmd "u" undo
@@ -462,9 +468,6 @@ for keymap in 'emacs' 'viins'; do
     bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
   fi
 
-  # Insert 'sudo ' at the beginning of the line.
-  bindkey -M "$keymap" "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
-
   # Ctrl-Space expands all aliases, including global.
   bindkey -M "$keymap" "$key_info[Ctrl] " glob-alias
 
@@ -476,15 +479,3 @@ for keymap in 'emacs' 'viins'; do
   # Execute ls
   bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
 done
-
-# Set the key layout.
-zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
-if [[ "$key_bindings" == (emacs|) ]]; then
-  bindkey -e
-elif [[ "$key_bindings" == vi ]]; then
-  bindkey -v
-else
-  print "prezto: editor: invalid key bindings: $key_bindings" >&2
-fi
-
-unset key{,map,_bindings}
