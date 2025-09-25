@@ -38,7 +38,9 @@ zinit load TheLocehiliosan/yadm
 # zsh-system-clipboard: System clipboard key bindings for Zsh Line Editor with vi mode.
 # https://github.com/kutsan/zsh-system-clipboard
 # Use Wayland + clipboard.
-# NOTE: Doesn't work without defining own keybindings if Zsh-Vi-Mode is also used.
+# INFO: Doesn't work without defining own keybindings (below) if Zsh-Vi-Mode is
+# also used.
+zinit ice wait"1" lucid
 zinit load kutsan/zsh-system-clipboard
 
 # jeffreytse/zsh-vi-mode: A better and friendly vi(vim) mode plugin for ZSH.
@@ -49,19 +51,30 @@ zinit light jeffreytse/zsh-vi-mode
 
 # Ensure zsh-vi-mode initializes after other keybindings
 export ZVM_INIT_MODE=sourcing
+
+# Need to use hooks to define bindings when using Zsh-Vi-Mode.
+# zvm_after_lazy_keybindings() {
 zvm_after_init() {
   bindkey -M vicmd 'cd' zsh-system-clipboard-vicmd-vi-delete
   bindkey -M vicmd 'cp' zsh-system-clipboard-vicmd-vi-put-after
   bindkey -M vicmd 'cP' zsh-system-clipboard-vicmd-vi-put-before
   bindkey -M vicmd 'cy' zsh-system-clipboard-vicmd-vi-yank
+
+  # Prepend command with sudo.
+  zvm_bindkey 'vicmd' ' is' prepend-sudo
+
+  source $ZDOTDIR/bindings.zsh
 }
 
-# Need to use this hook to define bindings in Vi mode when using Zsh-Vi-Mode.
-function zvm_after_lazy_keybindings() {
-  # Insert 'sudo ' at the beginning of the line.
-  # FIXME: Doesn't work. Use different keybinding?
-  # zvm_bindkey 'vicmd' '\s' prepend-sudo
-}
+# function zvm_before_lazy_keybindings() {
+#
+# # Command insertions.
+# # bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
+# bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
+# bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
+# bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
+#
+# }
 
 # zsh-completions: Additional completion definitions for Zsh.
 # https://github.com/clarketm/zsh-completions

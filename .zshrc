@@ -52,6 +52,8 @@ zstyle ':prezto:module:editor' key-bindings 'vi'
 zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
 if [[ "$key_bindings" == vi ]]; then
   set -o vi
+  # Set beam cursor.
+  print -n '\e[5 q'
 fi
 
 # Source Zinit plugin specs if Zinit is loaded.
@@ -75,20 +77,36 @@ for file in $snippets_dir/*.zsh $snippets_dir/*.sh; do
 done
 unset file snippets_dir
 
-# Local settings.
-[[ -f $ZDOTDIR/profile.local ]] && . $ZDOTDIR/profile.local
+setopt nullglob       # unmatched globs expand to nothing
+
+# Files to be sourced.
+files=(
+  aliases.sh
+  completion.zsh
+  settings.zsh
+  zsh-aliases.zsh
+)
+
+# Bindings are sourced from a Vi-Zsh-Mode's hook in plugins/misc.zsh if using
+# Vi mode.
+if [[ $key_bindings == emacs ]]; then
+  files+=(bindings.zsh)
+fi
+
+for f in $files; do
+  [[ -r $ZDOTDIR/$f ]] && source $ZDOTDIR/$f
+done
+
+# Any local files outside version control.
+for f in $ZDOTDIR/*.local.zsh; do
+  source $f
+done
 
 #  zinit ice multisrc"*.{zsh,sh}" lucid
 #  zinit light $ZDOTDIR
 #
 #  zinit ice multisrc"*.zsh" lucid
 #  zinit light $snippets_dir
-
-for file in $ZDOTDIR/*.zsh $ZDOTDIR/aliases.sh
-do
-  source "$file"
-done
-unset file
 
 # Normally is executed when loading syntax highlighting.
 if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
@@ -111,3 +129,4 @@ fi
 
 # Uncomment to show speed profiling stats.
 # zprof
+

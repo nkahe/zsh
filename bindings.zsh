@@ -12,6 +12,8 @@ if [[ "$TERM" == 'dumb' ]]; then
   return 1
 fi
 
+echo "sourced bindings.zsh"
+
 # NOTE: Emacs or Vi input mode is set in .zshrc.
 
 # Auto convert .... to ../..
@@ -68,6 +70,8 @@ key_info=(
   'BackTab'      "$terminfo[kcbt]"
   "Shift-Tab"    '^[[Z'
 )
+
+
 
 # NOTE: Ctrl-b is often used with Tmux so avoid binding that.
 
@@ -270,6 +274,9 @@ zle -N _runcmdpushinput_ls
 
 # Fast directory changing
 
+# NOTE: Changing directory and returning prompt didn't work as it should if these
+# are used as widgets so they are executed as normal functions with bindkey -s.
+
 function cd() {
   BACK_HISTORY=$PWD:$BACK_HISTORY
   FORWARD_HISTORY=""
@@ -285,7 +292,7 @@ function cd-previous-dir() {
   fi
 }
 
-function cd-previous-dir() {
+function cd-forward-dir() {
   DIR=${FORWARD_HISTORY%%:*}
   if [[ -d "$DIR" ]]; then
     FORWARD_HISTORY=${FORWARD_HISTORY#*:}
@@ -294,16 +301,27 @@ function cd-previous-dir() {
   fi
 }
 
+function command-insertions() {
+  bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
+  bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
+  bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
+}
+command-insertions
+
+# Change to Vi input mode.
 vi-mode() {
   set -o vi
   echo "Vi-mode on"
+  command-insertions
   sleep 0.5
   zle redisplay
 }
 
+# Change to Emacs input mode.
 emacs-mode() {
   set -o emacs
   echo "Emacs-mode on"
+  command-insertions
   sleep 0.5
   zle redisplay
 }
@@ -341,7 +359,6 @@ bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]E" edit-command-line
 # Insert 'sudo ' at the beginning of the line.
 bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
 
-
 # Additions to Prezto
 
 # Change to Vi-mode
@@ -351,12 +368,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   bindkey "$key_info[Opt-right]" forward-word
   bindkey "$key_info[Opt-left]"  backward-word
 fi
-
-# Command insertions.
-# bindkey -s "$key_info[F12]" 'source $ZDOTDIR/bindings.zsh\n'
-bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
-bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
-bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
 
 # Toggle comment at the start of the line. Note that we use pound-toggle which
 # is similar to pount insert, but meant to work around some issues that were
@@ -410,6 +421,7 @@ unbound_keys=(
   "${key_info[F9]}"
   "${key_info[F10]}"
   "${key_info[F11]}"
+  "${key_info[F12]}"
   "${key_info[PageUp]}"
   "${key_info[PageDown]}"
   "${key_info[ControlPageUp]}"
@@ -478,4 +490,5 @@ for keymap in 'emacs' 'viins'; do
 
   # Execute ls
   bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
+
 done
