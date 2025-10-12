@@ -12,8 +12,6 @@ if [[ "$TERM" == 'dumb' ]]; then
   return 1
 fi
 
-echo "sourced bindings.zsh"
-
 # NOTE: Emacs or Vi input mode is set in .zshrc.
 
 # Auto convert .... to ../..
@@ -71,61 +69,55 @@ key_info=(
   "Shift-Tab"    '^[[Z'
 )
 
-
-
 # NOTE: Ctrl-b is often used with Tmux so avoid binding that.
-
-# TODO: Show Vi or Emacs bindings depending input mode.
 
 # Display bindings with short description.
 # Defined in this file so they're easier to keep in sync with bindings.
-function lsbind() {
-  (echo; echo -e "
-  \nDefaults
-  Ctrl-A    Move to start of line
-  Ctrl-E    Move to end of line
-  Ctrl-U    Kill whole line
-  Ctrl-K    Kill to end of line
-  Alt-K     Kill to beginning of line
-  Ctrl-C    Kill the process
-  Ctrl-D    End-of-line
-  Ctrl-L    Clear screen
-  Ctrl-N    Select next menu item
-  Ctrl-P    Select previous menu item
-  Ctrl-Q    Push the line to stack
-  Ctrl-Z    Suspend the process
-  Alt-G     Get the line from stack
-  Alt-F     Move a word forward
-  Alt-B     Move a word backward
-
-  Extras
-  ↑ | ↓     History substring search
-  Ctrl-B    Show these bindings
-  Alt-<nbr> Paste <nbr> parameters of last command.
-  Alt-↑     cd ..
-  Alt- ← | ->   cd previous / next dir.
-  Alt-C     Fzf cd
-  Alt-E     Expand command path
-  Alt-L     ls
-  Alt-M     Duplicate previous word
-  Alt-V     Toggle Vi / Emacs mode.
-  Ctrl-G    Fzf cd to any dir
-  Ctrl-R    Fzf search history
-  Ctrl-T    Fzf select file
-  Ctrl-I    Complete in middle of a word
-  Ctrl-Z    2. press to continue process in background
-  F12       Source binding settings
-  Ctrl-BS   Kill previous word
-  Ctrl-Del  Kill next word
-  Ctrl-Space    Expand aliases
-  Ctrl- ← | ->  Move to previous / next word
-  C-X C-S   Prepend line with sudo
-  C-X C-E   Edit in external editor" | column)
-
-  zle reset-prompt
+function bindings() {
+echo "Global defaults"
+(echo -e "
+Ctrl-C    Kill the process
+Ctrl-D    End-of-line
+Ctrl-L    Clear screen
+Ctrl-Q    Push the line to stack
+Ctrl-Z    Suspend the process
+Emacs mode
+Ctrl-A    Move to start of line
+Ctrl-E    Move to end of line
+Ctrl-N    Next menu item
+Ctrl-P    Previous menu item
+Alt-F     Move a word forward
+Alt-B     Move a word backward
+Alt-G     Get the line from stack
+Ctrl-U    Kill whole line
+Alt-K     Kill to beginning of line
+Ctrl-K    Kill to end of line
+C-X C-S   Prepend line with sudo
+C-X C-E   Edit in external editor
+C-X C-]   Match bracket
+Vi mode
+<Space>is  Insert sudo at start of line.
+Extras
+↑ | ↓     History substring search
+Alt-<nbr> Paste <nbr> parameters of last command.
+Alt-↑     cd ..
+Alt- ← | ->   cd previous / next dir.
+Alt-C     Fzf cd
+Alt-E     Expand command path
+Alt-L     ls
+Alt-M     Duplicate previous word
+Alt-V     Toggle Vi / Emacs mode.
+Ctrl-G    Fzf cd to any dir
+Ctrl-R    Fzf search history
+Ctrl-T    Fzf select file
+Ctrl-I    Complete in middle of a word
+Ctrl-Z    2. press to continue process in background
+Ctrl-BS   Kill previous word
+Ctrl-Del  Kill next word
+Ctrl-Space    Expand aliases
+Ctrl- ← | ->  Move to previous / next word" | column)
 }
-
-zle -N lsbind
+zle -N bindings
 
 #   Alt-K     Describe key briefly.
 #   Alt-E     Edit command line in text editor.
@@ -283,7 +275,7 @@ function cd() {
   builtin cd "$@"
 }
 
-function cd-previous-dir() {
+function cd-back() {
   DIR=${BACK_HISTORY%%:*}
   if [[ -d "$DIR" ]]; then
     BACK_HISTORY=${BACK_HISTORY#*:}
@@ -292,7 +284,7 @@ function cd-previous-dir() {
   fi
 }
 
-function cd-forward-dir() {
+function cd-forward() {
   DIR=${FORWARD_HISTORY%%:*}
   if [[ -d "$DIR" ]]; then
     FORWARD_HISTORY=${FORWARD_HISTORY#*:}
@@ -302,31 +294,34 @@ function cd-forward-dir() {
 }
 
 function command-insertions() {
-  bindkey -s "$key_info[Alt-Right]" 'cd-forward-dir\n'
-  bindkey -s "$key_info[Alt-Left]" 'cd-previous-dir\n'
+  bindkey -s "$key_info[Alt-Right]" 'cd-forward\n'
+  bindkey -s "$key_info[Alt-Left]" 'cd-back\n'
   bindkey -s "$key_info[Alt-Up]" 'cd ..\n'
 }
 command-insertions
 
 # Change to Vi input mode.
 vi-mode() {
-  set -o vi
+  bindkey -v
   echo "Vi-mode on"
   command-insertions
+  # Set beam cursor.
+  print -n '\e[5 q'
   sleep 0.5
   zle redisplay
 }
+zle -N vi-mode
 
 # Change to Emacs input mode.
 emacs-mode() {
-  set -o emacs
+  bindkey -e
   echo "Emacs-mode on"
   command-insertions
+  # Block cursor
+  print -n '\e[2 q'
   sleep 0.5
   zle redisplay
 }
-
-zle -N vi-mode
 zle -N emacs-mode
 
 #
@@ -485,10 +480,11 @@ for keymap in 'emacs' 'viins'; do
 
   # Additions to Prezto
 
-  # List bindings
-  bindkey -M "$keymap" "$key_info[Ctrl]b" lsbind
-
   # Execute ls
   bindkey -M "$keymap" "$key_info[Esc]l" _runcmdpushinput_ls
 
 done
+
+# Needed when changing input mode.
+# unset keymap
+# unset key_info
