@@ -11,7 +11,7 @@
 # autoload -U colors && colors
 
 # These should be in .zshrc or such.
-default_user=''
+default_user='henri'
 
 # Define colors
 if [[ "$TERM" == 'linux' ]]; then
@@ -43,11 +43,11 @@ fi
 
 vicmd_char="%F{$vicmd_color}$vicmd_char%{$reset_color%}"
 
-# Beam
-ins_mode_cursor="\e[5 q"
+# Blinking beam
+viins_cursor="\e[5 q"
 
-# Block
-cmd_mode_cursor="\e[1 q"
+# Steady block
+vicmd_cursor="\e[2 q"
 
 # Modal cursor color for vi's insert/normal modes.
 ##
@@ -63,45 +63,35 @@ zle-line-init () {
   #echo -ne "\033]12;Grey\007"
   #echo -n 'grayline1'
   # echo -ne "\033]12;Gray\007"
-  printf $ins_mode_cursor
-
+  printf $viins_cursor
   # echo -ne "\033[4 q"
-  #print 'did init' >/dev/pts/16
 }
-
 zle -N zle-line-init
 
-# Change cursor based on vimmode
+# Change cursor depending on vi mode.
 function zle-keymap-select {
   zle reset-prompt
-  # Normal / Command mode
-  if [[ $KEYMAP == vicmd ]]; then
-    # If not run inside Tmux.
-    if [[ -z $TMUX ]]; then
+  if [[ $KEYMAP == vicmd ]]; then  # Normal / Command mode
+    if [[ -z $TMUX ]]; then        # If not run inside Tmux.
       # printf "\033]12;Green\007"
-      printf $cmd_mode_cursor
+      printf $vicmd_cursor
     else
       # printf "\033Ptmux;\033\033]12;red\007\033\\"
       # printf "\033Ptmux;\033\033[1 q\033\\"
-      printf $cmd_mode_cursor
+      printf $vicmd_cursor
     fi
   else
     # Insert mode
     if [[ -z $TMUX ]]; then
       # printf "\033]12;Grey\007"
-      # Beam
-      printf $ins_mode_cursor
-      # Underscore
-      # printf "\033[4 q"
+      printf $viins_cursor
     else
       # printf "\033Ptmux;\033\033]12;grey\007\033\\"
       # printf "\033Ptmux;\033\033[4 q\033\\"
-      printf $ins_mode_cursor
+      printf $viins_cursor
     fi
   fi
-  #print 'did select' >/dev/pts/16
 }
-
 zle -N zle-keymap-select
 
 # function zle-line-finish {
@@ -113,26 +103,25 @@ zle -N zle-keymap-select
 # indicator, while in fact you would be in INS mode Fixed by catching
 # SIGINT (C-c), set vim_mode to INS and then repropagate the SIGINT, so if
 # anything else depends on it, we will not break it.
-# function TRAPINT() {
-#   vim_mode=$vim_ins_mode
-#   return $(( 128 + $1 ))
-# }
+function TRAPINT() {
+  return $(( 128 + $1 ))
+}
 
 # Content of the prompt
 prompt() {
   # Username. Show if it's not the default.
   if [[ "$USER" != "$default_user" ]]; then
-      # If we are root, use different color.
-      # Conditionals:  %(x.true-text.false-text) .
-      # x=! : true if the shell is running with privileges.
-      print -n "%(!.%{%F{$root_color}%}root.%{%F{$user_color}%}"$USER")"
-      local add_colon=true
+    # If we are root, use different color.
+    # Conditionals:  %(x.true-text.false-text) .
+    # x=! : true if the shell is running with privileges.
+    print -n "%(!.%{%F{$root_color}%}root.%{%F{$user_color}%}"$USER")"
+    local add_colon=true
   fi
 
   # Print host if we are on SSH.
   if [[ -n "$SSH_CONNECTION" ]]; then
-      print -n "%F{$user_color}@%m"
-      local add_colon=true
+    print -n "%F{$user_color}@%m"
+    local add_colon=true
   fi
 
   # Print colon if either user or host was printed.
@@ -140,9 +129,9 @@ prompt() {
 
   # (%~) : Working dir. Use different color if it's writable by current user.
   if [[ ! -w "$PWD" ]]; then
-      print -n "%F{$non_writable_dir}%~%f%F{$non_writable_dir} $lock "
+    print -n "%F{$non_writable_dir}%~%f%F{$non_writable_dir} $lock "
   else
-      print -n "%F{$writable_dir}%~ "
+    print -n "%F{$writable_dir}%~ "
   fi
 
   # Background jobs. Print '&' and number of jobs if there's atleast 1 (%j1).
@@ -150,13 +139,12 @@ prompt() {
   print -n "%1(j.%{%F{$bg_jobs_color}%}&%j .)"
 
   # Prompt character. Use different color if previous command didn't exit with 0 (= ?).
-
-print -n "%(?.%F{$prompt_color}.%F{$error_color})${${KEYMAP/vicmd/$vicmd_char}/(main|viins)/$prompt_char}%f "
+  print -n "%(?.%F{$prompt_color}.%F{$error_color})"
+  print -n "${${KEYMAP/vicmd/$vicmd_char}/(main|viins)/$prompt_char}%f "
 }
 
 prompt_precmd() {
-    echo
-    PROMPT='%{%f%b%k%}$(prompt)'
+  PROMPT='%{%f%b%k%}$(prompt)'
 }
 
 autoload -Uz add-zsh-hook
