@@ -27,9 +27,11 @@ if [[ "$TERM" == 'linux' ]]; then
   local prompt_color=6       # cyan
   local error_color=1        # red
   local lock=''
+  local prompt_char=">"
 else
   # For 256 colors and font with symbols.
-  local writable_dir=82      # green
+  local writable_dir=43      # cyan
+  # local writable_dir=82      # green
   local non_writable_dir=33  # blue
   local root_color=160       # red
   local user_color=37
@@ -37,6 +39,7 @@ else
   local error_color=9        # red
   local bg_jobs_color=cyan
   local lock=''             # Non-writable dir symbol
+  local prompt_char="❯"
 fi
 
 # Text for different vimmodes.
@@ -157,15 +160,13 @@ prompt() {
 
   # Prompt sign. Use different color if previous command didn't exit with 0 (= ?).
   # Use '$' prompt sign for regular user, '#' for root (= !).
-  print -n "%(?.%F{$prompt_color}.%F{$error_color})%(!.#.$)%f "
+  print -n "%(?.%F{$prompt_color}.%F{$error_color})$prompt_char%f "
+  # print -n "%(?.%F{$prompt_color}.%F{$error_color})%(!.#.$)%f "
 }
 
 prompt_precmd() {
     echo
     PROMPT='%{%f%b%k%}$(prompt)'
-
-    # Right-side prompt
-    # RPROMPT='${vim_mode}'
 }
 
 autoload -Uz add-zsh-hook
