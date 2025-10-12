@@ -41,6 +41,7 @@ else
 fi
 
 export EDITOR=$editor
+export SYSTEMD_EDITOR=$editor
 export VISUAL=$editor
 unset $editor
 
