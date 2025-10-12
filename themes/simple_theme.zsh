@@ -1,7 +1,4 @@
 #!/bin/zsh
-# Using colors:
-# %F (%f) : Start (stop) using a different foreground colour
-#
 # For conditionals, check "13.3 Conditional Substrings in Prompts" at:
 # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
 
@@ -12,6 +9,8 @@
 
 # These should be in .zshrc or such.
 default_user='henri'
+
+# TODO: emacs mode support.
 
 # Define colors
 if [[ "$TERM" == 'linux' ]]; then
@@ -49,9 +48,6 @@ viins_cursor="\e[5 q"
 # Steady block
 vicmd_cursor="\e[2 q"
 
-# Modal cursor color for vi's insert/normal modes.
-##
-# Other cursor options: cheat shell-cursors
 # http://stackoverflow.com/questions/30985436/
 # https://bbs.archlinux.org/viewtopic.php?id=95078
 # http://unix.stackexchange.com/questions/115009/
@@ -81,15 +77,13 @@ function zle-keymap-select {
       printf $vicmd_cursor
     fi
   else
-    # Insert mode
     if [[ -z $TMUX ]]; then
       # printf "\033]12;Grey\007"
-      printf $viins_cursor
     else
       # printf "\033Ptmux;\033\033]12;grey\007\033\\"
       # printf "\033Ptmux;\033\033[4 q\033\\"
-      printf $viins_cursor
     fi
+    printf $viins_cursor
   fi
 }
 zle -N zle-keymap-select
@@ -109,11 +103,12 @@ function TRAPINT() {
 
 # Content of the prompt
 prompt() {
-  # Username. Show if it's not the default.
+  # Show username if it's not the default.
   if [[ "$USER" != "$default_user" ]]; then
     # If we are root, use different color.
     # Conditionals:  %(x.true-text.false-text) .
     # x=! : true if the shell is running with privileges.
+    # %F = foreground color.
     print -n "%(!.%{%F{$root_color}%}root.%{%F{$user_color}%}"$USER")"
     local add_colon=true
   fi
