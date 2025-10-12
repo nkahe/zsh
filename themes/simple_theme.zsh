@@ -1,6 +1,4 @@
 #!/bin/zsh
-# vim:ft=zsh ts=2 sw=2 sts=2
-#
 # Using colors:
 # %F (%f) : Start (stop) using a different foreground colour
 #
@@ -10,8 +8,6 @@
 # With Zinit:
 # zinit ice src"simple_theme.zsh"
 # zinit light $ZDOTDIR/themes
-
-
 # autoload -U colors && colors
 
 # These should be in .zshrc or such.
@@ -20,7 +16,7 @@ default_user=''
 # Define colors
 if [[ "$TERM" == 'linux' ]]; then
   # For 16 colors, basic font.
-  local writable_dir=2       # green
+  local writable_dir=6       # cyan
   local non_writable_dir=6   # cyan
   local root_color=1         # red
   local user_color=9
@@ -28,6 +24,7 @@ if [[ "$TERM" == 'linux' ]]; then
   local error_color=1        # red
   local lock=''
   local prompt_char=">"
+  local vicmd_char="N"
 else
   # For 256 colors and font with symbols.
   local writable_dir=43      # cyan
@@ -38,15 +35,13 @@ else
   local prompt_color=42      # light green
   local error_color=9        # red
   local bg_jobs_color=cyan
+  local vicmd_color=blue
   local lock=''             # Non-writable dir symbol
   local prompt_char="❯"
+  local vicmd_char="N"
 fi
 
-# Text for different vimmodes.
-# %F{$non_writable_dir}%~
-vim_ins_mode="%F{28}Ins %{$reset_color%}"
-vim_cmd_mode="%F{33}Nor %{$reset_color%}"
-vim_mode=$vim_ins_mode
+vicmd_char="%F{$vicmd_color}$vicmd_char%{$reset_color%}"
 
 # Beam
 ins_mode_cursor="\e[5 q"
@@ -78,7 +73,6 @@ zle -N zle-line-init
 
 # Change cursor based on vimmode
 function zle-keymap-select {
-  vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
   zle reset-prompt
   # Normal / Command mode
   if [[ $KEYMAP == vicmd ]]; then
@@ -110,19 +104,19 @@ function zle-keymap-select {
 
 zle -N zle-keymap-select
 
-function zle-line-finish {
-  vim_mode=$vim_ins_mode
-}
-zle -N zle-line-finish
+# function zle-line-finish {
+#   vim_mode=$vim_ins_mode
+# }
+# zle -N zle-line-finish
 
 # Fix a bug when you C-c in CMD mode and you'd be prompted with CMD mode
 # indicator, while in fact you would be in INS mode Fixed by catching
 # SIGINT (C-c), set vim_mode to INS and then repropagate the SIGINT, so if
 # anything else depends on it, we will not break it.
-function TRAPINT() {
-  vim_mode=$vim_ins_mode
-  return $(( 128 + $1 ))
-}
+# function TRAPINT() {
+#   vim_mode=$vim_ins_mode
+#   return $(( 128 + $1 ))
+# }
 
 # Content of the prompt
 prompt() {
@@ -144,9 +138,6 @@ prompt() {
   # Print colon if either user or host was printed.
   [[ -n "$add_colon" ]] && print -n ":"
 
-  # Vim-mode
-  print -n "$vim_mode"
-
   # (%~) : Working dir. Use different color if it's writable by current user.
   if [[ ! -w "$PWD" ]]; then
       print -n "%F{$non_writable_dir}%~%f%F{$non_writable_dir} $lock "
@@ -158,10 +149,9 @@ prompt() {
   # default prompt color.
   print -n "%1(j.%{%F{$bg_jobs_color}%}&%j .)"
 
-  # Prompt sign. Use different color if previous command didn't exit with 0 (= ?).
-  # Use '$' prompt sign for regular user, '#' for root (= !).
-  print -n "%(?.%F{$prompt_color}.%F{$error_color})$prompt_char%f "
-  # print -n "%(?.%F{$prompt_color}.%F{$error_color})%(!.#.$)%f "
+  # Prompt character. Use different color if previous command didn't exit with 0 (= ?).
+
+print -n "%(?.%F{$prompt_color}.%F{$error_color})${${KEYMAP/vicmd/$vicmd_char}/(main|viins)/$prompt_char}%f "
 }
 
 prompt_precmd() {
