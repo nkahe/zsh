@@ -8,7 +8,7 @@
 # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
 
 # With Zinit:
-# zinit ice src"oma_teema.zsh-theme"
+# zinit ice src"simple_theme.zsh"
 # zinit light $ZDOTDIR/themes
 
 

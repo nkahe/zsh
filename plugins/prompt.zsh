@@ -8,7 +8,7 @@ if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
     eval $(starship init zsh);
   else
     # Backup -theme.
-    themefile=$ZDOTDIR/themes/oma_teema.zsh-theme
+    themefile=$ZDOTDIR/themes/simple_theme.zsh
     [[ -f $themefile ]] && source $themefile
   fi
 else
