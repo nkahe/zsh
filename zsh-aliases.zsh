@@ -19,15 +19,7 @@ alias reload="source $ZDOTDIR/{.zprofile,.zshrc,aliases.sh}"
 # Functions {{{
 
 # Automatically show files after directory change.
-if (( $+commands[eza] )); then
-  chpwd() { eza --group-directories-first ;}
-else
-  if [[ $OSTYPE == 'darwin'* ]]; then
-    chpwd() { ls -c ;}
-  else
-    chpwd() { ls --color ;}
-  fi
-fi
+chpwd() { ls ;}
 
 # Edit Zsh config files. Usage: edz <part of filename>
 #   - Bypass fuzzy finder if there's only one match (--select-1)
