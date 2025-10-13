@@ -7,83 +7,68 @@
 # zinit light $ZDOTDIR/themes
 # autoload -U colors && colors
 
-# These should be in .zshrc or such.
-default_user='henri'
+# Could be explicitly defined in .zshrc
+default_user=$USER
 
-# TODO: emacs mode support.
+# Enable vi mode.
+bindkey -v
+# bindkey -e
 
 # Define colors
 if [[ "$TERM" == 'linux' ]]; then
   # For 16 colors, basic font.
-  local writable_dir=6       # cyan
-  local non_writable_dir=6   # cyan
-  local root_color=1         # red
-  local user_color=9
-  local prompt_color=6       # cyan
-  local error_color=1        # red
-  local lock=''
-  local prompt_char=">"
-  local vicmd_char="N"
+  writable_dir=6       # cyan
+  non_writable_dir=6   # cyan
+  root_color=1         # red
+  user_color=9
+  prompt_color=6       # cyan
+  error_color=1        # red
+  lock=''
+  prompt_char=">"      # Last character of prompt.
+  vicmd_char="N"       # Use in vi cmd mode instead of above prompt char.
 else
   # For 256 colors and font with symbols.
-  local writable_dir=43      # cyan
+  writable_dir=43      # cyan
   # local writable_dir=82      # green
-  local non_writable_dir=33  # blue
-  local root_color=160       # red
-  local user_color=37
-  local prompt_color=42      # light green
-  local error_color=9        # red
-  local bg_jobs_color=cyan
-  local vicmd_color=blue
-  local lock=''             # Non-writable dir symbol
-  local prompt_char="❯"
-  local vicmd_char="N"
+  non_writable_dir=33  # blue
+  root_color=160       # red
+  user_color=37
+  prompt_color=42      # light green
+  error_color=9        # red
+  bg_jobs_color=cyan
+  vicmd_color=blue
+  lock=''             # Non-writable dir symbol
+  prompt_char="❯"
+  vicmd_char="N"
 fi
 
 vicmd_char="%F{$vicmd_color}$vicmd_char%{$reset_color%}"
 
-# Blinking beam
-viins_cursor="\e[5 q"
-
-# Steady block
-vicmd_cursor="\e[2 q"
+main_cursor="\e[5 q"   # Blinking beam
+vicmd_cursor="\e[2 q"  # Steady block
 
 # http://stackoverflow.com/questions/30985436/
 # https://bbs.archlinux.org/viewtopic.php?id=95078
 # http://unix.stackexchange.com/questions/115009/
 
-# Default mode & cursor
+# Executed every time the line editor is started to read a new line of input.
 zle-line-init () {
-  zle -K viins
-  # Colors are commented because they are set by zsh-syntax-highlighting -plugin
-  #echo -ne "\033]12;Grey\007"
-  #echo -n 'grayline1'
-  # echo -ne "\033]12;Gray\007"
-  printf $viins_cursor
-  # echo -ne "\033[4 q"
+  # zle -K viins
+  printf $main_cursor
 }
 zle -N zle-line-init
 
-# Change cursor depending on vi mode.
+# Executed every time the keymap changes, i.e. the special parameter KEYMAP is set
+# to a different value, while the line editor is active. Initialising the keymap
+# when the line editor starts does not cause the widget to be called.
 function zle-keymap-select {
+  print -n "sel:$KEYMAP "
   zle reset-prompt
-  if [[ $KEYMAP == vicmd ]]; then  # Normal / Command mode
-    if [[ -z $TMUX ]]; then        # If not run inside Tmux.
-      # printf "\033]12;Green\007"
+  if [[ $KEYMAP == vicmd ]]; then
       printf $vicmd_cursor
-    else
-      # printf "\033Ptmux;\033\033]12;red\007\033\\"
-      # printf "\033Ptmux;\033\033[1 q\033\\"
-      printf $vicmd_cursor
-    fi
-  else
-    if [[ -z $TMUX ]]; then
-      # printf "\033]12;Grey\007"
-    else
-      # printf "\033Ptmux;\033\033]12;grey\007\033\\"
-      # printf "\033Ptmux;\033\033[4 q\033\\"
-    fi
-    printf $viins_cursor
+  elif [[ $KEYMAP == vicmd ]]; then
+   else
+    printf $main_cursor
   fi
 }
 zle -N zle-keymap-select
@@ -135,10 +120,19 @@ prompt() {
 
   # Prompt character. Use different color if previous command didn't exit with 0 (= ?).
   print -n "%(?.%F{$prompt_color}.%F{$error_color})"
-  print -n "${${KEYMAP/vicmd/$vicmd_char}/(main|viins)/$prompt_char}%f "
+  # print -n "${${KEYMAP/vicmd/$vicmd_char}/(main|viins)/$prompt_char}%f "
+
+  case $KEYMAP in
+    vicmd)  print -n "$vicmd_char"  ;;
+    *)      print -n "$prompt_char" ;;
+  esac
+
+  print -n "%f "  # End text coloring and add space.
 }
 
 prompt_precmd() {
+  # Add empty line before prompt.
+  echo
   PROMPT='%{%f%b%k%}$(prompt)'
 }
 
