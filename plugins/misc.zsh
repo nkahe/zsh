@@ -30,6 +30,18 @@ zinit ice wait"2" lucid as"program" make'!' pick"bin/keyd" \
 zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moor* -> moor"
 zinit load walles/moor
 
+zinit ice wait"1" lucid as"program" pick"todo"
+zinit load todotxt/todo.txt-cli
+
+# Tungsten - WolframAlpha CLI. https://github.com/ASzc/tungsten
+zinit ice wait"2" lucid as"program" pick"tungsten.sh" atload"alias ask=tungsten.sh"
+zinit load ASzc/tungsten
+
+# A CLI tool that scrapes Google search results and SERPs that provides
+# instant and concise answers. https://github.com/Bugswriter/tuxi
+zinit ice wait"2" as"program" pick"tuxi" lucid
+zinit load Bugswriter/tuxi
+
 # Yet Another Dotfiles Manager - yadm https://yadm.io
 zinit ice wait"2" lucid as"program" has"git" pick"yadm" \
   cp"yadm.1 -> $HOME/.local/man/man1" atpull'%atclone'
