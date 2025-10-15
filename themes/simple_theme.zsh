@@ -7,9 +7,6 @@
 # zinit light $ZDOTDIR/themes
 # autoload -U colors && colors
 
-# Could be explicitly defined in .zshrc
-default_user=$USER
-
 # Enable vi mode.
 bindkey -v
 # bindkey -e
@@ -38,7 +35,8 @@ else
   bg_jobs_color=cyan
   vicmd_color=blue
   lock=''             # Non-writable dir symbol
-  prompt_char="❯"
+  prompt_char="$"
+  # prompt_char="❯"
   vicmd_char="N"
 fi
 
@@ -62,11 +60,9 @@ zle -N zle-line-init
 # to a different value, while the line editor is active. Initialising the keymap
 # when the line editor starts does not cause the widget to be called.
 function zle-keymap-select {
-  print -n "sel:$KEYMAP "
   zle reset-prompt
   if [[ $KEYMAP == vicmd ]]; then
       printf $vicmd_cursor
-  elif [[ $KEYMAP == vicmd ]]; then
    else
     printf $main_cursor
   fi
@@ -86,26 +82,33 @@ function TRAPINT() {
   return $(( 128 + $1 ))
 }
 
-# Content of the prompt
-prompt() {
-  # Show username if it's not the default.
-  if [[ "$USER" != "$default_user" ]]; then
+if [[ $EUID == 0 ]]; then
+  show_user=true
+else
+  show_user=false
+fi
+
+if [[ -n "$SSH_CONNECTION" ]]; then
+  show_host=true
+else
+  show_host=false
+fi
+
+# Content of the prompt. # %F = foreground color.
+function print_prompt() {
+  if [[ $show_user == true ]]; then
     # If we are root, use different color.
     # Conditionals:  %(x.true-text.false-text) .
     # x=! : true if the shell is running with privileges.
-    # %F = foreground color.
-    print -n "%(!.%{%F{$root_color}%}root.%{%F{$user_color}%}"$USER")"
-    local add_colon=true
+    print -n "%(!.%{%F{$root_color}%}.%{%F{$user_color}%})$USER%f"
+    [[ $show_host == false ]] && print -n " in "
   fi
 
-  # Print host if we are on SSH.
-  if [[ -n "$SSH_CONNECTION" ]]; then
+  if [[ $show_host == true ]]; then
     print -n "%F{$user_color}@%m"
-    local add_colon=true
   fi
 
-  # Print colon if either user or host was printed.
-  [[ -n "$add_colon" ]] && print -n ":"
+  [[ show_user == true || show_host == true ]] && print -n ":"
 
   # (%~) : Working dir. Use different color if it's writable by current user.
   if [[ ! -w "$PWD" ]]; then
@@ -133,7 +136,7 @@ prompt() {
 prompt_precmd() {
   # Add empty line before prompt.
   echo
-  PROMPT='%{%f%b%k%}$(prompt)'
+  PROMPT='%{%f%b%k%}$(print_prompt)'
 }
 
 autoload -Uz add-zsh-hook
