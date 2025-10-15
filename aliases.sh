@@ -20,8 +20,7 @@ file="$HOME/Applications/AppImageUpdate-x86_64.AppImage"
 has file && alias AppImageUpdate="$file"
 
 file="$HOME/Applications/appimageupdatetool-x86_64.AppImage"
-has file && alias appimage="$file"
-
+has file && alias appimage-update="$file"
 
 # firenvim: Embed Neovim in Chrome, Firefox & others. https://github.com/glacambre/firenvim
 alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
@@ -161,40 +160,38 @@ function restart {
  # Huom. jos laittaa & perään, niin oletuksena bg jobeilla on pienempi prioriteetti.
  # You can turn this feature off by setting NO_BG_NICE.
 
-# For non-root users.
-if [[ $UID != 0 ]]; then
-  #alias mount='sudo mount'
-  #alias umount='sudo umount'
-  alias updatedb='sudo updatedb'
-fi
+#alias mount='sudo mount'
+#alias umount='sudo umount'
+alias updatedb='sudo updatedb'
 
-# Better default flags for interactive use
+# Extra default flags for interactive use
 
 # OS X versions has some different flags.
 if [[ $OSTYPE != 'darwin'* ]]; then
-  cflags='--preserve-root -v'
+  alias chmod='chmod --preserve-root --verbose'
+  alias chown='chown --preserve-root --verbose'
+  alias cp="cp --verbose"
   alias df='df --human-readable'
+  alias dd='dd status=progress'
   alias du='du --human'
   alias free='free --human'
-  alias ka='killall --verbose'
+  alias mv="mv --verbose"
   alias rm='rm --verbose'
   alias shred='shred --verbose --remove --zero'
   alias units="units --verbose --one-line --history \
   ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 else
-  cflags='-v'
+  alias chmod='chmod -v'
+  alias chown='chown -v'
+  alias cp='cp -v'
   alias df='df -h'
   alias du='du -h'
   alias free='free -h'
-  alias ka='killall -v'
+  alias mv='mv -v'
   alias rm='rm'
   alias shred='shred -v -z'
   alias units="units -v -1 -H ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 fi
-alias chmod="chmod $cflags"
-alias chown="chown $cflags"
-alias dd='dd status=progress'
-unset cflags
 
 # Abbrevations
 
