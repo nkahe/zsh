@@ -10,7 +10,7 @@
 # Ei ole asennettu.
 
 # Reload Zsh user settings.
-alias reload="source $ZDOTDIR/{.zprofile,.zshrc,aliases.sh}"
+alias reload="source $ZDOTDIR/{.zprofile,.zshrc}"
 
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw
@@ -146,6 +146,8 @@ function cmdfu() {
 # FIXME: doesn't work.
 alias lsl='ls -d *(@)' \
       lll='ls -dl *(@)'
+
+for index ({1..9}) alias "$index"="cd -${index}"; unset index
 
 # Make new dir and change to it.
 function mkdcd() {
