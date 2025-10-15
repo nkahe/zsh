@@ -3,8 +3,7 @@
 # /etc/zprofile gets executed before this.
 # settings in /etc/zshrc can override these.
 #
-# Don't put anything that outputs text here. Can break things
-# like ssh and scp.
+# Don't put anything that outputs text here. Can break things like ssh and scp.
 #
 # NOTE: No Zsh-only syntax. This file is linked to ~/.profile and is sourced
 # from Bash too.
@@ -32,18 +31,17 @@ function has() {
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
 # Default text editor
-if has nvim && [[ $UID != 0 ]]; then
-  editor="nvim"
+if has nvim; then
+  EDITOR="nvim"
 elif has micro; then
-  editor="micro"
+  EDITOR="micro"
 else
-  editor="nano"
+  EDITOR="nano"
 fi
 
-export EDITOR=$editor
-export SYSTEMD_EDITOR=$editor
-export VISUAL=$editor
-unset $editor
+export $EDITOR
+export SYSTEMD_EDITOR=$EDITOR
+export VISUAL=$EDITOR
 
 # has qimgv && export IMAGEVIEWER='qimgv'
 # has zathura && export PDFVIEWER='zathura'
@@ -64,7 +62,6 @@ if has nvimpager; then
   export MANPAGER='nvimpager'
 fi
 
-# Bat
 if has bat; then
   # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
   # It might be necessary to set MANROFFOPT="-c" if  experience formatting problems.
@@ -109,8 +106,6 @@ fi
 # file="$dir/.node_repl_history"
 # export NODE_REPL_HISTORY="$file"
 # unset dir file
-
-has wayland && export MOZ_ENABLE_WAYLAND=1
 
 has cheat && export CHEAT_USE_FZF=true
 
