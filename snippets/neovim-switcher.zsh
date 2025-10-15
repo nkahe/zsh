@@ -22,8 +22,8 @@ function nvims() {
     config='astroNvim'
   elif [[ $config == "SpaceVim" ]]; then
     config='SpaceVim'
-  elif [[ $config == "Minimal" ]]; then
-    config='nvim-mini'
+  elif [[ $config == "Simple" ]]; then
+    config='nvim-simple'
   fi
   NVIM_APPNAME=$config nvim $@
 }
@@ -34,6 +34,6 @@ alias nvim-old="NVIM_APPNAME=nvim-old nvim $@"
 alias nvchad="NVIM_APPNAME=nvchad nvim $@"
 alias astro="NVIM_APPNAME=astroNvim nvim $@"
 alias spacevim="NVIM_APPNAME=SpaceVim nvim $@"
-alias nvim-mini="NVIM_APPNAME=nvim-mini nvim $@"
+alias nvim-simple="NVIM_APPNAME=nvim-simple nvim $@"
 
 # bindkey -s '^a' "nvims\n"
