@@ -1,5 +1,8 @@
 # Settings that are no longer in use.
 archive
-
-zcompdump
+aliases.local.zsh
+plugins/skip
+profile.local.zsh
+.profile
+.zcompdump
 .zcalc_history
