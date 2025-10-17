@@ -52,12 +52,13 @@ zinit load TheLocehiliosan/yadm
 # Use Wayland + clipboard.
 # INFO: Doesn't work without defining own keybindings (below) if Zsh-Vi-Mode is
 # also used.
+ZSH_SYSTEM_CLIPBOARD_METHOD="wlp"
+ZSH_SYSTEM_CLIPBOARD_DISABLE_DEFAULT_MAPS="true"
 zinit ice wait"1" lucid
 zinit load kutsan/zsh-system-clipboard
 
 # jeffreytse/zsh-vi-mode: A better and friendly vi(vim) mode plugin for ZSH.
 # https://github.com/jeffreytse/zsh-vi-mode
-zstyle -s ':prezto:module:editor' key-bindings 'key_bindings'
 zinit ice depth=1 if"[[ $key_bindings == vi ]]"
 zinit light jeffreytse/zsh-vi-mode
 
@@ -70,6 +71,7 @@ zvm_after_init() {
   bindkey -M vicmd 'cd' zsh-system-clipboard-vicmd-vi-delete
   bindkey -M vicmd 'cp' zsh-system-clipboard-vicmd-vi-put-after
   bindkey -M vicmd 'cP' zsh-system-clipboard-vicmd-vi-put-before
+  # FIXME: Doesn't work.
   bindkey -M vicmd 'cy' zsh-system-clipboard-vicmd-vi-yank
 
   # Prepend command with sudo.
