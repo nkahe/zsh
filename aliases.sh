@@ -265,29 +265,53 @@ function tm {
   timer "$@" && notify-send "Time is up!" && paplay "$HOME/Sounds/complete.wav"
 }
 
-# Aliases for ls
-opts="--group-directories-first --color=always"
-# Base ls command used after for aliases.
-if has eza; then
-  ls="eza --icons $opts"
-elif has exa; then
-  ls="exa --icons $opts"
-else
-  ls="ls $opts"
-fi
-unset opts
+function _ignore() {
+  # Aliases for ls
+  opts="--group-directories-first --color=always"
+  # Base ls command used after for aliases.
+  if has eza; then
+    _ls="eza --icons $opts"
+  elif has exa; then
+    _ls="exa --icons $opts"
+  else
+    _ls="ls $opts"
+  fi
+  unset opts
 
-# note: --group-directories-first doesn't apply to symlinks.
-# eza:lla myös --group
-alias ls="$ls" \
-  sl=ls \
-  ll="$ls -l" \
-  lsa="$ls -a" \
-  la="lsa" \
-  lla="$ls -l -a" \
-  lsd="$ls -d */" \
-  lld="$ls -l -d */"
-unset ls
+  # Function for ls (overrides binary). Needs to be functions since it's used
+  # by chpwd().
+  ls() { $_ls "$@"; }
+
+  # note: --group-directories-first doesn't apply to symlinks.
+  # eza:lla myös --group
+  alias sl=ls \
+    ll="$_ls -l" \
+    lsa="$_ls -a" \
+    la="lsa" \
+    lla="$_ls -l -a" \
+    lsd="$_ls -d */" \
+    lld="$_ls -l -d */"
+}
+
+LS_FLAGS=(--group-directories-first --color=always)
+
+if has eza; then
+  LS_CMD=(eza --icons "${LS_FLAGS[@]}")
+elif has exa; then
+  LS_CMD=(exa --icons "${LS_FLAGS[@]}")
+else
+  LS_CMD=(ls "${LS_FLAGS[@]}")
+fi
+
+# Used in chpwd() in Zsh to needs to be a function.
+ls() { "${LS_CMD[@]}" "$@"; }
+
+ll() { ls -l "$@"; }
+lsa() { ls -a "$@"; }
+la() { lsa "$@"; }
+lla() { ls -l -a "$@"; }
+lsd() { ls -d */ "$@"; }
+lld() { ls -l -d */ "$@"; }
 
 # Package management {{{1
 
