@@ -1,9 +1,6 @@
 # These aliases and functions only work with X11
 
-# This file is not currently sourced.
-
-# Don't continue if Xorg isn't running.
-if ! pgrep -x Xorg >/dev/null || ! pgrep -x X >/dev/null; then
+if [[ ${XDG_SESSION_TYPE} != x11 ]]; then
   return
 fi
 
