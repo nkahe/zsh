@@ -1,13 +1,7 @@
 
-#alias nvim-lazy="NVIM_APPNAME=LazyVim nvim"
-#alias nvim-kick="NVIM_APPNAME=kickstart nvim"
-#alias nvim-chad="NVIM_APPNAME=NvChad nvim"
-#alias nvim-astro="NVIM_APPNAME=AstroNvim nvim"
-
-#  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim")
-
+# Pick an installed Neovim configuration to run from list using fzf.
 function nvims() {
-  items=("LazyVim" "Minimal" "NvChad" "AstroNvim" "SpaceVim" "Old config" )
+  items=("LazyVim" "Minimal" "NvChad" "AstroNvim" "SpaceVim" "Old config" "No plugins" "MiniMax" )
   config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
   if [[ -z $config ]]; then
     echo "Nothing selected"
@@ -22,18 +16,19 @@ function nvims() {
     config='astroNvim'
   elif [[ $config == "SpaceVim" ]]; then
     config='SpaceVim'
-  elif [[ $config == "Simple" ]]; then
-    config='nvim-simple'
+  elif [[ $config == "No plugins" ]]; then
+    config='nvim-no_plugins'
+  elif [[ $config == "MiniMax" ]]; then
+    config='nvim-minimax'
   fi
   NVIM_APPNAME=$config nvim $@
 }
 
-# If want to start by using alias.
-alias lvim="nvim $@"
+# If want to start by using alias instead.
+alias lazyvim="nvim $@"
 alias nvim-old="NVIM_APPNAME=nvim-old nvim $@"
 alias nvchad="NVIM_APPNAME=nvchad nvim $@"
 alias astro="NVIM_APPNAME=astroNvim nvim $@"
 alias spacevim="NVIM_APPNAME=SpaceVim nvim $@"
-alias nvim-simple="NVIM_APPNAME=nvim-simple nvim $@"
-
-# bindkey -s '^a' "nvims\n"
+alias nvim-noplugins="NVIM_APPNAME=nvim-no_plugins nvim $@"
+alias minimax="NVIM_APPNAME=nvim-minimax nvim $@"
