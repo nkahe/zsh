@@ -360,16 +360,13 @@ unset file
 #}}}
 # DEs and WMs {{{1
 
-if [[ -n "$XDG_SESSION_DESKTOP" ]]; then
-  if [[ "$XDG_SESSION_DESKTOP" == "plasma5" || "$XDG_SESSION_DESKTOP" == "KDE" ]]
-  then
-    qdbus="qdbus org.kde.ksmserver /KSMServer logout"
-    # Don't use "shutdown"" on KDE but these:
-    alias kpoweroff="$qdbus 0 2 0" \
-          kreboot="$qdbus 0 1 0" \
-          klogout="$qdbus 0 0 0" \
-          restart-kwin='kwin_x11 --replace &>>/dev/null'
-  fi
+if [[ -n "$XDG_SESSION_DESKTOP" && "$XDG_SESSION_DESKTOP" == "KDE" ]]; then
+  qdbus="qdbus org.kde.ksmserver /KSMServer logout"
+  # Don't use "shutdown"" on KDE but these:
+  alias kpoweroff="$qdbus 0 2 0" \
+        kreboot="$qdbus 0 1 0" \
+        klogout="$qdbus 0 0 0" \
+        restart-kwin='kwin_wayland --replace &>>/dev/null'
 fi
 
 # vi:ft=sh
