@@ -58,8 +58,8 @@ key_info=(
   'F12'          "$terminfo[kf12]"
   'Insert'       "$terminfo[kich1]"
   'Home'         "$terminfo[khome]"
-  'PageUp'       "$terminfo[kpp]"
   'End'          "$terminfo[kend]"
+  'PageUp'       "$terminfo[kpp]"
   'PageDown'     "$terminfo[knp]"
   'Up'           "$terminfo[kcuu1]"
   'Left'         "$terminfo[kcub1]"
@@ -375,7 +375,6 @@ bindkey -M emacs "$key_info[Ctrl]_" pound-toggle
 #
 
 # Undo/Redo
-bindkey -M vicmd "u" undo
 bindkey -M viins "$key_info[Ctrl]_" undo
 bindkey -M vicmd "$key_info[Ctrl]R" redo
 
