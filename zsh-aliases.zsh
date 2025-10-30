@@ -12,14 +12,16 @@
 # Reload Zsh user settings.
 alias reload="source $ZDOTDIR/{.zprofile,.zshrc}"
 
+
+# Automatically show files after directory change.
+chpwd() { ls ;}
+
+
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw
 
  #}}}
 # Functions {{{
-
-# Automatically show files after directory change.
-chpwd() { ls ;}
 
 # Edit Zsh config files. Usage: edz <part of filename>
 #   - Bypass fuzzy finder if there's only one match (--select-1)

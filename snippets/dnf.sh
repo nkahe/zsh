@@ -17,7 +17,8 @@ alias copr="sudo dnf copr"    \
       lu="dnf check-update"   \
       rem="sudo dnf remove"   \
       se="dnf search --exclude '*i686'"  \
-      up="sudo dnf upgrade"
+      up="sudo dnf upgrade"   \
+      upgrade="sudo dnf upgrade"
 
 whyfile() {
   package=$(rpm -qf $1 --qf "%{NAME}")
