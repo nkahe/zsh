@@ -19,14 +19,6 @@ zinit load jamielinux/bashmount
 zinit ice wait"1" lucid as"program" pick"ch"
 zinit load learnbyexample/command_help
 
-# rvaiya/keyd: A key remapping daemon for linux.
-# https://github.com/rvaiya/keyd
-# make'!...' -> run make before atclone & atpull
-zinit ice wait"2" lucid as"program" make'!' pick"bin/keyd" \
-  atclone"sudo systemctl enable --now keyd" \
-  cp"keyd.1.gz -> $HOME/.local/man/man1"
-    zinit load rvaiya/keyd
-
 zinit ice wait lucid from"github-rel" as"program" bpick"*linux-amd64" mv"moor* -> moor"
 zinit load walles/moor
 
