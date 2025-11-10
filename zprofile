@@ -1,4 +1,4 @@
-#
+# vim: ft=bash
 # Executes commands at login shells pre-zshrc, e.g. at system startup.
 # /etc/zprofile gets executed before this.
 # settings in /etc/zshrc can override these.
@@ -32,6 +32,7 @@ export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
 # Default text editor
 if has nvim; then
+  export NVIM_APPNAME=nvim-custom
   EDITOR="nvim"
 elif has micro; then
   EDITOR="micro"
