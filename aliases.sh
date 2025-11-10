@@ -25,6 +25,31 @@ has file && alias appimage-update="$file"
 # firenvim: Embed Neovim in Chrome, Firefox & others. https://github.com/glacambre/firenvim
 alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
 
+function nvr() {
+  local target="$1"
+  if [ -z "$target" ]; then
+    echo "Usage: nvr <file>"
+    return 1
+  fi
+
+  # Find Neovim server
+  local server="${NVIM:-$(ls -t /tmp/nvim.* 2>/dev/null | head -n 1)}"
+  if [ ! -S "$server" ]; then
+    echo "No running Neovim server found."
+    return 1
+  fi
+
+  # Resolve path from current shell CWD
+  local abs_path
+  abs_path="$(realpath "$1" 2>/dev/null || echo "$1")"
+
+  # Open file in existing Neovim
+  nvim --server "$server" --remote "$abs_path"
+
+  # Focus the opened window (simulate `:buffer` command)
+  nvim --server "$server" --remote-send "<C-\\><C-N>:buffer ${abs_path}<CR>"
+}
+
 # nvimpager: Use nvim as a pager to view manpages, diffs, etc with nvim's syntax
 # highlighting. https://github.com/lucc/nvimpager
 alias nvp='nvimpager'
@@ -265,33 +290,42 @@ function tm {
   timer "$@" && notify-send "Time is up!" && paplay "$HOME/Sounds/complete.wav"
 }
 
-function _ignore() {
-  # Aliases for ls
-  opts="--group-directories-first --color=always"
-  # Base ls command used after for aliases.
-  if has eza; then
-    _ls="eza --icons $opts"
-  elif has exa; then
-    _ls="exa --icons $opts"
-  else
-    _ls="ls $opts"
-  fi
-  unset opts
+# function _ignore() {
+#   # Aliases for ls
+#   opts="--group-directories-first --color=always"
+#   # Base ls command used after for aliases.
+#   if has eza; then
+#     _ls="eza --icons $opts"
+#   elif has exa; then
+#     _ls="exa --icons $opts"
+#   else
+#     _ls="ls $opts"
+#   fi
+#   unset opts
+#
+#   # Function for ls (overrides binary). Needs to be functions since it's used
+#   # by chpwd().
+#   function ls() {
+#   $_ls "$@"
+#   }
+#
+#   # note: --group-directories-first doesn't apply to symlinks.
+#   # eza:lla myös --group
+#   alias sl=ls \
+#     ll="$_ls -l" \
+#     lsa="$_ls -a" \
+#     la="lsa" \
+#     lla="$_ls -l -a" \
+#     lsd="$_ls -d */" \
+#     lld="$_ls -l -d */"
+# }
 
-  # Function for ls (overrides binary). Needs to be functions since it's used
-  # by chpwd().
-  ls() { $_ls "$@"; }
-
-  # note: --group-directories-first doesn't apply to symlinks.
-  # eza:lla myös --group
-  alias sl=ls \
-    ll="$_ls -l" \
-    lsa="$_ls -a" \
-    la="lsa" \
-    lla="$_ls -l -a" \
-    lsd="$_ls -d */" \
-    lld="$_ls -l -d */"
-}
+# Disable alias expansion safely in both bash and zsh
+if [ -n "$BASH_VERSION" ]; then
+  shopt -u expand_aliases 2>/dev/null
+elif [ -n "$ZSH_VERSION" ]; then
+  setopt no_aliases 2>/dev/null
+fi
 
 LS_FLAGS=(--group-directories-first --color=always)
 
@@ -304,7 +338,9 @@ else
 fi
 
 # Used in chpwd() in Zsh to needs to be a function.
-ls() { "${LS_CMD[@]}" "$@"; }
+function ls() {
+  "${LS_CMD[@]}" "$@"
+}
 
 ll() { ls -l "$@"; }
 lsa() { ls -a "$@"; }
@@ -369,4 +405,4 @@ if [[ -n "$XDG_SESSION_DESKTOP" && "$XDG_SESSION_DESKTOP" == "KDE" ]]; then
         restart-kwin='kwin_wayland --replace &>>/dev/null'
 fi
 
-# vi:ft=sh
+# vi:ft=bash
