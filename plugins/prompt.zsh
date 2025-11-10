@@ -1,12 +1,4 @@
 
-# Select Vi input mode if it's set (in Zshrc).
-if [[ "$key_bindings" == vi ]]; then
-  # Zsh documentation recommends this over 'set -o vi'.
-  bindkey -v
-  # Set beam cursor.
-  print -n '\e[5 q'
-fi
-
 if [[ -n "$ID" && "$ID" == "raspbian" ]]; then
   # Zinit's updating below didn't work on Raspberry's executables so it's
   # updated manually.

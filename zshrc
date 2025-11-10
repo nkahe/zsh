@@ -8,6 +8,8 @@ file="$snippets_dir/startup-time.zsh"
 [[ -f "$file" ]] && source "$file"
 unset file
 
+source $ZDOTDIR/.zprofile
+
 # Set the key mapping style to either 'emacs' or 'vi'.
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 key_bindings=vi
@@ -43,6 +45,16 @@ source "$ZINIT_HOME/bin/zinit.zsh"
 
 ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 
+# Set so fzf correctly sets up key bindings for vi mode.
+if [[ "$key_bindings" == vi ]]; then
+  bindkey -v
+else
+  set -o emacs
+  # Bindings are sourced from a Vi-Zsh-Mode's hook in plugins/misc.zsh if we
+  # are using vi input mode.
+  files+=(bindings.zsh)
+fi
+
 # Used by OMZ plugins like last-working-dir and completions.
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
@@ -50,7 +62,8 @@ export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 
 # Source Zinit plugin specs if Zinit is loaded.
 if [[ -n $(functions zinit) ]]; then
-  for file in $plugins_dir/*.zsh; do
+  for file in $plugins_dir/*.zsh
+  do
     source "$file"
   done
   unset file plugins_dir
@@ -62,9 +75,10 @@ else
 fi
 
 # Source snippets.
-# NOTE: Using 'zinit snippet' command instead can cause issues with cache when
-# files are changed.
-for file in $snippets_dir/*.zsh $snippets_dir/*.sh; do
+# NOTE: If changing content of files sourced with zinit, it needs to be
+# updated with 'zinit update (name)' because files are compiled and cached.
+for file in $snippets_dir/*.zsh $snippets_dir/*.sh
+do
   # source "$file"
   zinit ice id-as"$f"
   zinit snippet "$file"
@@ -84,27 +98,16 @@ files=(
   zsh-aliases.zsh
 )
 
-# ~/.fzf.bash in your .bashrc, so that it correctly sets up key bindings
-# for vi mode."
-if [[ "$key_bindings" == vi ]]; then
-  set -o vi
-  # Set beam cursor.
-  print -n '\e[5 q'
-else
-  set -o emacs
-  # Bindings are sourced from a Vi-Zsh-Mode's hook in plugins/misc.zsh if using
-  # Vi mode.
-  files+=(bindings.zsh)
-fi
-
 for f in $files; do
-  zinit ice id-as"$f"
-  zinit snippet $ZDOTDIR/$f
-  # [[ -r $ZDOTDIR/$f ]] && source $ZDOTDIR/$f
+[[ -r $ZDOTDIR/$f ]] && source $ZDOTDIR/$f
+  # If want to measure time taken:
+  # zinit ice id-as"$f"
+  # zinit snippet $ZDOTDIR/$f
 done
 
 # Any local files outside version control.
-for f in $ZDOTDIR/*.local.zsh; do
+for f in $ZDOTDIR/*.local.zsh
+do
   source $f
 done
 
@@ -127,3 +130,10 @@ fi
 # zprof
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+if [[ "$key_bindings" == vi ]]; then
+  bindkey -v
+  # Set beam cursor.
+  print -n '\e[5 q'
+fi
+
