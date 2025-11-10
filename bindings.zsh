@@ -357,7 +357,7 @@ bindkey -M emacs "$key_info[Ctrl]X$key_info[Ctrl]S" prepend-sudo
 # Additions to Prezto
 
 # Change to Vi-mode
-bindkey -e "$key_info[Alt]v" vi-mode
+bindkey -M emacs "$key_info[Alt]v" vi-mode
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   bindkey "$key_info[Opt-right]" forward-word
