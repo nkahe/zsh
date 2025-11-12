@@ -59,7 +59,6 @@ fi
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
 
-
 # Source Zinit plugin specs if Zinit is loaded.
 if [[ -n $(functions zinit) ]]; then
   for file in $plugins_dir/*.zsh
@@ -128,8 +127,6 @@ fi
 
 # Uncomment to show speed profiling stats.
 # zprof
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 if [[ "$key_bindings" == vi ]]; then
   bindkey -v

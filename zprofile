@@ -32,7 +32,7 @@ export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
 # Default text editor
 if has nvim; then
-  export NVIM_APPNAME=nvim-custom
+  export NVIM_APPNAME="nvim/custom"
   EDITOR="nvim"
 elif has micro; then
   EDITOR="micro"
@@ -68,6 +68,11 @@ if has bat; then
   # It might be necessary to set MANROFFOPT="-c" if  experience formatting problems.
   export MANROFFOPT="-c"
   export BAT_THEME='Visual Studio Dark+'
+fi
+
+# Sets env variables for Brew.
+if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 export GREP_COLORS='ms=01;36:mc=01;31:sl=37:cx=01;33:fn=34:ln=94:bn=32:se=36'
