@@ -46,9 +46,18 @@ function nvr() {
   # Open file in existing Neovim
   nvim --server "$server" --remote "$abs_path"
 
-  # Focus the opened window (simulate `:buffer` command)
-  nvim --server "$server" --remote-send "<C-\\><C-N>:buffer ${abs_path}<CR>"
+  # nvim --server "$server" --remote-send "<C-\\><C-N>:buffer ${abs_path}<CR>"
+  # nvim --server "$server" --remote-send "<C-\\><C-N>:edit ${abs_path}<CR>:q!<CR>"
+  # nvim --server "$server" --remote-expr "execute('edit ' . fnameescape('$abs_path')) | if &buftype ==# 'terminal' | quit | endif"
+  # nvim --server "$server" --remote-send "<C-\\><C-N>:edit ${abs_path}<CR>:q!<CR>"
+  # nvim --server "$server" --remote-expr "execute('edit ' . fnameescape('$abs_path'))"
+  # nvim --server "$server" --remote-expr \
+  # "execute('edit ' . fnameescape('$abs_path')) |
+  # if &buftype ==# 'terminal' |
+  #   Snacks.terminal.toggle() |
+  # endif"
 }
+
 
 # nvimpager: Use nvim as a pager to view manpages, diffs, etc with nvim's syntax
 # highlighting. https://github.com/lucc/nvimpager
