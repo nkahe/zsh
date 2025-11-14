@@ -138,9 +138,14 @@ function _terminal-set-titles-with-command {
       local cmd="${(j: :)${cmd_array[@]}}"
     fi
 
-    # Truncate if longer than 20 characters.
-    local truncated_cmd="${cmd/(#m)?(#c20,)/${MATCH[1,17]}...}"
-    unset MATCH
+    # Truncate long titles if needed.
+    local max_width=20
+    local keep=17
+      if (( ${#cmd} > max_width )); then
+        truncated_cmd="${cmd[1,$keep]}..."
+      else
+        truncated_cmd="$cmd"
+      fi
 
     if [[ $TERM == screen* ]]; then
       set-multiplexer-title "$truncated_cmd"
@@ -158,11 +163,14 @@ function _terminal-set-titles-with-path {
   local absolute_path="${${1:a}:-$PWD}"
   local abbreviated_path="${absolute_path/#$HOME/~}"
 
-  # Terminator uses wide tabs so in that case make path 20 characters wide.
-  [[ $TERMINAL == terminator ]] && local width="-20" || local width="-12"
-
-  local truncated_path="${abbreviated_path/(#m)?(#c15,)/...${MATCH[$width,-1]}}"
-  unset MATCH
+  # Truncate long titles if needed.
+  local max_width=20
+  local keep=17
+  if (( ${#abbreviated_path} > max_width )); then
+    truncated_path="...${abbreviated_path[-$keep,-1]}"
+  else
+    truncated_path="$abbreviated_path"
+  fi
 
   if [[ $TERM == screen* ]]; then
     set-multiplexer-title "$truncated_path"
