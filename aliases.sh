@@ -368,16 +368,6 @@ lld() { ls -l -d */ "$@"; }
 
 #echo "Package Manager" $MNGR "detected."
 
-if has rpm; then
-  function rpm-isot {
-    rpm -qa --queryformat="%{SIZE} %{NAME} %{VERSION}\n" \
-      | sort -k 1 -n \
-      | tail -n 100 \
-      | awk '{size=$1; $1=""; print size, $0}' \
-      | numfmt --field=1 --to=iec --suffix=B
-  }
-fi
-
 function power() { upower -i "/org/freedesktop/UPower/devices/battery_BAT$1"; }
 
 # Find out distribution.
