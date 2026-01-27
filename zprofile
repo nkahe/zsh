@@ -27,20 +27,31 @@ function has() {
   command -v "$@" &> /dev/null
 }
 
+export OPENAI_CONFIG_HOME=$HOME/.config
+export OPENAI_DATA_HOME=$HOME/.local/share
+
 # Ignore saving these to history file.
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
 # Default text editor
 if has nvim; then
   export NVIM_APPNAME="nvim/custom"
-  EDITOR="nvim"
+  # Nightly
+  file="$HOME/src/nvim-linux-x86_64/bin/nvim"
+  if has file; then
+    EDITOR=$file
+    # For Neovide.
+    export NEOVIM_BIN=$file
+  else
+    EDITOR="nvim"
+  fi
 elif has micro; then
   EDITOR="micro"
 else
   EDITOR="nano"
 fi
 
-export $EDITOR
+export EDITOR
 export SYSTEMD_EDITOR=$EDITOR
 export VISUAL=$EDITOR
 
