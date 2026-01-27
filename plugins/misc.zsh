@@ -54,22 +54,29 @@ zinit load kutsan/zsh-system-clipboard
 zinit ice depth=1 if"[[ $key_bindings == vi ]]"
 zinit light jeffreytse/zsh-vi-mode
 
+# For best results, source this plugin after zsh-vi-mode:
+# https://github.com/TunaCuma/zsh-vi-man
+# zinit ice wait lucid
+zinit light TunaCuma/zsh-vi-man
+
 # Ensure zsh-vi-mode initializes after other keybindings
 export ZVM_INIT_MODE=sourcing
 
 # Need to use hooks to define bindings when using Zsh-Vi-Mode.
 # zvm_after_lazy_keybindings() {
 zvm_after_init() {
-  bindkey -M vicmd 'cd' zsh-system-clipboard-vicmd-vi-delete
-  bindkey -M vicmd 'cp' zsh-system-clipboard-vicmd-vi-put-after
-  bindkey -M vicmd 'cP' zsh-system-clipboard-vicmd-vi-put-before
+
+  bindkey -M vicmd 'gd' zsh-system-clipboard-vicmd-vi-delete
+  # bindkey -M vicmd 'cp' zsh-system-clipboard-vicmd-vi-put-after
+  bindkey -M vicmd 'gP' zsh-system-clipboard-vicmd-vi-put-before
   # FIXME: Doesn't work.
-  bindkey -M vicmd 'cy' zsh-system-clipboard-vicmd-vi-yank
+  bindkey -M vicmd 'gy' zsh-system-clipboard-vicmd-vi-yank
 
   # Prepend command with sudo.
   zvm_bindkey 'vicmd' ' is' prepend-sudo
 
-  source $ZDOTDIR/bindings.zsh
+  # source $ZDOTDIR/bindings.zsh
+
 }
 
 # function zvm_before_lazy_keybindings() {
