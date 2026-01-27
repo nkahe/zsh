@@ -9,7 +9,11 @@ This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuratio
 - Many plugins and snippets and their settings loaded with deferred loading for faster startup.
 - Many aliases, user functions and keybindings.
 
-### Plugins
+titles.zsh: My custom plugin / snippet forked originally from Prezto module.
+It Updates terminal's window and titles dynamically based on terminal,
+current working directory, last command and background jobs.
+
+### Plugins configurations
 
 - [fast-syntax-highlighting: Feature-rich syntax highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting)
 - [zsh-autosuggestions: Fish-like autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
@@ -41,6 +45,28 @@ Optional:
 - [translate-shell: Command-line translator using Google Translate, Bing Translator, Yandex.Translate, etc.](https://github.com/soimort/translate-shell)
 - [termdown: Countdown timer and stopwatch in your terminal](https://github.com/trehn/termdown)
 
+## Files
+
+- .zshenv - Tells Zsh where rest of the files are. In home directory should be a symlink with same the name to this file or a copy of it.
+- zprofile - Zsh -specific environment variables and settings.
+- zshrc - First file that is processed during init and main configuration file of which rest of configurations are sourced.
+- settings.zsh - General settings.
+- completion.zsh - Completion settings. *
+- aliases.sh - Misc aliases and functions used by Bash too.
+- zsh-aliases.zsh - Zsh -specific aliases and functions.
+- bindings.zsh - Key bindings for Zsh line editor. *
+
+All .zsh-files directly under these directories are sourced from .zshrc during init.
+- plugins/ - Plugin specs mainly for Zinit. Files can contain many specs.
+- snippets/ - Different snippets. Some are Zinit specs for external snippet.
+  - titles.zsh - *
+  - prezto.zsh - Specs for used Prezto modules.
+  - *.sh - Snippets that can be sourced from Bash too.
+- completions/ - Additional locally added completions.
+
+> [!NOTE]
+> `*` These are derived from Prezto modules. Changes can be seen in next section.
+
 ## Installation
 
 1. Install requirements.
@@ -54,31 +80,9 @@ ln -s ~/.config/zsh/zshenv $HOME/.zshenv
 cp ~/.config/zsh/zshenv $HOME/.zshenv
 ```
 
-4. If using different directory for the config, change it in .zshenv accordingly.
-5. Start a new shell. If Zinit installation is not found, it is installed automatically
+1. If using different directory for the config, change it in .zshenv accordingly.
+2. Start a new shell. If Zinit installation is not found, it is installed automatically
 and all defined external plugins and snippets are being pulled.
-
-## Configuration files
-
-- .zshenv - Tells Zsh where rest of the files are. In home directory should be a symlink with same the name to this file or a copy of it.
-- .zprofile - Zsh -specific environment variables and settings.
-- .zshrc - First file that is processed during init and main configuration file of which rest of configurations are sourced.
-- settings.zsh - General settings.
-- completion.zsh - Completion settings. *
-- aliases.sh - Misc aliases and functions that can be sourced from Bash too.
-- zsh-aliases.zsh - Zsh -specific aliases and functions.
-- bindings.zsh - Keybindings. *
-
-All .zsh-files directly under these directories are sourced from .zshrc during init.
-- plugins/ - Plugin specs mainly for Zinit. Files can contain many specs.
-- snippets/ - Different snippets. Some are Zinit specs for external snippet.
-  - titles.zsh *
-  - prezto.zsh - Specs for used Prezto modules.
-  - *.sh - Snippets that can be sourced from Bash too.
-- completions/ - Additional locally added completions.
-
-> [!NOTE]
-> `*` These are derived from Prezto modules. Changes can be seen in next section.
 
 ### Forked Prezto modules
 
