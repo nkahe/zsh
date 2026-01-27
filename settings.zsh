@@ -5,7 +5,8 @@
 
 # Named directories
 hash -d cheat="$HOME/Nextcloud/cheat" config="$HOME/.config" \
-  share="$HOME/.local/share" zsh="$ZDOTDIR"
+  share="$HOME/.local/share" zsh="$ZDOTDIR" nvim="$HOME/.config/nvim" \
+  ndata="$HOME/.local/share/nvim"
 
 # Turn beeping off
 if [[ "$TERM" == (linux|dump) ]]; then

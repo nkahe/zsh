@@ -162,6 +162,7 @@ alias touch='nocorrect touch'
 alias ln='nocorrect ln'
 alias mv='nocorrect mv --verbose'
 alias mkdir='nocorrect mkdir --verbose --parents'
+alias npm='nocorrect npm'
 
 # Finding files {{{1
 

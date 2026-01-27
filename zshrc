@@ -8,7 +8,7 @@ file="$snippets_dir/startup-time.zsh"
 [[ -f "$file" ]] && source "$file"
 unset file
 
-source $ZDOTDIR/.zprofile
+# source $ZDOTDIR/.zprofile
 
 # Set the key mapping style to either 'emacs' or 'vi'.
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
