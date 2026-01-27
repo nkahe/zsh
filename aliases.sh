@@ -9,11 +9,17 @@ function has() {
 
 # Extra applications {{{1
 
+file="$HOME/src/nvim-linux-x86_64/bin/nvim"
+has file && alias nvim="$file"
+
 ## AppImages
 
 # Neovide - Simple, no-nonsense, cross-platform GUI for Neovim. https://neovide.dev
-file="$HOME/Applications/neovide.AppImage"
-has file && alias neovide="$file"
+# file="$HOME/Applications/neovide.AppImage"
+# has file && alias neovide="$file"
+
+# file="$HOME/Applications/nvim-linux-x86_64.appimage"
+# has file && alias nvim-nightly="$file"
 
 # AppImageUpdate. https://github.com/AppImageCommunity/AppImageUpdate
 file="$HOME/Applications/AppImageUpdate-x86_64.AppImage"
@@ -240,6 +246,7 @@ alias p="$PAGER"
 # Put trash
 alias pt='trash'
 alias sctl='systemctl'
+alias soft-reboot="sudo systemctl soft-reboot"
 alias yd='yadm'
 # z=zoxide
 # x=extract (Prezto module)
@@ -401,7 +408,8 @@ if [[ -n "$XDG_SESSION_DESKTOP" && "$XDG_SESSION_DESKTOP" == "KDE" ]]; then
   alias kpoweroff="$qdbus 0 2 0" \
         kreboot="$qdbus 0 1 0" \
         klogout="$qdbus 0 0 0" \
-        restart-kwin='kwin_wayland --replace &>>/dev/null'
+        restart-kwin='kwin_wayland --replace &>>/dev/null' \
+        updatemenu=kbuildsycoca6
 fi
 
 # vi:ft=bash
