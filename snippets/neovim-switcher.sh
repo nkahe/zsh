@@ -29,17 +29,17 @@ function nvims() {
     config='old'
   fi
   config="nvim/$config"
-  NVIM_APPNAME=$config nvim $@
+  NVIM_APPNAME="$config" nvim "$@"
 }
 
 # If want to start by using alias instead.
-alias lazyvim="NVIM_APPNAME=nvim/lazyvim nvim $@"
-alias lazyvim-default="NVIM_APPNAME=nvim/lazyvim-default nvim $@"
-alias nvim-old="NVIM_APPNAME=nvim/old nvim $@"
-alias nvchad="NVIM_APPNAME=nvim/nvchad nvim $@"
-alias astro="NVIM_APPNAME=nvim/astroNvim nvim $@"
-alias spacevim="NVIM_APPNAME=vim/spaceVim nvim $@"
-alias nvim-noplugins="NVIM_APPNAME=nvim/no_plugins nvim $@"
-alias mini="NVIM_APPNAME=nvim/minimax nvim $@"
-alias nvim-custom="NVIM_APPNAME=nvim/custom nvim $@"
-alias nvim-minimal="NVIM_APPNAME=nvim/minimal nvim $@"
+lazyvim() { NVIM_APPNAME="nvim/lazyvim" nvim "$@"; }
+lazyvim-default() { NVIM_APPNAME="nvim/lazyvim-default" nvim "$@"; }
+nvim-old() { NVIM_APPNAME="nvim/old" nvim "$@"; }
+nvchad() { NVIM_APPNAME="nvim/nvchad" nvim "$@"; }
+astro() { NVIM_APPNAME="nvim/astroNvim" nvim "$@"; }
+spacevim() { NVIM_APPNAME="vim/spaceVim" nvim "$@"; }
+nvim-noplugins() { NVIM_APPNAME="nvim/no_plugins" nvim "$@"; }
+mini() { NVIM_APPNAME="nvim/minimax" nvim "$@"; }
+nvim-custom() { NVIM_APPNAME="nvim/custom" nvim "$@"; }
+nvim-minimal() { NVIM_APPNAME="nvim/minimal" nvim "$@"; }
