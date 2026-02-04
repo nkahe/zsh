@@ -100,11 +100,6 @@ function ifconfig() {
   grc ifconfig "$@"
 }
 
-# ls command
-function ls() {
-  grc ls "$@"
-}
-
 # df command
 function df() {
   grc df "$@"
