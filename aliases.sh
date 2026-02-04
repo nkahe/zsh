@@ -337,26 +337,30 @@ function tm {
 # }
 
 # Disable alias expansion safely in both bash and zsh
-if [ -n "$BASH_VERSION" ]; then
-  shopt -u expand_aliases 2>/dev/null
-elif [ -n "$ZSH_VERSION" ]; then
-  setopt no_aliases 2>/dev/null
-fi
+# if [ -n "$BASH_VERSION" ]; then
+#   shopt -u expand_aliases 2>/dev/null
+# elif [ -n "$ZSH_VERSION" ]; then
+#   setopt no_aliases 2>/dev/null
+# fi
 
+# Distros often define these.
+unalias ls ll la lsa lla lsd lld 2>/dev/null
+
+# Flags for all ls applications.
 LS_FLAGS=(--group-directories-first --color=always)
 
+# Different flags for different ls applications depending what's available.
 if has eza; then
   LS_CMD=(eza --icons "${LS_FLAGS[@]}")
 elif has exa; then
   LS_CMD=(exa --icons "${LS_FLAGS[@]}")
 else
-  LS_CMD=(ls "${LS_FLAGS[@]}")
+  LS_CMD=(command ls "${LS_FLAGS[@]}")
 fi
 
-# Used in chpwd() in Zsh to needs to be a function.
-function ls() {
-  "${LS_CMD[@]}" "$@"
-}
+# Used in chpwd() in Zsh which is executed after path changes. It to needs to
+# be a function. Used also in functions below.
+ls() { "${LS_CMD[@]}" "$@"; }
 
 ll() { ls -l "$@"; }
 lsa() { ls -a "$@"; }
