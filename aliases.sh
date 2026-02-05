@@ -29,7 +29,7 @@ file="$HOME/Applications/appimageupdatetool-x86_64.AppImage"
 has file && alias appimage-update="$file"
 
 # firenvim: Embed Neovim in Chrome, Firefox & others. https://github.com/glacambre/firenvim
-alias firenvim='NVIM_APPNAME=nvim-mini nvim --headless "+call firenvim#install(0) | q"'
+alias firenvim='NVIM_APPNAME=nvim/firenvim nvim --headless "+call firenvim#install(0) | q"'
 
 function nvr() {
   local target="$1"
