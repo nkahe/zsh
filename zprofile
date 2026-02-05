@@ -166,3 +166,6 @@ fi
 if has wget; then
   export WGETRC=${XDG_CONFIG_HOME:-$HOME/.config}/wgetrc
 fi
+
+export _ZO_DATA_DIR="$HOME/.local/state/zsh"
+[[ ! -d "$_ZO_DATA_DIR" ]] && mkdir -p "$_ZO_DATA_DIR"

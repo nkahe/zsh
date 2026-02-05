@@ -7,10 +7,6 @@
 # zinit light $ZDOTDIR/themes
 # autoload -U colors && colors
 
-# Enable vi mode.
-bindkey -v
-# bindkey -e
-
 # Define colors
 if [[ "$TERM" == 'linux' ]]; then
   # For 16 colors, basic font.
