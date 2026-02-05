@@ -1,13 +1,13 @@
 # My Zsh configuration
 
-This is my maximalistic [Z shell aka Zsh](httpszsh.sourceforge.io/) configuration. It uses flexible and fast [Zinit plugin manager](https://github.com/zdharma-continuum/zinit). Some modules from [Prezto configuration framework](https://github.com/sorin-ionescu/prezto) are used and [some are forked from them](#forked-prezto-modules). My environment is Linux but this should work in Mac too although isn't actively tested.
+This is my [Z shell aka Zsh](httpszsh.sourceforge.io/) configuration. It uses flexible and fast [antidote](https://antidote.sh/) plugin manager. Some modules from [Prezto configuration framework](https://github.com/sorin-ionescu/prezto) are used and [some are forked from them](#forked-prezto-modules). Aimed for Linux but this should work in Mac too although isn't actively tested.
 
 ## Features
 
 - Full featured, yet fast.
 - Good settings mainly from Prezto.
-- Many plugins and snippets and their settings loaded with deferred loading for faster startup.
 - Many aliases, user functions and keybindings.
+- Many plugins and snippets and their settings loaded with deferred loading for faster startup.
 
 titles.zsh: My custom plugin / snippet forked originally from Prezto module.
 It Updates terminal's window and titles dynamically based on terminal,
@@ -20,9 +20,7 @@ current working directory, last command and background jobs.
 - [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search) with key bindings for emacs, vi -insert and normal modes.
 - [zsh-completions: Additional completion definitions for Zsh.](https://github.com/clarketm/zsh-completions)
 - [zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.](https://github.com/jeffreytse/zsh-vi-mode)
-[moor: Moor is a pager. It's designed to just do the right thing without any configuration.](https://github.com/walles/moor)
 - [command_help: Extract help text from builtin commands and man pages](https://github.com/learnbyexample/command_help)
-- [bashmount: Tool to mount and unmount removable media from the command-line](https://github.com/jamielinux/bashmount)
 - more
 
 ## Requirements
@@ -48,21 +46,21 @@ Optional:
 ## Files
 
 - .zshenv - Tells Zsh where rest of the files are. In home directory should be a symlink with same the name to this file or a copy of it.
-- zprofile - Zsh -specific environment variables and settings.
-- zshrc - First file that is processed during init and main configuration file of which rest of configurations are sourced.
-- settings.zsh - General settings.
-- completion.zsh - Completion settings. *
-- aliases.sh - Misc aliases and functions used by Bash too.
-- zsh-aliases.zsh - Zsh -specific aliases and functions.
+- zprofile - Environment variables that can be used in Bash too.
+- zshrc - Main configuration file of which rest of configurations are sourced.
+- aliases.sh - Aliases and functions that can be used in Bash too.
 - bindings.zsh - Key bindings for Zsh line editor. *
+- completion.zsh - Completion settings. *
+- settings.zsh - General settings.
+- zsh-aliases.zsh - Zsh -specific aliases and functions.
+- zsh_plugins.txt - Used plugin specifications use by Antidote.
 
 All .zsh-files directly under these directories are sourced from .zshrc during init.
-- plugins/ - Plugin specs mainly for Zinit. Files can contain many specs.
-- snippets/ - Different snippets. Some are Zinit specs for external snippet.
+- snippets/ - Different snippets.
   - titles.zsh - *
-  - prezto.zsh - Specs for used Prezto modules.
   - *.sh - Snippets that can be sourced from Bash too.
 - completions/ - Additional locally added completions.
+- later/ - Local files which use deferred loading for speed.
 
 > [!NOTE]
 > `*` These are derived from Prezto modules. Changes can be seen in next section.
@@ -119,7 +117,7 @@ Changes:
 - Forked from completion module in Prezto.
 
 Changes:
-- No LS_COLORS definition since I use fork of  [LS_COLORS: A collection of LS_COLORS definitions; needs your contribution!](https://github.com/trapd00r/LS_COLORS) instead.
+- No LS_COLORS definition since I use fork of [LS_COLORS: A collection of LS_COLORS definitions; needs your contribution!](https://github.com/trapd00r/LS_COLORS) instead.
 - No compinit loading since it's done using Zinit when initializing syntax highlighting -plugin.
 - Mutt's path ~/.mutt -> ~/.config/mutt
 - Use $ZSH_CACHE_DIR for caching.

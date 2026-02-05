@@ -9,8 +9,8 @@ function has() {
 
 # Extra applications {{{1
 
-file="$HOME/src/nvim-linux-x86_64/bin/nvim"
-has file && alias nvim="$file"
+# file="$HOME/src/nvim-linux-x86_64/bin/nvim"
+# has file && alias nvim="$file"
 
 ## AppImages
 
@@ -247,6 +247,7 @@ alias p="$PAGER"
 alias pt='trash'
 alias sctl='systemctl'
 alias soft-reboot="sudo systemctl soft-reboot"
+alias todo="todo.sh"
 alias yd='yadm'
 # z=zoxide
 # x=extract (Prezto module)

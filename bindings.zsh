@@ -392,9 +392,6 @@ done
 # Emacs and Vi Key Bindings
 #
 
-# history-substring-search bindings are defined in zshrc since they need be
-# defined when the plugin loads which is after this file.
-
 # Unbound keys in vicmd and viins mode will cause really odd things to happen
 # such as the casing of all the characters you have typed changing or other
 # undefined things. In emacs mode they just insert a tilde, but bind these keys
@@ -421,6 +418,22 @@ unbound_keys=(
   "${key_info[ControlPageUp]}"
   "${key_info[ControlPageDown]}"
 )
+
+# For history-substring-search plugin. Need to be after plugin is loaded.
+if (( $+functions[history-substring-search-up] )); then
+  local -A keys=([up]='\eOA' [up2]='^[[A' [down]='\eOB' [down2]='^[[B')
+
+  # Bind the up and down keys for each keymap in the array
+  for keymap in emacs vicmd viins; do
+    for action in up down; do
+      bindkey -M "$keymap" "${keys[$action]}" "history-substring-search-${action}"
+      bindkey -M "$keymap" "${keys[${action}2]}" "history-substring-search-${action}"
+    done
+  done
+
+  bindkey -M vicmd 'k' history-substring-search-up
+  bindkey -M vicmd 'j' history-substring-search-down
+fi
 
 #"${key_info[F12]}"
 

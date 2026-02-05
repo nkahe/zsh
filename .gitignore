@@ -6,3 +6,5 @@ profile.local.zsh
 .profile
 .zcompdump
 .zcalc_history
+.zsh_history
+zsh_plugins.zsh

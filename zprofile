@@ -30,21 +30,36 @@ function has() {
 export OPENAI_CONFIG_HOME=$HOME/.config
 export OPENAI_DATA_HOME=$HOME/.local/share
 
+## Plugins
+
+export region_highlight=''
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+export ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd 
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
+
+# Ensure zsh-vi-mode initializes after other keybindings
+export ZVM_INIT_MODE=sourcing
+export ZVM_SYSTEM_CLIPBOARD_ENABLED=true
+
 # Ignore saving these to history file.
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
+# Neovim nightly
+nightly_path="/opt/nvim-linux-x86_64/bin"
+if [[ -d "$nightly_path" ]]; then
+ export PATH="$PATH:$nightly_path"
+fi
+
 # Default text editor
-if has nvim; then
+if has nvim || [[ -d "$nightly_path" ]]; then
   export NVIM_APPNAME="nvim/custom"
-  # Nightly
-  file="$HOME/src/nvim-linux-x86_64/bin/nvim"
-  if has file; then
-    EDITOR=$file
-    # For Neovide.
-    export NEOVIM_BIN=$file
-  else
-    EDITOR="nvim"
-  fi
+  EDITOR="nvim"
+  # file="$HOME/src/nvim-linux-x86_64/bin/nvim"
+  # if has file; then
+  #   EDITOR=$file
+  #   # For Neovide.
+  #   export NEOVIM_BIN=$file
+  # else
 elif has micro; then
   EDITOR="micro"
 else
