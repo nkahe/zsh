@@ -34,20 +34,15 @@ add-zsh-hook precmd show-elapsed-time
 
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # bindkey -v should set it.
-# key_bindings=vi
 
-# Uncomment for Vi-input mode
-bindkey -v
-# Uncomment for Emacs-input mode.
-# set -o emacs
+bindkey -v      # Uncomment for Vi-input mode
+# set -o emacs  # Uncomment for Emacs-input mode.
 
-# Set beam cursor from start.
-print -n '\e[5 q'
+print -n '\e[5 q'  # Set beam cursor from start.
 
 # provide a simple prompt till the proper loads.
 PS1="%~ ❯ "
 
-# plugins_dir="$ZDOTDIR/plugins"
 fpath+=("$ZDOTDIR/completions")
 
 #ZSH_DISABLE_COMPFIX=true
@@ -57,17 +52,6 @@ fpath+=("$ZDOTDIR/completions")
 
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d
-
-# Load Zinit - Zsh plugin manager. Install if not present.
-# https://github.com/zdharma-continuum/zinit
-# ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
-# if [ ! -d $ZINIT_HOME/bin/.git ]; then
-#   [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-#   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-# fi
-# source "$ZINIT_HOME/bin/zinit.zsh"
-
-# ZINIT[ZCOMPDUMP_PATH]="${ZSH_CACHE_DIR:-$ZDOTDIR}/zcompdump"
 
 zstyle ':antidote:bundle' use-friendly-names 'yes'
 
