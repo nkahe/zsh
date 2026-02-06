@@ -78,7 +78,7 @@ export VISUAL=$EDITOR
 # available when this file is sourced.
 # if has moar; then
   export PAGER='moor'
-  export MOOR='-style github-dark'
+  export MOOR='-style github-dark -quit-if-one-screen'
 # elif has most; then
 #   export PAGER='most'
 # else
