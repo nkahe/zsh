@@ -155,14 +155,6 @@ if has paplay; then
   }
 fi
 
-function define() {
-  if [[ $# -ge 2 ]]; then
-    echo "define: too many arguments" >&2
-    return 1
-  fi
-  curl -s "dict://dict.org/d:${1}" | $PAGER
-}
-
 # Copy file's path or CWD to clipboard.
 function cppath {
   if [[ -n "$1" ]]; then
@@ -233,10 +225,11 @@ else
   alias units="units -v -1 -H ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 fi
 
-# Abbrevations
+# General abbrevations
 
 # allows you to create and view interactive sheets on the command-line.
 # https://github.com/cheat/cheat. cs is short for cheatsheet
+alias ad='antidote'
 alias cs='cheat'
 alias e="$EDITOR"
 alias g='git'
@@ -270,10 +263,9 @@ function lsblk {
 }
 
 alias lspath='echo -e ${PATH//:/\\n}'
-
 alias lsip='ip -brief -family inet addr'
 
-# Don't show some long entires.
+# List env. variables. Don't show some long entires.
 alias lsenv='env | grep -vE "LS_COLORS|LESS_TERMCAP" | sort -f | column -t -s "=" -E 2'
 
 function lsmount {
