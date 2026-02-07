@@ -34,8 +34,11 @@ export OPENAI_DATA_HOME=$HOME/.local/share
 
 export region_highlight=''
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-export ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd 
+export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion) 
+# Avoid triggering suggestions when pasting large amount of text in the terminal.
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
+# Don't suggest anything longer than this amount of characters.
+export ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c80,)"
 
 # Ensure zsh-vi-mode initializes after other keybindings
 export ZVM_INIT_MODE=sourcing
