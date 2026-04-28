@@ -47,22 +47,16 @@ export ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 # Ignore saving these to history file.
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
-# Neovim nightly
-nightly_path="/opt/nvim-linux-x86_64/bin"
-if [[ -d "$nightly_path" ]]; then
- export PATH="$PATH:$nightly_path"
-fi
+ # Bob - Neovim version manager
+file="$HOME/.local/share/bob/env/env.sh"
+[[ -f $file ]] && . "$file"
 
 # Default text editor
-if has nvim || [[ -d "$nightly_path" ]]; then
-  export NVIM_APPNAME="nvim/custom"
+if has nvim; then
   EDITOR="nvim"
-  # file="$HOME/src/nvim-linux-x86_64/bin/nvim"
-  # if has file; then
-  #   EDITOR=$file
-  #   # For Neovide.
-  #   export NEOVIM_BIN=$file
-  # else
+  if [[ -d $HOME/.config/nvim/custom ]]; then
+    export NVIM_APPNAME="nvim/custom"
+  fi
 elif has micro; then
   EDITOR="micro"
 else

@@ -9,7 +9,6 @@
 # unset file
 
 zsh_start_time=$(date +%s%N)
-
 # Define a precmd hook to run just before the prompt is displayed
 function show-elapsed-time() {
   # Get the current time just before showing the prompt

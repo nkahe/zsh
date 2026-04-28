@@ -126,4 +126,4 @@ Changes:
 
 ## License
 
-See [LICENSE -file](./LICENSE)
+MIT. See [LICENSE -file](./LICENSE)
