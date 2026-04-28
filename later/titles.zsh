@@ -46,9 +46,10 @@ function set-window-title {
 
 TERMINAL=$(ps -o comm= "$PPID")
 
-if [[ $TERMINAL == "yakuake" ]]; then
+if [[ $TERMINAL == "yakuake" ]] && command -v qdbus >/dev/null; then
   session_id=$(qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.activeSessionId)
 fi
+
 # Sets the terminal tab title.
 function set-tab-title {
   local title_format{,ted}
@@ -59,12 +60,14 @@ function set-tab-title {
     yakuake)
       # TODO: way to get this to work with root?
       # Getting needed session id doesn't work for root user.
-      [[ $UID == 0 || -z "$session_id" ]] && return
+      [[ $UID == 0 || -v "$session_id" ]] && return
+       
       # echo "session_id: $session_id title: ${(V%)title_formatted}"
       # Without redirection to /dev/null extra line change is printed.
-      qdbus org.kde.yakuake /yakuake/tabs setTabTitle "$session_id" \
-        "${(V%)title_formatted}" &>/dev/null
-      # echo "qdbus org.kde.yakuake /yakuake/tabs setTabTitle \"$session_id\" \"${(V%)title_formatted}\""
+      # method void org.kde.yakuake.setTabTitle(int sessionId, QString newTitle)
+      local title="${(V%)title_formatted}"
+      qdbus org.kde.yakuake /yakuake/tabs org.kde.yakuake.setTabTitle \
+        $session_id "$title" &>/dev/null
     ;;
     konsole)
       set-konsole-tab-title "${(V%)title_formatted}"
@@ -141,11 +144,11 @@ function _terminal-set-titles-with-command {
     # Truncate long titles if needed.
     local max_width=20
     local keep=17
-      if (( ${#cmd} > max_width )); then
-        truncated_cmd="${cmd[1,$keep]}..."
-      else
-        truncated_cmd="$cmd"
-      fi
+    if (( ${#cmd} > max_width )); then
+      local truncated_cmd="${cmd[1,$keep]}..."
+    else
+      local truncated_cmd="$cmd"
+    fi
 
     if [[ $TERM == screen* ]]; then
       set-multiplexer-title "$truncated_cmd"
@@ -167,9 +170,9 @@ function _terminal-set-titles-with-path {
   local max_width=20
   local keep=17
   if (( ${#abbreviated_path} > max_width )); then
-    truncated_path="...${abbreviated_path[-$keep,-1]}"
+    local truncated_path="...${abbreviated_path[-$keep,-1]}"
   else
-    truncated_path="$abbreviated_path"
+    local truncated_path="$abbreviated_path"
   fi
 
   if [[ $TERM == screen* ]]; then
