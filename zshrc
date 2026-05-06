@@ -99,17 +99,16 @@ export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 # NOTE: If changing content of files sourced with zinit, it needs to be
 # updated with 'zinit update (name)' because files are compiled and cached.
 
-for file in $ZDOTDIR/snippets/*.zsh $ZDOTDIR/snippets/*.sh; do
+# (N) = suppress "no matches" errors.
+for file in $ZDOTDIR/snippets/*.zsh(N) $ZDOTDIR/snippets/*.sh(N); do
   source "$file"
 done
 
 # Defer sourcing of these files.
-for file in $ZDOTDIR/later/*.zsh; do
+for file in $ZDOTDIR/later/*.zsh(N); do
   # source "$file"
   zsh-defer source "$file"
 done
-
-setopt nullglob       # unmatched globs expand to nothing
 
 # Files to be sourced.
 files=(
@@ -121,11 +120,11 @@ files=(
 )
 
 for f in $files; do
-[[ -r $ZDOTDIR/$f ]] && source $ZDOTDIR/$f
+  [[ -r $ZDOTDIR/$f ]] && source $ZDOTDIR/$f
 done
 
 # Any local files outside version control.
-for f in $ZDOTDIR/*.local.zsh; do
+for f in $ZDOTDIR/*.local.zsh(N); do
   source $f
 done
 

@@ -47,6 +47,9 @@ export ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 # Ignore saving these to history file.
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
+
+# Editor settings
+
  # Bob - Neovim version manager
 file="$HOME/.local/share/bob/env/env.sh"
 [[ -f $file ]] && . "$file"
@@ -70,6 +73,8 @@ export VISUAL=$EDITOR
 # has qimgv && export IMAGEVIEWER='qimgv'
 # has zathura && export PDFVIEWER='zathura'
 # export AUDIOPLAYER="xdg-open"
+
+# Pager
 
 # moor pager is installed as zinit -plugin so it's executable is not
 # available when this file is sourced.
