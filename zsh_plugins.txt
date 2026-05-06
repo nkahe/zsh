@@ -30,7 +30,7 @@ jeffreytse/zsh-vi-mode kind:defer
 # https://github.com/TunaCuma/zsh-vi-man
 TunaCuma/zsh-vi-man kind:defer
 
-zdharma-continuum/fast-syntax-highlighting kind:defer
+# zdharma-continuum/fast-syntax-highlighting kind:defer
 
 zsh-users/zsh-autosuggestions
 

@@ -128,5 +128,10 @@ for f in $ZDOTDIR/*.local.zsh(N); do
   source $f
 done
 
+# Binary is installed with ubi.
+if command -v zsh-patina &>/dev/null; then
+  eval "$(zsh-patina activate)"
+fi
+
 # Uncomment to show speed profiling stats.
 # zprof
