@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-SRC_FILE="LS_COLORS"
-TARGET_FILE="../snippets/ls_colors.sh"
+SRC_FILE=LS_COLORS
+TARGET_FILE=ls_colors.sh
 
 usage() {
   cat <<EOF
