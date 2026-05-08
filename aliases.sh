@@ -362,6 +362,14 @@ lla() { ls -l -a "$@"; }
 lsd() { ls -d */ "$@"; }
 lld() { ls -l -d */ "$@"; }
 
+if (( $+commands[eza] )); then
+  compdef _eza ls ll lsa la lla lsd lld
+elif (( $+commands[exa] )); then
+  compdef _exa ls ll lsa la lla lsd lld
+else
+  compdef _ls ls ll lsa la lla lsd lld
+fi
+
 # Package management {{{1
 
 # find alternative apps if it is installed on your system

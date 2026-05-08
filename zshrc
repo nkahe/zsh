@@ -91,9 +91,6 @@ fi
 # https://github.com/ajeetdsouza/zoxide
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
-# FIXME Command not found
-# (( $+commands[eza] )) && compdef eza=ls
-
 # Used by OMZ plugins like last-working-dir and completions.
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
