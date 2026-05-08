@@ -68,7 +68,10 @@ zstyle ':prezto:module:history' histsize 99999
 # Set the maximum number of history events to save in the history file.
 zstyle ':prezto:module:history' savehist 99999
 
-# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+# Source before plugins.
+source $ZDOTDIR/completion.zsh
+
+# initialize plugins statically.
 antidote load ${ZDOTDIR:-~}/zsh_plugins.txt
 
 # Prompt
@@ -114,7 +117,6 @@ done
 files=(
   aliases.sh
   bindings.zsh
-  completion.zsh
   settings.zsh
   zsh-aliases.zsh
 )

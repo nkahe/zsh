@@ -32,7 +32,11 @@ TunaCuma/zsh-vi-man kind:defer
 
 # zdharma-continuum/fast-syntax-highlighting kind:defer
 
-zsh-users/zsh-autosuggestions
+# zsh-sage: Intelligent zsh autosuggestions with multi-signal ranking
+# https://github.com/UtsavMandal2022/zsh-sage
+UtsavMandal2022/zsh-sage
+
+# zsh-users/zsh-autosuggestions
 
 # Key bindings need to be defined after loading so can't defer.
 zsh-users/zsh-history-substring-search

@@ -32,13 +32,15 @@ export OPENAI_DATA_HOME=$HOME/.local/share
 
 ## Plugins
 
-export region_highlight=''
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion) 
-# Avoid triggering suggestions when pasting large amount of text in the terminal.
-export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
-# Don't suggest anything longer than this amount of characters.
-export ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c80,)"
+
+# Zsh Autosuggestions
+# export region_highlight=''
+# export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+# export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion) 
+# # Avoid triggering suggestions when pasting large amount of text in the terminal.
+# export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
+# # Don't suggest anything longer than this amount of characters.
+# export ZSH_AUTOSUGGEST_HISTORY_IGNORE="?(#c80,)"
 
 # Ensure zsh-vi-mode initializes after other keybindings
 export ZVM_INIT_MODE=sourcing
@@ -47,6 +49,10 @@ export ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 # Ignore saving these to history file.
 export HISTORY_IGNORE="(cd -|cd ..|ls|ll|la|pwd|exit|history|trfi*|tren*)"
 
+# Zsh-sage
+export ZSH_SAGE_COLOR_HIGH=247     # light grey
+export ZSH_SAGE_COLOR_MED=244      # medium grey
+export ZSH_SAGE_COLOR_LOW=241      # faint grey
 
 # Editor settings
 
@@ -162,6 +168,11 @@ if has tldr; then
   export TLDR_CACHE_ENABLED=1
   export TLDR_CACHE_MAX_AGE=720
 fi
+
+# Got error without this:
+# zvm_zle-line-pre-redraw:5: TMUX: parameter not set
+${TMUX:=}
+export TMUX
 
 # Linux utility to configure modifier keys to act as other keys when presse
 
