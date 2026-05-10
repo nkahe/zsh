@@ -56,7 +56,8 @@ Optional:
 - zsh_plugins.txt - Used plugin specifications use by Antidote.
 
 All .zsh-files directly under these directories are sourced from .zshrc during init.
-- snippets/ - Different snippets.
+- archive/ - Scripts not use anymore.
+- snippets/ - Different script snippets.
   - titles.zsh - *
   - *.sh - Snippets that can be sourced from Bash too.
 - completions/ - Additional locally added completions.
