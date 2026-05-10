@@ -12,10 +12,17 @@
 # Reload Zsh user settings.
 alias reload="source $ZDOTDIR/{.zprofile,.zshrc}"
 
-
 # Automatically show files after directory change.
 chpwd() { ls ;}
 
+# Make completion work with ls.
+if has eza; then
+  compdef _eza ls ll lsa la lla lsd lld
+elif has exa; then
+  compdef _exa ls ll lsa la lla lsd lld
+else
+  compdef _ls ls ll lsa la lla lsd lld
+fi
 
 # fzf_surfraw() { zle -I; surfraw $(cat ~/.config/surfraw/bookmarks | fzf |
 # \ awk 'NF != 0 && !/^#/ {print $1}' ) ; }; zle -N fzf_surfraw; bindkey '^W' fzf_surfraw

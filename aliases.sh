@@ -241,7 +241,6 @@ alias sctl='systemctl'
 alias soft-reboot="sudo systemctl soft-reboot"
 alias todo="todo.sh"
 alias yd='yadm'
-# z=zoxide
 # x=extract (Prezto module)
 
 # Handy aliases
@@ -360,14 +359,6 @@ la() { lsa "$@"; }
 lla() { ls -l -a "$@"; }
 lsd() { ls -d */ "$@"; }
 lld() { ls -l -d */ "$@"; }
-
-if (( $+commands[eza] )); then
-  compdef _eza ls ll lsa la lla lsd lld
-elif (( $+commands[exa] )); then
-  compdef _exa ls ll lsa la lla lsd lld
-else
-  compdef _ls ls ll lsa la lla lsd lld
-fi
 
 # Change the current working directory when exiting Yazi.
 if has yazi; then
