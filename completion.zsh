@@ -46,7 +46,6 @@ setopt extended_glob       # Needed for file modification glob modifiers with co
 unsetopt menu_complete     # Do not autoselect the first completion entry.
 unsetopt flowcontrol       # Disable start/stop characters in shell editor.
 
-
 #
 # Initialization
 #
@@ -213,15 +212,16 @@ zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
 zstyle ':completion:*:(nano|vim|nvim|vi|emacs|kwrite|kate|e|micro):*' ignored-patterns '*.(wav|mp3|flac|ogg|mp4|avi|mkv|webm|iso|dmg|so|o|a|bin|exe|dll|pcap|7z|zip|tar|gz|bz2|rar|deb|pkg|gzip|pdf|mobi|epub|png|jpeg|jpg|gif)'
 
 # Taskwarrior
-zstyle ':completion:*:*:task:*' verbose yes
-zstyle ':completion:*:*:task:*:descriptions' format '%U%B%d%b%u'
-zstyle ':completion:*:*:task:*' group-name ''
+if (( $+commands[task] )); then
+  zstyle ':completion:*:*:task:*' verbose yes
+  zstyle ':completion:*:*:task:*:descriptions' format '%U%B%d%b%u'
+  zstyle ':completion:*:*:task:*' group-name ''
+fi
 
 # Docker
 # Short-option stacking can be enabled with:
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
-
 
 # # Angular cli
 # if command -v "ng" &> /dev/null; then

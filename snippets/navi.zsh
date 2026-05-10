@@ -1,5 +1,11 @@
 
-# Key bindings changed
+# Add binding for F4 to run Zsh widget for Navi which inserts result to
+# command line without executing (unlike "navi" command"). Make to work with
+# Zsh-Vi-Mode.
+
+if ! (( $+commands[navi] )); then
+  return
+fi
 
 _navi_call() {
    local result="$(navi "$@" </dev/tty)"
@@ -33,22 +39,12 @@ _navi_widget() {
    zle redisplay
 }
 
-#
-# Bindings
-#
 zle -N _navi_widget
 
-# jeffreytse/zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.
-# https://github.com/jeffreytse/zsh-vi-mode
-
-# Different environments may give different codes for F4.
+# NOTE: Different environments may give different codes for F4.
 local F4_key='^[OS'
 
 # When using Zsh-Vi-Mode bindings are added this way.
-
 for keymap in 'emacs' 'viins' 'vicmd'; do
   zvm_after_init_commands+=("bindkey -M $keymap '$F4_key' _navi_widget")
 done
-
-(( $+commands[fzf] )) && zvm_after_init_commands+=("source <(fzf --zsh)")
-
