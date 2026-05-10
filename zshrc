@@ -48,38 +48,44 @@ zstyle ':prezto:environment:termcap' color
 # Set the file to save the history in when an interactive shell exits.
 # zstyle ':prezto:module:history' histfile "${ZDOTDIR:-$HOME}/.zsh_history"
 
-# Set the maximum  number  of  events  stored  in  the  internal history list.
+# Set the maximum number of events stored in the internal history list.
 zstyle ':prezto:module:history' histsize 99999
 
 # Set the maximum number of history events to save in the history file.
 zstyle ':prezto:module:history' savehist 99999
 
-# Source before plugins.
+# Source before plugins. zsh-sage didn't work properly if this was sourced after.
 source $ZDOTDIR/completion.zsh
 
-# initialize plugins statically.
-antidote load ${ZDOTDIR:-~}/zsh_plugins.txt
+# Load plugins.
+# antidote load ${ZDOTDIR:-~}/zsh_plugins.txt
+
+# Source generated plugin loader normally so deferred/plugin setup lines run too.
+source ~/.config/zsh/zsh_plugins.zsh
 
 # Prompt
 if (( $+commands[starship] )); then
   eval "$(starship init zsh)"
 else
-  Light custom backup -theme.
+  # Light custom backup -theme.
   themefile=$ZDOTDIR/themes/simple_theme.zsh
   [[ -f $themefile ]] && source $themefile
 fi
 
-# fuzzy-finder/fzf: Fast Fuzzy Finder for Command-Line Search
+# Binary is installed with ubi.
+if command -v zsh-patina &>/dev/null; then
+  eval "$(zsh-patina activate)"
+fi
+
+# Add fuzzy-finder/fzf Zsh integration while using Zvm-Vi-Mode.
+# Fast Fuzzy Finder for Command-Line Search
 # https://github.com/fuzzy-finder/fzf
-(( $+commands[fzf] )) && source <(fzf --zsh)
+(( $+commands[fzf] )) && zvm_after_init_commands+=("source <(fzf --zsh)")
+# (( $+commands[fzf] )) && source <(fzf --zsh)
 
 # ajeetdsouza/zoxide: A smarter cd command.
 # https://github.com/ajeetdsouza/zoxide
-(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
-
-# Used by OMZ plugins like last-working-dir and completions.
-export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-[[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
+(( $+commands[zoxide] )) && zsh-defer eval "$(zoxide init zsh)"
 
 # Source snippets.
 # NOTE: If changing content of files sourced with zinit, it needs to be
