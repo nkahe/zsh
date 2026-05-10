@@ -4,32 +4,18 @@
 [[ $- != *i* ]] && return
 
 # Measure configuration load time.
-# file="$snippets_dir/startup-time.zsh"
-# [[ -f "$file" ]] && source "$file"
-# unset file
-
-zsh_start_time=$(date +%s%N)
-# Define a precmd hook to run just before the prompt is displayed
-function show-elapsed-time() {
-  # Get the current time just before showing the prompt
-  zsh_end_time=$(date +%s%N)
-
-  # Calculate the time difference in milliseconds
-  # Convert nanoseconds to milliseconds
-  elapsed_time=$(( (zsh_end_time - zsh_start_time) / 1000000 ))
-
-  echo "Config load time: ${elapsed_time} ms"
-
-  add-zsh-hook -d precmd show-elapsed-time
-}
+source $ZDOTDIR/lib/startup-time.zsh
 
 # Show how fast Zsh loaded.
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd show-elapsed-time
 
+# Uncomment to profile speed.
+zmodload zsh/zprof
+
 # Profile is loaded when starting login shell. Uncomment to temporarily
 # source it for all interactive shells.
-# source $ZDOTDIR/.zprofile
+source $ZDOTDIR/.zprofile
 
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # bindkey -v should set it.
