@@ -230,7 +230,6 @@ fi
 # allows you to create and view interactive sheets on the command-line.
 # https://github.com/cheat/cheat. cs is short for cheatsheet
 alias ad='antidote'
-alias cs='cheat'
 alias e="$EDITOR"
 alias g='git'
 alias jctl='journalctl'
@@ -368,6 +367,18 @@ elif (( $+commands[exa] )); then
   compdef _exa ls ll lsa la lla lsd lld
 else
   compdef _ls ls ll lsa la lla lsd lld
+fi
+
+# Change the current working directory when exiting Yazi.
+if has yazi; then
+  function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+      builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+  }
 fi
 
 # Package management {{{1
