@@ -1,6 +1,3 @@
-
-return
-
 # Record the start time in nanoseconds when Zsh starts
 zsh_start_time=$(date +%s%N)
 
