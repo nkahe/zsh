@@ -3,7 +3,7 @@
 # command line without executing (unlike "navi" command"). Make to work with
 # Zsh-Vi-Mode.
 
-if ! (( $+commands[navi] )); then
+if ! command -v navi &>/dev/null; then
   return
 fi
 

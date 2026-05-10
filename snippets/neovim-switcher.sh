@@ -1,5 +1,11 @@
-# Pick an installed Neovim configuration to run from list using fzf.
-#
+
+# Pick an installed Neovim configuration to run from list using fzf with
+# "nvims" or individual functions names for different configs.
+
+if ! command -v nvim &>/dev/null; then
+  return
+fi
+
 function nvims() {
   if ! command -v fzf >/dev/null 2>&1; then
     echo "nvims: fzf is not installed" >&2

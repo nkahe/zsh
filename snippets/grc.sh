@@ -1,4 +1,11 @@
-# Functions for grc
+# Generic Colorizer is yet another colorizer for beautifying your log files or
+# output of commands.
+
+# Make functions to get coloring.
+
+if ! command -v zsh-patina &>/dev/null; then
+  return
+fi
 
 # configure command
 function configure() {
