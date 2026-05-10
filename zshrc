@@ -93,13 +93,7 @@ fi
 
 # (N) = suppress "no matches" errors.
 for file in $ZDOTDIR/snippets/*.zsh(N) $ZDOTDIR/snippets/*.sh(N); do
-  source "$file"
-done
-
-# Defer sourcing of these files.
-for file in $ZDOTDIR/later/*.zsh(N); do
-  # source "$file"
-  zsh-defer source "$file"
+  zsh-defer -t 1 source "$file"
 done
 
 # Files to be sourced.
@@ -119,10 +113,11 @@ for f in $ZDOTDIR/*.local.zsh(N); do
   source $f
 done
 
-# Binary is installed with ubi.
-if command -v zsh-patina &>/dev/null; then
-  eval "$(zsh-patina activate)"
-fi
+# Files deferred later than others.
+for file in $ZDOTDIR/later/*.zsh(N); do
+  # source "$file"
+  zsh-defer -t 2 source "$file"
+done
 
 # Uncomment to show speed profiling stats.
-# zprof
+zprof | head -n 40
