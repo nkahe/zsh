@@ -15,9 +15,9 @@ current working directory, last command and background jobs.
 
 ### Plugins configurations
 
-- [fast-syntax-highlighting: Feature-rich syntax highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting)
-- [zsh-autosuggestions: Fish-like autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
-- [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search) with key bindings for emacs, vi -insert and normal modes.
+- [zsh-patina:  fast Zsh plugin performing syntax highlighting](https://github.com/michel-kraemer/zsh-patina)
+- [zsh-sage: Intelligent zsh autosuggestions with multi-signal ranking](https://github.com/UtsavMandal2022/zsh-sage)
+- [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search)
 - [zsh-completions: Additional completion definitions for Zsh.](https://github.com/clarketm/zsh-completions)
 - [zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.](https://github.com/jeffreytse/zsh-vi-mode)
 - [command_help: Extract help text from builtin commands and man pages](https://github.com/learnbyexample/command_help)
@@ -51,17 +51,19 @@ Optional:
 - aliases.sh - Aliases and functions that can be used in Bash too.
 - bindings.zsh - Key bindings for Zsh line editor. *
 - completion.zsh - Completion settings. *
-- settings.zsh - General settings.
-- zsh-aliases.zsh - Zsh -specific aliases and functions.
-- zsh_plugins.txt - Used plugin specifications use by Antidote.
+- settings.zsh - General Zsh options and some other settings.
+- zsh-aliases.zsh - Zsh -specific aliases and alias-like functions.
+- zsh_plugins.txt - Zsh plugins to be loaded by Antidote.
+- zsh_plugins.zsh - Output file of Antidote.
 
 All .zsh-files directly under these directories are sourced from .zshrc during init.
 - archive/ - Scripts not use anymore.
-- snippets/ - Different script snippets.
-  - titles.zsh - *
-  - *.sh - Snippets that can be sourced from Bash too.
 - completions/ - Additional locally added completions.
-- later/ - Local files which use deferred loading for speed.
+- lib/ - Files that are individually sourced.
+- snippets/ - All .zsh and .sh files in this dir are loaded with deferring of 1s.
+  - titles.zsh - *
+  - *.sh - Snippets that can be sourced from other shells too.
+- later/ - Files in this dir are loaded with longest defer time.
 
 > [!NOTE]
 > `*` These are derived from Prezto modules. Changes can be seen in next section.
