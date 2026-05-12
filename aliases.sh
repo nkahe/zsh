@@ -64,7 +64,6 @@ function nvr() {
   # endif"
 }
 
-
 # nvimpager: Use nvim as a pager to view manpages, diffs, etc with nvim's syntax
 # highlighting. https://github.com/lucc/nvimpager
 alias nvp='nvimpager'
@@ -359,18 +358,6 @@ la() { lsa "$@"; }
 lla() { ls -l -a "$@"; }
 lsd() { ls -d */ "$@"; }
 lld() { ls -l -d */ "$@"; }
-
-# Change the current working directory when exiting Yazi.
-if has yazi; then
-  function y() {
-    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-    yazi "$@" --cwd-file="$tmp"
-    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-      builtin cd -- "$cwd"
-    fi
-    rm -f -- "$tmp"
-  }
-fi
 
 # Package management {{{1
 
