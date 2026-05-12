@@ -3,15 +3,14 @@
 # If not running interactively
 [[ $- != *i* ]] && return
 
+# Set ZSH_BENCH to show startup benchmark.
+if [[ -n $ZSH_BENCH ]]; then
+  zmodload zsh/zprof
+fi
+
 # Measure configuration load time.
 source $ZDOTDIR/lib/startup-time.zsh
-
 # Show how fast Zsh loaded.
-autoload -Uz add-zsh-hook
-add-zsh-hook precmd show-elapsed-time
-
-# Uncomment to profile speed.
-zmodload zsh/zprof
 
 # Profile is loaded when starting login shell. Uncomment to temporarily
 # source it for all interactive shells.
@@ -119,5 +118,6 @@ for file in $ZDOTDIR/later/*.zsh(N); do
   zsh-defer -t 2 source "$file"
 done
 
-# Uncomment to show speed profiling stats.
-zprof | head -n 40
+if [[ -n $ZSH_BENCH ]]; then
+  zprof | head -n 40
+fi
