@@ -14,7 +14,7 @@ source $ZDOTDIR/lib/startup-time.zsh
 
 # Profile is loaded when starting login shell. Uncomment to temporarily
 # source it for all interactive shells.
-source $ZDOTDIR/.zprofile
+# source $ZDOTDIR/.zprofile
 
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # bindkey -v should set it.
@@ -64,12 +64,12 @@ if (( $+commands[starship] )); then
   eval "$(starship init zsh)"
 else
   # Light custom backup -theme.
-  themefile=$ZDOTDIR/themes/simple_theme.zsh
-  [[ -f $themefile ]] && source $themefile
+  file=$ZDOTDIR/themes/simple_theme.zsh
+  [[ -f $file ]] && source $file
 fi
 
 # Binary is installed with ubi.
-if command -v zsh-patina &>/dev/null; then
+if (( $+commands[zsh-patina] )); then
   eval "$(zsh-patina activate)"
 fi
 
@@ -87,34 +87,31 @@ fi
 # NOTE: If changing content of files sourced with zinit, it needs to be
 # updated with 'zinit update (name)' because files are compiled and cached.
 
-# (N) = suppress "no matches" errors.
-for file in $ZDOTDIR/snippets/*.zsh(N) $ZDOTDIR/snippets/*.sh(N); do
-  zsh-defer -t 1 source "$file"
-done
-
 # Files to be sourced.
 files=(
   aliases.sh
   bindings.zsh
   settings.zsh
   zsh-aliases.zsh
+  *.local.zsh(N)
 )
 
 for f in $files; do
   [[ -r $ZDOTDIR/$f ]] && source $ZDOTDIR/$f
 done
 
-# Any local files outside version control.
-for f in $ZDOTDIR/*.local.zsh(N); do
-  source $f
+# (N) = suppress "no matches" errors.
+for f in $ZDOTDIR/snippets/*.zsh(N) $ZDOTDIR/snippets/*.sh(N); do
+  zsh-defer -t 1 source "$f"
 done
 
 # Files deferred later than others.
-for file in $ZDOTDIR/later/*.zsh(N); do
+for f in $ZDOTDIR/later/*.zsh(N); do
   # source "$file"
-  zsh-defer -t 2 source "$file"
+  zsh-defer -t 2 source "$f"
 done
 
+# Show benchmark scores.
 if [[ -n $ZSH_BENCH ]]; then
   zprof | head -n 40
 fi
