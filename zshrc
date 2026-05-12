@@ -94,6 +94,7 @@ files=(
   settings.zsh
   zsh-aliases.zsh
   *.local.zsh(N)
+  lib/navi.zsh
 )
 
 for f in $files; do
