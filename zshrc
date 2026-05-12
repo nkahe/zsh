@@ -29,10 +29,7 @@ PS1="%~ ❯ "
 
 fpath+=("$ZDOTDIR/completions")
 
-#ZSH_DISABLE_COMPFIX=true
-
-# Uncomment to profile speed.
-# zmodload zsh/zprof
+# ZSH_DISABLE_COMPFIX=true
 
 # Reset to default key bindings. Needs to be before any key binding changes.
 bindkey -d

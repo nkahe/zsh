@@ -10,8 +10,13 @@ function show-elapsed-time() {
   # Convert nanoseconds to milliseconds
   elapsed_time=$(( (zsh_end_time - zsh_start_time) / 1000000 ))
 
-  # Display the total time taken for Zsh to initialize
-  echo "Startup time: ${elapsed_time} ms\n"
+  # If a terminal leaked control-sequence text on the current line,
+  # clear that line before printing the startup message.
+  print -n -- $'\r\033[2K'
+  print -P "%F{249}Startup time: ${elapsed_time} ms%f"
 
   add-zsh-hook -d precmd show-elapsed-time
 }
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd show-elapsed-time
