@@ -54,10 +54,7 @@ zstyle ':prezto:module:history' savehist 99999
 source $ZDOTDIR/completion.zsh
 
 # Load plugins.
-# antidote load ${ZDOTDIR:-~}/zsh_plugins.txt
-
-# Source generated plugin loader normally so deferred/plugin setup lines run too.
-source ~/.config/zsh/zsh_plugins.zsh
+antidote load ${ZDOTDIR:-~}/zsh_plugins.txt
 
 # Prompt
 if (( $+commands[starship] )); then
