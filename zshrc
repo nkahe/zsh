@@ -14,7 +14,7 @@ source $ZDOTDIR/lib/startup-time.zsh
 
 # Profile is loaded when starting login shell. Uncomment to temporarily
 # source it for all interactive shells.
-# source $ZDOTDIR/.zprofile
+source $ZDOTDIR/.zprofile
 
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # bindkey -v should set it.
@@ -65,11 +65,6 @@ else
   [[ -f $file ]] && source $file
 fi
 
-# Binary is installed with ubi.
-if (( $+commands[zsh-patina] )); then
-  eval "$(zsh-patina activate)"
-fi
-
 # Add fuzzy-finder/fzf Zsh integration while using Zvm-Vi-Mode.
 # Fast Fuzzy Finder for Command-Line Search
 # https://github.com/fuzzy-finder/fzf
@@ -108,6 +103,11 @@ for f in $ZDOTDIR/later/*.zsh(N); do
   # source "$file"
   zsh-defer -t 2 source "$f"
 done
+
+# Binary is installed with ubi.
+if (( $+commands[zsh-patina] )); then
+  eval "$(zsh-patina activate)"
+fi
 
 # Show benchmark scores.
 if [[ -n $ZSH_BENCH ]]; then
