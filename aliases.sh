@@ -74,18 +74,6 @@ alias restart-xdg='systemctl --user restart plasma-xdg-desktop-portal-kde'
 has kitty && alias icat="kitty +kitten icat"
   # Show images with Kitty's icat. https://sw.kovidgoyal.net/kitty/kittens/icat.html
 
-# vimwiki: Personal Wiki for Vim. https://github.com/vimwiki/vimwiki
-# ( <Leader>ww is keymap for VimWiki in Vim)
-
-if has nvim; then
-  WikiEditor="nvim"
-elif has vim; then
-  WikiEditor="vim"
-fi
-
-# Add 'wincmd w' if want to focus file.
-ww() { $WikiEditor -c ":execute 'cd ~/Documents/notes|NERDTreeToggle|wincmd w|VimwikiIndex'"; }
-
 # ffind: A sane replacement for find. https://github.com/jaimebuelta/ffind
 # alias ffind='ffind --hidden'    # Show also hidden files.
 
@@ -141,11 +129,6 @@ function alp() {
     printf "%s " "$char"
   done
   echo "Å Ä Ö"
-}
-
-function html-to-md () {
- find . -iname "*.html" -type f -exec sh -c \
-  'pandoc -s -r html -t markdown_strict "${0}" -o "${0%.html}.md"' {} \;
 }
 
 if has paplay; then
@@ -207,9 +190,10 @@ if [[ $OSTYPE != 'darwin'* ]]; then
   alias du='du --human'
   alias free='free --human'
   alias mv="mv --verbose"
-  alias rm='rm --verbose'
-  alias shred='shred --verbose --remove --zero'
-  alias units="units --verbose --one-line --history \
+  alias rm='rm -I --preserve-root --verbose'
+  alias ln='ln --symbolic --verbose'
+  alias shred='shred --remove --zero --verbose'
+  alias units="units --one-line --history --verbose \
   ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 else
   alias chmod='chmod -v'
@@ -234,11 +218,12 @@ alias g='git'
 alias jctl='journalctl'
 alias o='xdg-open'
 alias p="$PAGER"
-# Put trash
-alias pt='trash'
+# pt = Put trash
+alias pt='trash --verbose'
 alias sctl='systemctl'
 alias soft-reboot="sudo systemctl soft-reboot"
 alias todo="todo.sh"
+alias t="todo.sh"
 alias yd='yadm'
 # x=extract (Prezto module)
 
