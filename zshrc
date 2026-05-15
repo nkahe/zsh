@@ -95,7 +95,7 @@ done
 
 # (N) = suppress "no matches" errors.
 for f in $ZDOTDIR/snippets/*.zsh(N) $ZDOTDIR/snippets/*.sh(N); do
-  zsh-defer -t 1 source "$f"
+  source "$f"
 done
 
 # Files deferred later than others.

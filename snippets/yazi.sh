@@ -1,4 +1,3 @@
-
 # Change the current working directory when exiting Yazi.
 if command -v yazi >/dev/null 2>&1; then
   function y() {
@@ -7,7 +6,11 @@ if command -v yazi >/dev/null 2>&1; then
     if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
       builtin cd -- "$cwd"
     fi
-    rm -f -- "$tmp"
+    command rm -f -- "$tmp"
   }
 fi
 
+# Make completion work in Zsh.
+if [[ -n $ZSH_VERSION ]]; then
+  compdef y=yazi
+fi

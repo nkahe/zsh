@@ -45,3 +45,8 @@ function cs() {
   fi
   cheat "$@"
 }
+
+# Make completion work in Zsh.
+if [[ -n $ZSH_VERSION ]]; then
+  compdef cs=cheat
+fi
