@@ -12,11 +12,11 @@
 # NOTE: While setting tab title works in Yakuake, it gives message to journalctl:
 # yakuake: Skipped method "setTabTitle" : Type not registered with QtDBus in parameter list: TabBar::InteractiveType
 
-# Return if requirements are not found.
-if [[ $TERM == (dumb|linux|*bsd*|eterm*) ]]; then
-  return 1
+# Return if requirements are not found. Don't use with Kitty terminal since it
+# already has this behavior by default.
+if [[ $TERM == (dumb|linux|*bsd*|eterm*|*kitty*|) ]]; then
+  return
 fi
-
 # Settings. In Prezto these are defined in .zpreztorc.
 
 # Auto set the tab and window titles.
@@ -61,7 +61,7 @@ function set-tab-title {
       # TODO: way to get this to work with root?
       # Getting needed session id doesn't work for root user.
       [[ $UID == 0 || -v "$session_id" ]] && return
-       
+
       # echo "session_id: $session_id title: ${(V%)title_formatted}"
       # Without redirection to /dev/null extra line change is printed.
       # method void org.kde.yakuake.setTabTitle(int sessionId, QString newTitle)
