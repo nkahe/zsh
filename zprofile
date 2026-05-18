@@ -32,7 +32,6 @@ export OPENAI_DATA_HOME=$HOME/.local/share
 
 ## Plugins
 
-
 # Zsh Autosuggestions
 # export region_highlight=''
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
@@ -55,10 +54,6 @@ export ZSH_SAGE_COLOR_MED=244      # medium grey
 export ZSH_SAGE_COLOR_LOW=241      # faint grey
 
 # Editor settings
-
- # Bob - Neovim version manager
-file="$HOME/.local/share/bob/env/env.sh"
-[[ -f $file ]] && . "$file"
 
 # Default text editor
 if has nvim; then
