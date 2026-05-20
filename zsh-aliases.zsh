@@ -159,14 +159,14 @@ alias lsl='ls -d *(@)' \
 for index ({1..9}) alias "$index"="cd -${index}"; unset index
 
 # Make new dir and change to it.
-function mkdcd() {
-  nocorrect mkdir --parents "$1" && cd "$1";
+function mkcd() {
+  nocorrect mkdir --parents "$@" && cd "$1";
 }
 
 # Don't use autocorrect with these commands + some better default flags..
 alias sudo='nocorrect sudo'
 alias touch='nocorrect touch'
-alias ln='nocorrect ln'
+alias ln='nocorrect ln --symbolic --verbose'
 alias mv='nocorrect mv --verbose'
 alias mkdir='nocorrect mkdir --verbose --parents'
 alias npm='nocorrect npm'
