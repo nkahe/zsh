@@ -37,7 +37,14 @@ bindkey -d
 zstyle ':antidote:bundle' use-friendly-names 'yes'
 
 # Source antidote
-source "${XDG_DATA_HOME:-${HOME}/.local/share}/antidote/antidote.zsh"
+ad_path="${XDG_DATA_HOME:-${HOME}/.local/share}/antidote"
+if [[ -f $ad_path/antidote.zsh ]]; then
+  source $ad_path/antidote.zsh
+else
+  # first, run this from an interactive zsh terminal session:
+  git clone --depth=1 https://github.com/mattmc3/antidote.git $ad_path
+  source $ad_path/antidote.zsh
+fi
 
 zstyle ':prezto:environment:termcap' color
 
