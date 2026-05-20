@@ -1,6 +1,7 @@
 # Settings that are no longer in use.
 aliases.local.zsh
 profile.local.zsh
+.ctags.d
 .profile
 .zcompdump
 .zcalc_history

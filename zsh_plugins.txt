@@ -18,6 +18,8 @@ sorin-ionescu/prezto path:modules/history/init.zsh
 
 # Other
 
+romkatv/zsh-defer
+
 # zdharma-continuum/fast-syntax-highlighting kind:defer
 zsh-users/zsh-autosuggestions
 
