@@ -13,19 +13,17 @@ if [[ $TERM == xterm || $TERM == xterm-color ]]; then
   export TERM=xterm-256color
 fi
 
-# Path
-[[ -d $HOME/bin ]] && export PATH="$PATH:$HOME/bin"
-[[ -d $HOME/.local/bin ]] && export PATH="$PATH:$HOME/.local/bin"
-[[ -d $HOME/scripts ]] && export PATH="$PATH:$HOME/scripts"
-
-export GEM_HOME="$HOME/.local/rubygems"
-[[ -d $GEM_HOME ]] && export PATH="$PATH:$GEM_HOME/bin"
-
-
 # Check if a command exists.
 function has() {
   command -v "$@" &> /dev/null
 }
+
+# Path. Order matters.
+export GEM_HOME="$HOME/.local/rubygems"
+[[ -d $GEM_HOME ]] && export PATH="$GEM_HOME/bin:$PATH"
+[[ -d $HOME/.local/bin ]] && export PATH="$HOME/.local/bin:$PATH"
+[[ -d $HOME/scripts ]] && export PATH="$HOME/scripts:$PATH"
+[[ -d $HOME/bin ]] && export PATH="$HOME/bin:$PATH"
 
 export OPENAI_CONFIG_HOME=$HOME/.config
 export OPENAI_DATA_HOME=$HOME/.local/share
