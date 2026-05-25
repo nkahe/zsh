@@ -4,7 +4,7 @@ This is my [Z shell aka Zsh](httpszsh.sourceforge.io/) configuration. It uses fl
 
 ## Features
 
-- Full featured, yet fast.
+- Full featured, yet fast. Load time is about 100 ms.
 - Good settings mainly from Prezto.
 - Many aliases, user functions and keybindings.
 - Many plugins and snippets and their settings loaded with deferred loading for faster startup.
@@ -16,25 +16,25 @@ current working directory, last command and background jobs.
 ### Plugins configurations
 
 - [zsh-patina:  fast Zsh plugin performing syntax highlighting](https://github.com/michel-kraemer/zsh-patina)
-- [zsh-sage: Intelligent zsh autosuggestions with multi-signal ranking](https://github.com/UtsavMandal2022/zsh-sage)
+- zsh-users/zsh-autosuggestions
 - [zsh-history-substring-search: 🐠 ZSH port of Fish history search ](https://github.com/zsh-users/zsh-history-substring-search)
 - [zsh-completions: Additional completion definitions for Zsh.](https://github.com/clarketm/zsh-completions)
 - [zsh-vi-mode: 💻 A better and friendly vi(vim) mode plugin for ZSH.](https://github.com/jeffreytse/zsh-vi-mode)
 - [command_help: Extract help text from builtin commands and man pages](https://github.com/learnbyexample/command_help)
-- more
+- and more
 
 ## Requirements
 
-- zsh, git
-
+- zsh, git, internet connection for downloading.
 Recommended:
 - [Nerd Fonts](https://www.nerdfonts.com/) - fonts with glyphs for Starship prompt and eza, etc.
-- [Advanced and fast Starship -prompt](https://starship.rs)
-- [eza: A modern alternative to ls](https://github.com/eza-community/eza) which is also recommended, fzf fuzzy finder, for Wayland desktop: wl-copy for clipboard operations.
+- [Starship -prompt](https://starship.rs)
+- [eza: A modern alternative to ls](https://github.com/eza-community/eza)
+- fzf - fuzzy finder
+- For Wayland desktop: wl-copy for clipboard operations.
 
-Optional:
+Contains configs for example:
 - [zoxide: A smarter cd command. Supports all major shells.](https://github.com/ajeetdsouza/zoxide)
-- curl - for scripts getting information from web.
 - [grc - generic colouriser](https://github.com/garabik/grc)
 - [ccze - a fast log colorizer](https://github.com/cornet/ccze)
 [cheat - allows you to create and view interactive cheatsheets on the command-line](https://github.com/cheat/cheat)
@@ -45,7 +45,7 @@ Optional:
 
 ## Files
 
-- .zshenv - Tells Zsh where rest of the files are. In home directory should be a symlink with same the name to this file or a copy of it.
+- .zshenv - Tells Zsh where rest of the files are which is ~/.config/zsh/ by default.
 - zprofile - Environment variables that can be used in Bash too.
 - zshrc - Main configuration file of which rest of configurations are sourced.
 - aliases.sh - Aliases and functions that can be used in Bash too.
@@ -57,7 +57,7 @@ Optional:
 - zsh_plugins.zsh - Output file of Antidote.
 
 All .zsh-files directly under these directories are sourced from .zshrc during init.
-- archive/ - Scripts not use anymore.
+- archive/ - Scripts not in use anymore.
 - completions/ - Additional locally added completions.
 - lib/ - Files that are individually sourced.
 - snippets/ - All .zsh and .sh files in this dir are loaded with deferring of 1s.
@@ -70,20 +70,22 @@ All .zsh-files directly under these directories are sourced from .zshrc during i
 
 ## Installation
 
-1. Install requirements.
+You probably don't want to install whole configuration as it is but this is how it could be done:
+
+1. Install requirements if not present.
 2. Git clone this repo in ~/.config which makes sub-directory "zsh". Custom directory can also be used.
-3. If ~/.zshenv already exists backup by renaming it. Make a hidden symlink to home directory pointing zshenv -file:
+3. If ~/.zshenv already exists backup by renaming it. Make a symlink to home directory pointing to .zshenv or copy it:
+```sh
+ln -s ~/.config/zsh/.zshenv ~/.zshenv
 ```
-ln -s ~/.config/zsh/zshenv $HOME/.zshenv
-```
- or copy it:
-```
-cp ~/.config/zsh/zshenv $HOME/.zshenv
+ or:
+```sh
+cp ~/.config/zsh/.zshenv ~
 ```
 
 1. If using different directory for the config, change it in .zshenv accordingly.
-2. Start a new shell. If Zinit installation is not found, it is installed automatically
-and all defined external plugins and snippets are being pulled.
+2. Start a new shell. If Antidote installation is not found, it is installed automatically
+with Git and all defined external plugins and snippets are being pulled.
 
 ### Forked Prezto modules
 
