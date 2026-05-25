@@ -220,21 +220,32 @@ fi
 alias ad='antidote'
 alias e="$EDITOR"
 alias g='git'
-alias jctl='journalctl'
+alias {j,jctl}='journalctl'
 alias o='xdg-open'
 alias p="$PAGER"
+alias {s,sctl}='systemctl'
+alias {t,todo}="todo.sh"
+# y is for yazi, z for Zoxide.
+alias yd='yadm'
 # pt = Put trash
 alias pt='trash --verbose'
-alias sctl='systemctl'
 alias soft-reboot="sudo systemctl soft-reboot"
-alias todo="todo.sh"
-alias t="todo.sh"
-alias yd='yadm'
 # x=extract (Prezto module)
+
+alias add='git add'
+alias branch='git branch'
+alias clone='git clone'
+alias commit='git commit'
+alias pull='git pull'
+alias push='git push'
+alias remote='git remote'
+alias reset='git reset'
+alias restore='git restore'
+alias status='git status'
 
 # Handy aliases
 
-alias cpp='rsync --archive -verbose --human-readable --info=progress2'
+alias rcp='rsync --archive --verbose --human-readable --info=progress2'
 # Työhakemistossa olevien hakemistojen viemä tila.
 alias du1='du --max-depth=1 | sort --numeric-sort'
 # Ei alihakemistojen kokoa.
