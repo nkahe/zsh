@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Generate ctags
+
+set -eu
+
+OUT=".ctags.d/tags"
+
+mkdir -p .ctags.d
+
+ctags -R -f "$OUT" \
+  --fields=+l \
+  --extras=+q \
+  .
