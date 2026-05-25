@@ -198,8 +198,7 @@ if [[ $OSTYPE != 'darwin'* ]]; then
   alias rm='rm -I --preserve-root --verbose'
   alias ln='ln --symbolic --verbose'
   alias shred='shred --remove --zero --verbose'
-  alias units="units --one-line --history --verbose \
-  ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
+  alias units="units --one-line --verbose --history \ ${XDG_CACHE_DIR:-$HOME/.cache}/.units_history"
 else
   alias chmod='chmod -v'
   alias chown='chown -v'
