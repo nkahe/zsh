@@ -5,7 +5,7 @@
 #   Matt Hamilton <m@tthamilton.com>
 #
 
-function archive {
+function pack {
 
 local archive_name path_to_archive _gzip_bin _bzip2_bin _xz_bin _zstd_bin
 
