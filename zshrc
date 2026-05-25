@@ -14,7 +14,7 @@ source $ZDOTDIR/lib/startup-time.zsh
 
 # Profile is loaded when starting login shell. Uncomment to temporarily
 # source it for all interactive shells.
-source $ZDOTDIR/.zprofile
+# source $ZDOTDIR/.zprofile
 
 # Fzf: "If you use vi mode on bash, you need to add set -o vi before source
 # bindkey -v should set it.
