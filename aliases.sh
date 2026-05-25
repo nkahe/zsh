@@ -155,8 +155,13 @@ function cppath {
   fi
 }
 
+# function irc() {
+#   ssh -tt ${USER}@rasp screen -rdU
+# }
+
 function irc() {
-  ssh -tt "$USER@rasp screen -rdU"
+  print -n '\e]2;IRC (Weechat)\a'
+  ssh -tt rasp 'screen -D -RR weechat'
 }
 
 # Restart applications
