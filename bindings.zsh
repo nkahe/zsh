@@ -109,7 +109,7 @@ Alt-M     Duplicate previous word
 Alt-V     Toggle Vi / Emacs mode.
 Ctrl-G    Fzf cd to any dir
 Ctrl-R    Fzf search history
-Ctrl-T    Fzf select file
+Ctrl-T    Fzf select file under current dir
 Ctrl-I    Complete in middle of a word
 Ctrl-Z    2. press to continue process in background
 Ctrl-BS   Kill previous word
@@ -323,6 +323,21 @@ emacs-mode() {
   zle redisplay
 }
 zle -N emacs-mode
+
+# Paste the selected entry from locate output into the command line
+# https://github.com/junegunn/fzf/wiki/examples#changing-directory
+# Ctrl-Alt-F (Find).
+function fzf-locate-widget() {
+  local selected
+  if selected=$(locate / | fzf -q "$LBUFFER"); then
+    LBUFFER=$selected
+  fi
+  zle redisplay
+}
+zle     -N    fzf-locate-widget
+
+# FIXME:
+# add some shortcut.
 
 #
 # Emacs Key Bindings

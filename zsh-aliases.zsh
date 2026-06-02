@@ -9,8 +9,17 @@
 # [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe export LESSOPEN="|﻿ /usr/share/source-highlight/sr­­c-hilite-lesspipe.sh %s" 
 # Ei ole asennettu.
 
-# Reload Zsh user settings.
+# Reload Zsh user settings. TODO: make source all configs.
 alias reload="source $ZDOTDIR/{.zprofile,.zshrc}"
+
+# Named directories. Can be referred with ~name
+hash -d \
+  cheat="$HOME/Nextcloud/cheat" \
+  config="$HOME/.config" \
+  ndata="$HOME/.local/share/nvim" \
+  nvim="$HOME/.config/nvim" \
+  share="$HOME/.local/share" \
+  zsh="$ZDOTDIR" \
 
 # Automatically show files after directory change.
 chpwd() { ls ;}
@@ -112,19 +121,6 @@ if (( $+commands[surfraw] )); then
   }
 fi
 
-# Paste the selected entry from locate output into the command line
-# https://github.com/junegunn/fzf/wiki/examples#changing-directory
-# Ctrl-Alt-F (Find).
-function fzf-locate-widget() {
-  local selected
-  if selected=$(locate / | fzf -q "$LBUFFER"); then
-    LBUFFER=$selected
-  fi
-  zle redisplay
-}
-zle     -N    fzf-locate-widget
-bindkey -e '^[^F' fzf-locate-widget
-
 #}}}
 # Tietoa järjestelmästä {{{
 
@@ -177,7 +173,6 @@ alias npm='nocorrect npm'
 # You can enter searches: foo bar (bla1|bla2)
 function flocate () {
   keyword=$(echo "$@" | sed 's/ /.*/g' | sed 's:|:\\:g' | sed 's:(:\\(:g' | sed 's:):\\):g')
-  # Do not results from backup -directory
   locate --ignore-case --limit 500 $keyword | fzf
 }
 
