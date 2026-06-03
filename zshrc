@@ -12,6 +12,9 @@ fi
 source $ZDOTDIR/lib/startup-time.zsh
 # Show how fast Zsh loaded.
 
+# Show greet message once per day.
+source $ZDOTDIR/lib/greet.sh
+
 # Profile is loaded when starting login shell. Uncomment to temporarily
 # source it for all interactive shells.
 # source $ZDOTDIR/.zprofile
