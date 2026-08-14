@@ -128,7 +128,8 @@ fi
 
 alias lsfpath='echo -e ${FPATH//:/\\n}'  # List $FPATH (zsh functions path) nicely
 
-alias hist=' fc -El 1 | tail -n $1'
+alias hist=' fc -El 1 | tail -n ${1:-40}'
+alias h=hist
 
 #alias tv="w3m -dump http://www.iltapulu.fi/\?timeframe\=2 | awk '/tv-ohjelmat/,/^$/'"  pipetys sekoaa tästä.
 
