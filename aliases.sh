@@ -218,8 +218,8 @@ fi
 # https://github.com/cheat/cheat. cs is short for cheatsheet
 alias ad='antidote'
 alias e="$EDITOR"
-alias g='git'
 alias {j,jctl}='journalctl'
+alias g='git'
 alias o='xdg-open'
 alias p="$PAGER"
 alias {s,sctl}='systemctl'
@@ -228,9 +228,12 @@ alias {t,todo}="todo.sh"
 alias yd='yadm'
 # pt = Put trash
 alias pt='trash --verbose'
+# Script
+alias sel='selitä'
 alias soft-reboot="sudo systemctl soft-reboot"
 # x=extract (Prezto module)
 
+# Git
 alias add='git add'
 alias branch='git branch'
 alias clone='git clone'
@@ -251,6 +254,9 @@ alias du1='du --max-depth=1 | sort --numeric-sort'
 alias dud='du --separate-dirs | sort --numeric-sort --reverse'
 alias logoff='loginctl terminate-session $XDG_SESSION_ID'
 alias susp='systemctl suspend'
+
+# Scripts
+alias ud="urban-dict"
 
 # List things more nicely
 

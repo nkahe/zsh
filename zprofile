@@ -5,8 +5,8 @@
 #
 # Don't put anything that outputs text here. Can break things like ssh and scp.
 #
-# NOTE: No Zsh-only syntax. This file is linked to ~/.profile and is sourced
 # from Bash too.
+# NOTE: No Zsh-only syntax. This file is linked to ~/.profile and is sourced
 
 # If terminal is set to xterm, set 256 color mode.
 if [[ $TERM == xterm || $TERM == xterm-color ]]; then
