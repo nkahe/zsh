@@ -13,7 +13,7 @@ function show-elapsed-time() {
   # If a terminal leaked control-sequence text on the current line,
   # clear that line before printing the startup message.
   print -n -- $'\r\033[2K'
-  print -P "%F{249}Startup time: ${elapsed_time} ms%f"
+  print -P "Startup time: ${elapsed_time} ms"
 
   add-zsh-hook -d precmd show-elapsed-time
 }
