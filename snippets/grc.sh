@@ -3,7 +3,7 @@
 
 # Make functions to get coloring.
 
-if ! command -v zsh-patina &>/dev/null; then
+if ! command -v grc &>/dev/null; then
   return
 fi
 
@@ -100,11 +100,6 @@ function ps() {
 # dig command
 function dig() {
   grc dig "$@"
-}
-
-# ifconfig command
-function ifconfig() {
-  grc ifconfig "$@"
 }
 
 # df command
