@@ -223,7 +223,6 @@ alias g='git'
 alias o='xdg-open'
 alias p="$PAGER"
 alias {s,sctl}='systemctl'
-alias {t,todo}="todo.sh"
 # y is for yazi, z for Zoxide.
 alias yd='yadm'
 # pt = Put trash

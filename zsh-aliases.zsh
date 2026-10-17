@@ -167,6 +167,7 @@ alias ln='nocorrect ln --symbolic --verbose'
 alias mv='nocorrect mv --verbose'
 alias mkdir='nocorrect mkdir --verbose --parents'
 alias npm='nocorrect npm'
+alias {t,todo}="nocorrect todo.sh"
 
 # Finding files {{{1
 
